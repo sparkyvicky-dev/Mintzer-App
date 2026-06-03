@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mintzer UI Design Brief</title>
+  <style>
+    @page { margin: 18mm 16mm; size: A4; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.45;
+      color: #202124;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 12mm;
+    }
+    h1 { font-size: 22pt; color: #1A73E8; page-break-before: always; margin-top: 0; }
+    h1:first-of-type { page-break-before: avoid; }
+    h2 { font-size: 14pt; color: #1A73E8; margin-top: 1.2em; border-bottom: 1px solid #E8EAED; padding-bottom: 4px; page-break-after: avoid; }
+    h3 { font-size: 11.5pt; margin-top: 1em; page-break-after: avoid; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 9.5pt; page-break-inside: avoid; }
+    th, td { border: 1px solid #E8EAED; padding: 6px 8px; text-align: left; vertical-align: top; }
+    th { background: #F8F9FA; font-weight: 600; }
+    code, pre { background: #F8F9FA; font-size: 9pt; }
+    pre { padding: 10px; overflow-x: auto; border: 1px solid #E8EAED; page-break-inside: avoid; }
+    blockquote { border-left: 3px solid #1A73E8; margin: 8px 0; padding: 4px 12px; color: #5F6368; }
+    hr { border: none; border-top: 1px solid #E8EAED; margin: 16px 0; }
+    ul, ol { padding-left: 1.4em; }
+    li { margin: 4px 0; }
+    .cover { text-align: center; padding: 40mm 0 20mm; page-break-after: always; }
+    .cover h1 { page-break-before: avoid; font-size: 28pt; border: none; }
+    .cover p { color: #5F6368; font-size: 12pt; }
+    @media print {
+      body { padding: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="cover">
+  <h1>Mintzer Mobile App</h1>
+  <p><strong>UI Design Brief</strong> · Version 1.0 · June 2026</p>
+  <p>Mintzer Technologies Pvt Ltd</p>
+  <p style="margin-top:24px;font-size:10pt;">Print this document: Ctrl+P → Save as PDF</p>
+</div>
+<h1 id="mintzer-mobile-app--ui-design-brief">Mintzer Mobile App — UI Design Brief</h1>
+<p><strong>Document version:</strong> 1.1<br><strong>Date:</strong> June 2026<br><strong>Platform:</strong> Android (primary), iOS (future)<br><strong>Languages:</strong> English + Hindi (v1)<br><strong>Audience:</strong> UI/UX designer, Figma handoff<br><strong>Product:</strong> Mintzer — earn through card deals (Flipkart, Amazon, etc.)</p>
+<hr>
+<h2 id="table-of-contents">Table of contents</h2>
+<ol>
+<li><a href="#1-product-summary">Product summary</a></li>
+<li><a href="#2-design-principles">Design principles</a></li>
+<li><a href="#3-design-system">Design system</a></li>
+<li><a href="#4-user-flows">User flows</a></li>
+<li><a href="#5-global-components">Global components</a></li>
+<li><a href="#6-screen-specifications">Screen specifications</a></li>
+<li><a href="#7-money-display-rules">Money display rules</a></li>
+<li><a href="#8-asset--logo-guidelines">Asset &amp; logo guidelines</a></li>
+<li><a href="#9-notifications--deep-links">Notifications &amp; deep links</a></li>
+<li><a href="#10-states-checklist-all-screens">States checklist (all screens)</a></li>
+<li><a href="#11-out-of-scope-for-v1-design">Out of scope for v1 design</a></li>
+<li><a href="#12-client-decisions-locked">Client decisions (locked)</a></li>
+<li><a href="#13-localization-english--hindi">Localization (English + Hindi)</a></li>
+</ol>
+<hr>
+<h2 id="1-product-summary">1. Product summary</h2>
+<p>Mintzer helps users earn money by placing orders on e-commerce sites (Flipkart, etc.) using specific credit cards, delivering to Mintzer-provided addresses, and completing verification steps in the app.</p>
+<p><strong>Core user journey:</strong></p>
+<p>Login (phone) → Browse deals → Read deal detail → Accept deal → Place order on Flipkart within timer → Confirm Order ID → My Orders (tracking → delivery OTP → invoice) → Wallet payment.</p>
+<p><strong>Key product rules for design:</strong></p>
+<ul>
+<li>Login: phone + OTP only — no profile at signup.</li>
+<li>Flow: <strong>Home → Deal detail → Accept</strong> (Option B — read before commit).</li>
+<li>Only <strong>one active “place order” timer</strong> at a time until Order ID or screenshot submitted.</li>
+<li>Timer duration set by backend (show countdown, not fixed “15 min” in designs).</li>
+<li>User selects <strong>delivery partner</strong> + pastes tracking ID (no live API tracking in v1; courier list from samples/client).</li>
+<li>Invoice upload unlocked only after ops marks parcel received (backend).</li>
+<li>48-hour payment countdown starts after invoice upload.</li>
+<li><strong>v1 orders:</strong> Regular only (no Instant tab).</li>
+<li><strong>KYC:</strong> Name + PAN on <strong>first Accept</strong>; required before first order.</li>
+<li><strong>Withdraw:</strong> Full flow in v1.</li>
+<li><strong>Languages:</strong> English + Hindi.</li>
+</ul>
+<hr>
+<h2 id="2-design-principles">2. Design principles</h2>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Feel</td>
+<td>Fluid like RedBus — fast, clear, trustworthy</td>
+</tr>
+<tr>
+<td>Theme</td>
+<td><strong>Light only</strong> for v1</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><strong>Google Material</strong> — not purple AI gradients, not dark/gold competitor look</td>
+</tr>
+<tr>
+<td>Density</td>
+<td>One primary action per screen; paste-friendly inputs on order steps</td>
+</tr>
+<tr>
+<td>Trust</td>
+<td>Show exact ₹ figures on deal detail — no vague “Earn” without breakdown</td>
+</tr>
+<tr>
+<td>Logos</td>
+<td>Fixed-size containers — never stretched store/bank logos</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-design-system">3. Design system</h2>
+<h3 id="31-color-palette">3.1 Color palette</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Primary</td>
+<td><code>#1A73E8</code></td>
+<td>Buttons, links, active nav, progress</td>
+</tr>
+<tr>
+<td>Primary dark</td>
+<td><code>#1557B0</code></td>
+<td>Button pressed</td>
+</tr>
+<tr>
+<td>Surface</td>
+<td><code>#FFFFFF</code></td>
+<td>Cards, sheets</td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#F8F9FA</code></td>
+<td>Screen background</td>
+</tr>
+<tr>
+<td>Text primary</td>
+<td><code>#202124</code></td>
+<td>Headings, amounts</td>
+</tr>
+<tr>
+<td>Text secondary</td>
+<td><code>#5F6368</code></td>
+<td>Captions, hints</td>
+</tr>
+<tr>
+<td>Earn / success</td>
+<td><code>#188038</code></td>
+<td>You earn, commission, checkmarks</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td><code>#F9AB00</code></td>
+<td>Timer low, alerts</td>
+</tr>
+<tr>
+<td>Error</td>
+<td><code>#D93025</code></td>
+<td>Errors, TDS line, cancel confirm</td>
+</tr>
+<tr>
+<td>Divider</td>
+<td><code>#E8EAED</code></td>
+<td>Card borders, lines</td>
+</tr>
+<tr>
+<td>Active placement strip</td>
+<td><code>#E8F0FE</code> bg + <code>#1A73E8</code> text</td>
+<td>Timer banner on Home</td>
+</tr>
+<tr>
+<td>Commission bar</td>
+<td><code>#1A73E8</code> (primary blue)</td>
+<td>My Orders card footer — <strong>locked</strong> (see §12)</td>
+</tr>
+</tbody></table>
+<h3 id="32-typography">3.2 Typography</h3>
+<table>
+<thead>
+<tr>
+<th>Style</th>
+<th>Size</th>
+<th>Weight</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Display / hero ₹</td>
+<td>28–32sp</td>
+<td>Bold</td>
+<td>You earn, wallet balance</td>
+</tr>
+<tr>
+<td>Title</td>
+<td>20–22sp</td>
+<td>SemiBold</td>
+<td>Screen titles</td>
+</tr>
+<tr>
+<td>Section label</td>
+<td>12sp</td>
+<td>Medium, uppercase optional</td>
+<td>YOU PAY, CASHBACK</td>
+</tr>
+<tr>
+<td>Body</td>
+<td>14–16sp</td>
+<td>Regular</td>
+<td>Rules, notes</td>
+</tr>
+<tr>
+<td>Caption</td>
+<td>12sp</td>
+<td>Regular</td>
+<td>Billing cycle, hints</td>
+</tr>
+<tr>
+<td>Money row</td>
+<td>16sp</td>
+<td>Medium</td>
+<td>Line items in money card</td>
+</tr>
+<tr>
+<td>Button</td>
+<td>16sp</td>
+<td>SemiBold</td>
+<td>CTAs</td>
+</tr>
+</tbody></table>
+<p><strong>Font:</strong> Roboto or Google Sans (Material default).</p>
+<h3 id="33-spacing--shape">3.3 Spacing &amp; shape</h3>
+<ul>
+<li>Screen horizontal padding: <strong>16dp</strong></li>
+<li>Card padding: <strong>16dp</strong></li>
+<li>Card corner radius: <strong>12dp</strong></li>
+<li>Button height: <strong>48dp</strong>; corner <strong>24dp</strong> (pill) or <strong>8dp</strong></li>
+<li>Bottom nav height: <strong>56dp</strong> + safe area</li>
+<li>FAB: <strong>56dp</strong>, bottom-right above nav (<strong>16dp</strong> margin)</li>
+<li>Min tap target: <strong>48×48dp</strong></li>
+</ul>
+<h3 id="34-icons">3.4 Icons</h3>
+<ul>
+<li>Material Icons Outlined</li>
+<li>Header: wallet, notifications, share, back, copy, paste</li>
+<li>Nav: home, shopping_bag/orders, percent/offers, person/profile</li>
+<li>Support FAB: chat or WhatsApp-style</li>
+</ul>
+<h3 id="35-motion">3.5 Motion</h3>
+<ul>
+<li>Screen transitions: <strong>300ms</strong> ease</li>
+<li>Success checkmark: subtle scale-in</li>
+<li>Timer last 2 min: optional gentle pulse on countdown (not flashing red)</li>
+<li>Skeleton loaders on lists — no full-screen spinners</li>
+</ul>
+<h3 id="36-localization">3.6 Localization</h3>
+<ul>
+<li><strong>v1 languages:</strong> English (default) + Hindi.</li>
+<li>Design all screens with <strong>~30% longer Hindi strings</strong> in mind (buttons, labels).</li>
+<li>Provide Figma text styles for both; key strings duplicated as component variants or separate frames.</li>
+<li>Language switcher: Profile row <strong>Language</strong> → English | हिंदी (persists in app).</li>
+<li>Numbers and ₹ stay LTR; dates localized later.</li>
+</ul>
+<hr>
+<h2 id="4-user-flows">4. User flows</h2>
+<h3 id="41-primary-flow">4.1 Primary flow</h3>
+<pre><code>Login → Home → Deal detail → Accept deal
+  → [External: Flipkart order]
+  → Submit Order ID / screenshot
+  → Order placed success → My Orders
+  → Tracking ID → Out for delivery (last 4 + OTP)
+  → [Wait: parcel received — ops]
+  → Upload invoice → 48h timer → Wallet credited
+</code></pre>
+<h3 id="42-placement-rules">4.2 Placement rules</h3>
+<ul>
+<li>User taps <strong>Accept deal</strong> on Deal detail → timer starts on <strong>Accept screen</strong>.</li>
+<li>While timer active: Home shows <strong>active order strip</strong>; other deals <strong>dimmed</strong> — “Finish current order first”.</li>
+<li><strong>Cancel order</strong> on Accept → frees slot.</li>
+<li>Timer expires without confirm → no My Orders entry; push to re-engage.</li>
+</ul>
+<h3 id="43-navigation-structure">4.3 Navigation structure</h3>
+<p><strong>Bottom tabs (always visible on main app):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Root screen</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Home</td>
+<td>Deal list</td>
+</tr>
+<tr>
+<td>Orders</td>
+<td>My Orders</td>
+</tr>
+<tr>
+<td>Offers</td>
+<td>Promotions</td>
+</tr>
+<tr>
+<td>Profile</td>
+<td>Settings</td>
+</tr>
+</tbody></table>
+<p><strong>Stack screens (push over tabs):</strong></p>
+<p>Deal detail → Accept → Order success<br>KYC sheet (modal)<br>Withdraw (future)</p>
+<hr>
+<h2 id="5-global-components">5. Global components</h2>
+<p>Design these once in Figma as components:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Variants</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Primary button</strong></td>
+<td>Default, disabled, loading</td>
+</tr>
+<tr>
+<td><strong>Secondary / outline button</strong></td>
+<td>Cancel, Browse deals</td>
+</tr>
+<tr>
+<td><strong>Deal card (Home)</strong></td>
+<td>Default, disabled/blocked</td>
+</tr>
+<tr>
+<td><strong>Active placement banner</strong></td>
+<td>With countdown</td>
+</tr>
+<tr>
+<td><strong>Logo row</strong></td>
+<td>Store 40×40, Bank 32×32, contain</td>
+</tr>
+<tr>
+<td><strong>Money summary card</strong></td>
+<td>Full (deal detail), compact (accept)</td>
+</tr>
+<tr>
+<td><strong>Paste text field</strong></td>
+<td>+ Paste chip button</td>
+</tr>
+<tr>
+<td><strong>Order progress bar</strong></td>
+<td>6 steps: placed → shipped → OFD → delivered → invoice → payment</td>
+</tr>
+<tr>
+<td><strong>Order card</strong></td>
+<td>Collapsed, expanded per step</td>
+</tr>
+<tr>
+<td><strong>Countdown timer</strong></td>
+<td>Accept (mm:ss), Payment (hh:mm:ss)</td>
+</tr>
+<tr>
+<td><strong>Bottom nav bar</strong></td>
+<td>4 tabs, active state</td>
+</tr>
+<tr>
+<td><strong>Support FAB</strong></td>
+<td>Blue circle, chat icon</td>
+</tr>
+<tr>
+<td><strong>Empty state</strong></td>
+<td>Illustration + CTA</td>
+</tr>
+<tr>
+<td><strong>Skeleton</strong></td>
+<td>Deal list, order list</td>
+</tr>
+<tr>
+<td><strong>Snackbar / toast</strong></td>
+<td>Copied, error, success</td>
+</tr>
+<tr>
+<td><strong>Confirm dialog</strong></td>
+<td>Cancel order, Log out</td>
+</tr>
+<tr>
+<td><strong>Collapsible section</strong></td>
+<td>Offer details, Links, How wallet calculated</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="6-screen-specifications">6. Screen specifications</h2>
+<hr>
+<h3 id="page-1--login-phone">PAGE 1 — Login (Phone)</h3>
+<p><strong>Purpose:</strong> Enter app with phone only.</p>
+<p><strong>Layout:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Top</td>
+<td>Mintzer logo centered</td>
+</tr>
+<tr>
+<td>Middle</td>
+<td>Headline: “Enter mobile number”</td>
+</tr>
+<tr>
+<td>Input</td>
+<td>Country +91 + 10-digit phone field</td>
+</tr>
+<tr>
+<td>CTA</td>
+<td><strong>Continue</strong> (disabled until 10 digits)</td>
+</tr>
+<tr>
+<td>Footer</td>
+<td>Terms · Privacy links (small)</td>
+</tr>
+</tbody></table>
+<p><strong>OTP sub-screen (same flow):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Title</td>
+<td>“Verify OTP”</td>
+</tr>
+<tr>
+<td>Subtitle</td>
+<td>“Sent to +91 XXXXX X4321”</td>
+</tr>
+<tr>
+<td>Input</td>
+<td>4–6 OTP boxes</td>
+</tr>
+<tr>
+<td>Link</td>
+<td>Resend OTP (with countdown)</td>
+</tr>
+<tr>
+<td>CTA</td>
+<td><strong>Verify</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Do not include:</strong> Name, email, KYC, referral.</p>
+<p><strong>States:</strong> Invalid phone error, wrong OTP, loading on button.</p>
+<hr>
+<h3 id="page-2--home">PAGE 2 — Home</h3>
+<p><strong>Purpose:</strong> Browse deals; resume active placement.</p>
+<p><strong>Layout (top → bottom):</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Element</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Header:</strong> Mintzer logo left · <strong>WhatsApp</strong> + <strong>YouTube</strong> icons · Wallet ₹ · Notifications bell</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Search bar: “Search deals…” + filter icon</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Active placement strip</strong> (conditional): “iQOO Z10 — <strong>12:34</strong> left · Tap to continue →”</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Promo banner carousel (optional): signup bonus or YouTube — copy flexible; blue/white</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Deal list</strong> (vertical scroll)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Support FAB (bottom right)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Bottom nav — Home selected</td>
+</tr>
+</tbody></table>
+<p><strong>Deal card (each row):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Spec</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Product image</td>
+<td>Left, ~80dp, fixed frame</td>
+</tr>
+<tr>
+<td>Title</td>
+<td>Product name, 2 lines max</td>
+</tr>
+<tr>
+<td>Store logo + name</td>
+<td>Small Logo row</td>
+</tr>
+<tr>
+<td>Card chip</td>
+<td>“Axis Credit Card” / “Any card”</td>
+</tr>
+<tr>
+<td>Order price</td>
+<td>“₹20,000”</td>
+</tr>
+<tr>
+<td>Earn</td>
+<td>“Earn ₹300” green</td>
+</tr>
+<tr>
+<td>Button</td>
+<td><strong>Earn ₹300</strong> full width on card OR whole card tappable</td>
+</tr>
+</tbody></table>
+<p><strong>Blocked deal variant:</strong> 50% opacity + text “Finish current order first”.</p>
+<p><strong>States:</strong> Loading skeleton, empty “No deals”, error + retry.</p>
+<p><strong>Tap:</strong> Card → <strong>Deal detail</strong> (not Accept directly).</p>
+<hr>
+<h3 id="page-3--deal-detail">PAGE 3 — Deal detail</h3>
+<p><strong>Purpose:</strong> Read full deal and money breakdown; tap Accept.</p>
+<p><strong>Layout (scroll + sticky footer):</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Element</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Header</td>
+<td>Back · “Deal details” · Share (optional)</td>
+</tr>
+<tr>
+<td>Hero</td>
+<td>Product image — fixed frame, contain</td>
+</tr>
+<tr>
+<td>Meta</td>
+<td>Name · Color · Variant · Qty</td>
+</tr>
+<tr>
+<td>Store row</td>
+<td>[Logo 40dp] Flipkart</td>
+</tr>
+<tr>
+<td>Card row</td>
+<td>[Logo 32dp] Card to use · Axis Credit Card</td>
+</tr>
+<tr>
+<td><strong>Money summary card</strong></td>
+<td>See <a href="#7-money-display-rules">Section 7</a></td>
+</tr>
+<tr>
+<td>Rules</td>
+<td>Up to 3 bullet points (coupon, colour, card warning)</td>
+</tr>
+<tr>
+<td>Accordion</td>
+<td>Offer details (TDS, timing)</td>
+</tr>
+<tr>
+<td>Accordion</td>
+<td>Links — URL + Copy + Open</td>
+</tr>
+<tr>
+<td>Accordion</td>
+<td>How to use — YouTube</td>
+</tr>
+<tr>
+<td>Sticky footer</td>
+<td><strong>Accept deal</strong> primary button</td>
+</tr>
+</tbody></table>
+<p><strong>Do not include:</strong> Timer, delivery address, Order ID, Cancel.</p>
+<p><strong>Dialog:</strong> If active placement exists — “Finish current order first” + Go to Accept.</p>
+<hr>
+<h3 id="page-4--accept--place-order">PAGE 4 — Accept / Place order</h3>
+<p><strong>Purpose:</strong> Timer running; user orders on Flipkart and confirms.</p>
+<p><strong>Layout:</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Element</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Header</td>
+<td>Back (warn if leaving) · “Place your order”</td>
+</tr>
+<tr>
+<td><strong>Timer</strong></td>
+<td>Large mm:ss — hero; amber when &lt; 2 min</td>
+</tr>
+<tr>
+<td>Summary</td>
+<td>Product name · color · store · card chip</td>
+</tr>
+<tr>
+<td>Compact money</td>
+<td>You pay <strong>₹20,200</strong> · You earn <strong>₹300</strong></td>
+</tr>
+<tr>
+<td>Actions</td>
+<td><strong>Copy address</strong> · <strong>Copy pin</strong> (side by side)</td>
+</tr>
+<tr>
+<td>CTA</td>
+<td><strong>Open Flipkart</strong> (primary outline or filled)</td>
+</tr>
+<tr>
+<td>Accordion</td>
+<td>Offer details (optional)</td>
+</tr>
+<tr>
+<td>Input</td>
+<td>Order ID — wide field + <strong>Paste</strong> chip</td>
+</tr>
+<tr>
+<td>Upload</td>
+<td><strong>Upload screenshot</strong> secondary</td>
+</tr>
+<tr>
+<td>Footer</td>
+<td><strong>Submit order</strong> primary</td>
+</tr>
+<tr>
+<td>Footer</td>
+<td><strong>Cancel order</strong> outline/red — confirm dialog</td>
+</tr>
+</tbody></table>
+<p><strong>KYC sheet (first Accept only):</strong> Modal on Accept — “Complete KYC to continue” → KYC form (Name + PAN only).</p>
+<p><strong>States:</strong></p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Design</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Running</td>
+<td>Normal</td>
+</tr>
+<tr>
+<td>Submitting</td>
+<td>Button loading</td>
+</tr>
+<tr>
+<td>Expired</td>
+<td>Full message “Time’s up” + Browse deals</td>
+</tr>
+<tr>
+<td>Cancelled</td>
+<td>Return Home</td>
+</tr>
+</tbody></table>
+<p><strong>Success navigates to:</strong> Order placed success.</p>
+<hr>
+<h3 id="page-5--order-placed-success">PAGE 5 — Order placed success</h3>
+<p><strong>Purpose:</strong> Confirmation moment.</p>
+<p><strong>Layout (centered):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Animation</td>
+<td>Green checkmark</td>
+</tr>
+<tr>
+<td>Title</td>
+<td><strong>Order placed!</strong></td>
+</tr>
+<tr>
+<td>Subtitle</td>
+<td>“₹300 commission locked”</td>
+</tr>
+<tr>
+<td>Hint</td>
+<td>“Add tracking ID when your order ships”</td>
+</tr>
+<tr>
+<td>Primary CTA</td>
+<td><strong>Go to My Orders</strong></td>
+</tr>
+<tr>
+<td>Secondary</td>
+<td>Browse more deals</td>
+</tr>
+</tbody></table>
+<p>No back to Accept. White background, minimal text.</p>
+<hr>
+<h3 id="page-6--my-orders">PAGE 6 — My Orders</h3>
+<p><strong>Purpose:</strong> Track and complete all orders after Order ID confirmed.</p>
+<p><strong>Layout:</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Element</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Header</td>
+<td>“My Orders”</td>
+</tr>
+<tr>
+<td>Search</td>
+<td>“Search by Order ID” + calendar icon (optional)</td>
+</tr>
+<tr>
+<td>Tabs</td>
+<td><strong>Ongoing</strong> · <strong>Completed</strong> only (v1: <strong>Regular orders only</strong> — no Instant tab)</td>
+</tr>
+<tr>
+<td>List</td>
+<td>Order cards</td>
+</tr>
+<tr>
+<td>FAB</td>
+<td>Support</td>
+</tr>
+<tr>
+<td>Nav</td>
+<td>Orders tab active</td>
+</tr>
+</tbody></table>
+<p><strong>Order card — collapsed:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Header bar</td>
+<td>Order ID ORDT86KP80 + copy icon</td>
+</tr>
+<tr>
+<td>Progress</td>
+<td>Horizontal: Placed → Shipped → OFD → Delivered → Invoice → Paid</td>
+</tr>
+<tr>
+<td>Product</td>
+<td>Thumb · name · color · store logo</td>
+</tr>
+<tr>
+<td>Footer bar</td>
+<td><strong>Blue</strong> bar: Commission ₹300 · <strong>Payout ›</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Next action label on card (one line):</strong><br>“Add tracking” / “Enter delivery OTP” / “Waiting for delivery” / “Upload invoice” / “Payment in 36h”</p>
+<p><strong>Order card — expanded (one step active):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>UI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 Placed</td>
+<td>✓ date</td>
+</tr>
+<tr>
+<td>2 Tracking</td>
+<td><strong>Delivery partner</strong> dropdown + Tracking ID paste field + <strong>Save</strong></td>
+</tr>
+<tr>
+<td>3 Out for delivery</td>
+<td>Last 4 digits field + OTP field (6+) + <strong>Save</strong></td>
+</tr>
+<tr>
+<td>4 Waiting</td>
+<td>Grey — “Waiting for delivery confirmation” — no upload</td>
+</tr>
+<tr>
+<td>5 Invoice</td>
+<td>Green hint when unlocked + <strong>Upload</strong> + <strong>Submit</strong></td>
+</tr>
+<tr>
+<td>6 Payment</td>
+<td><strong>48:00:00 → 0:00:00</strong> countdown + “Payment within 48 hours”</td>
+</tr>
+<tr>
+<td>7 Paid</td>
+<td>✓ — move to Completed tab</td>
+</tr>
+</tbody></table>
+<p><strong>Delivery partner dropdown:</strong> Ekart, Delhivery, Blue Dart, DTDC, India Post, etc. — list from client samples; future: suggest partner from tracking ID pattern (design dropdown + optional helper text).</p>
+<p><strong>Paste-friendly:</strong> Full-width fields, monospace-friendly Order/Tracking IDs.</p>
+<hr>
+<h3 id="page-7--wallet">PAGE 7 — Wallet</h3>
+<p><strong>Purpose:</strong> Balance and history.</p>
+<p><strong>Layout:</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Element</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Header</td>
+<td>“Wallet” · back if from Home</td>
+</tr>
+<tr>
+<td>Hero card</td>
+<td>Available balance <strong>₹X,XXX</strong> large</td>
+</tr>
+<tr>
+<td>Row</td>
+<td>Pending · Confirmed (smaller)</td>
+</tr>
+<tr>
+<td>List</td>
+<td>Transactions — order credits, withdrawals</td>
+</tr>
+<tr>
+<td>CTA</td>
+<td><strong>Withdraw</strong> (min balance + KYC verified)</td>
+</tr>
+<tr>
+<td>Note</td>
+<td>TDS deducted line</td>
+</tr>
+</tbody></table>
+<p><strong>Empty:</strong> “Start earning” + link to Home.</p>
+<p><strong>v1:</strong> Full withdraw flow required (see PAGE 12).</p>
+<hr>
+<h3 id="page-8--offers">PAGE 8 — Offers</h3>
+<p><strong>Purpose:</strong> Promotions separate from deal list.</p>
+<p><strong>Layout:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Header</td>
+<td>Offers</td>
+</tr>
+<tr>
+<td>Cards</td>
+<td>Signup bonus, referral, seasonal</td>
+</tr>
+<tr>
+<td>Each card</td>
+<td>Title · expiry · T&amp;C · CTA</td>
+</tr>
+</tbody></table>
+<p>Light styling — don’t compete with Home deal cards.</p>
+<hr>
+<h3 id="page-9--profile">PAGE 9 — Profile</h3>
+<p><strong>Purpose:</strong> Account, KYC, support.</p>
+<p><strong>Layout (list rows):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Header</td>
+<td>Phone number</td>
+</tr>
+<tr>
+<td>KYC</td>
+<td>Status badge — tap to complete</td>
+</tr>
+<tr>
+<td>Wallet</td>
+<td>Shortcut →</td>
+</tr>
+<tr>
+<td>My Orders</td>
+<td>Shortcut →</td>
+</tr>
+<tr>
+<td>Support</td>
+<td>WhatsApp / email</td>
+</tr>
+<tr>
+<td>Tutorials</td>
+<td>YouTube</td>
+</tr>
+<tr>
+<td>Notifications</td>
+<td>Toggle</td>
+</tr>
+<tr>
+<td>Terms &amp; Privacy</td>
+<td>Links</td>
+</tr>
+<tr>
+<td>Log out</td>
+<td>Red text — confirm dialog</td>
+</tr>
+</tbody></table>
+<p><strong>KYC sub-screen/sheet:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Name as per PAN</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>PAN number</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Submit</td>
+<td>Primary</td>
+</tr>
+</tbody></table>
+<p>Bank/UPI for withdraw collected on <strong>Withdraw screen</strong> (PAGE 12), not on KYC form.</p>
+<hr>
+<h3 id="page-10--kyc-required-modal">PAGE 10 — KYC required (modal)</h3>
+<p><strong>Purpose:</strong> Gate before first order (PerkPay-style timing).</p>
+<p><strong>Layout:</strong> Sheet or centered modal on Accept screen.</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Icon</td>
+<td>Shield</td>
+</tr>
+<tr>
+<td>Title</td>
+<td>Complete verification</td>
+</tr>
+<tr>
+<td>Body</td>
+<td>One-time before your first order</td>
+</tr>
+<tr>
+<td>CTA</td>
+<td><strong>Complete KYC</strong></td>
+</tr>
+<tr>
+<td>Secondary</td>
+<td>Cancel</td>
+</tr>
+</tbody></table>
+<p>Light theme — not dark/gold competitor modal.</p>
+<hr>
+<h3 id="page-12--withdraw">PAGE 12 — Withdraw</h3>
+<p><strong>Purpose:</strong> User moves wallet balance to bank/UPI (v1 full flow).</p>
+<p><strong>Entry:</strong> Wallet → <strong>Withdraw</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Element</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Header</td>
+<td>Back · “Withdraw”</td>
+</tr>
+<tr>
+<td>Summary</td>
+<td>Available balance · Min withdrawal ₹250</td>
+</tr>
+<tr>
+<td>Method</td>
+<td>UPI / Bank account (tabs or radio)</td>
+</tr>
+<tr>
+<td>UPI</td>
+<td>UPI ID field</td>
+</tr>
+<tr>
+<td>Bank</td>
+<td>Account number · IFSC · Account holder name</td>
+</tr>
+<tr>
+<td>Amount</td>
+<td>Enter amount (max = available) · Quick chips 100% / 50%</td>
+</tr>
+<tr>
+<td>Note</td>
+<td>Processing time · TDS summary if applicable</td>
+</tr>
+<tr>
+<td>CTA</td>
+<td><strong>Withdraw</strong> primary</td>
+</tr>
+<tr>
+<td>Success</td>
+<td>“Withdrawal submitted” + reference id</td>
+</tr>
+</tbody></table>
+<p><strong>Requires:</strong> KYC verified (Name + PAN). Show blocker if not verified → Complete KYC.</p>
+<p><strong>States:</strong> Insufficient balance, below minimum, invalid UPI, loading, success, failed.</p>
+<hr>
+<h3 id="page-13--language-profile-sub-screen">PAGE 13 — Language (Profile sub-screen)</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Title</td>
+<td>Language / भाषा</td>
+</tr>
+<tr>
+<td>Options</td>
+<td>English · हिंदी</td>
+</tr>
+<tr>
+<td>Note</td>
+<td>Applies immediately app-wide</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="page-14--notification-states-not-full-screens">PAGE 14 — Notification states (not full screens)</h3>
+<p>Design notification <strong>banners</strong> and <strong>push</strong> templates:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Title example</th>
+<th>Tap opens</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Timer warning</td>
+<td>5 minutes left to place order</td>
+<td>Accept</td>
+</tr>
+<tr>
+<td>Timer expired</td>
+<td>Complete your deal — try again</td>
+<td>Deal detail</td>
+</tr>
+<tr>
+<td>Parcel received</td>
+<td>Upload your invoice</td>
+<td>My Orders order</td>
+</tr>
+<tr>
+<td>Payment credited</td>
+<td>₹600 added to wallet</td>
+<td>Wallet</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="7-money-display-rules">7. Money display rules</h2>
+<h3 id="71-deal-detail--money-summary-card-required">7.1 Deal detail — Money summary card (required)</h3>
+<p>Single white card, four sections:</p>
+<p><strong>YOU PAY</strong></p>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Order value</td>
+<td>₹20,000</td>
+</tr>
+<tr>
+<td>Platform fee</td>
+<td>₹90 ⚠</td>
+</tr>
+<tr>
+<td>Card fee</td>
+<td>₹110 ⚠</td>
+</tr>
+<tr>
+<td>Discount</td>
+<td>− ₹0</td>
+</tr>
+<tr>
+<td><strong>Total checkout</strong></td>
+<td><strong>₹20,200</strong></td>
+</tr>
+</tbody></table>
+<p><strong>CASHBACK (your card)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cashback</td>
+<td>₹1,000</td>
+</tr>
+<tr>
+<td>Credited</td>
+<td>Next billing cycle</td>
+</tr>
+<tr>
+<td>Note</td>
+<td>Cashback not on platform/card fees</td>
+</tr>
+</tbody></table>
+<p><strong>FROM MINTZER (wallet)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Wallet credit</td>
+<td>₹19,300</td>
+</tr>
+</tbody></table>
+<p><strong>YOU EARN</strong></p>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Commission</td>
+<td>₹300</td>
+</tr>
+<tr>
+<td>TDS</td>
+<td>− ₹0</td>
+</tr>
+<tr>
+<td><strong>Final earnings</strong></td>
+<td><strong>₹300</strong> ← hero green, largest</td>
+</tr>
+</tbody></table>
+<p><strong>Expand:</strong> How wallet is calculated<br><code>Order − Cashback − Discount + Commission = Wallet</code></p>
+<p><strong>Footer note:</strong><br>“Cashback is credited as per your bank’s billing cycle. Mintzer wallet after order completion.”</p>
+<h3 id="72-accept-screen--compact-money">7.2 Accept screen — compact money</h3>
+<p>Two lines only:</p>
+<ul>
+<li>You pay <strong>₹20,200</strong></li>
+<li>You earn <strong>₹300</strong></li>
+</ul>
+<h3 id="73-home-deal-card">7.3 Home deal card</h3>
+<ul>
+<li>Order ~₹20,000</li>
+<li><strong>Earn ₹300</strong> green — no full breakdown</li>
+</ul>
+<h3 id="74-formulas-for-designer-reference-labels">7.4 Formulas (for designer reference labels)</h3>
+<pre><code>Total checkout     = Order value − Discount + Platform fee + Card fee
+Wallet from Mintzer = Order value − Cashback − Discount + Commission
+You earn           = Commission − TDS
+</code></pre>
+<hr>
+<h2 id="8-asset--logo-guidelines">8. Asset &amp; logo guidelines</h2>
+<h3 id="81-mintzer-brand">8.1 Mintzer brand</h3>
+<ul>
+<li><strong>New logo coming</strong> — client will supply updated brand files before final export.</li>
+<li>Design with <strong>placeholder</strong> horizontal logo in header; swap when assets arrive.</li>
+<li>Formats needed: SVG + PNG @1x/@2x/@3x, light background only.</li>
+<li>Primary blue <code>#1A73E8</code> — not purple gradient logo treatments.</li>
+</ul>
+<h3 id="82-store-logos-flipkart-amazon-etc">8.2 Store logos (Flipkart, Amazon, etc.)</h3>
+<ul>
+<li>Master file: <strong>80×80px @2x</strong> canvas, transparent PNG</li>
+<li>In app: <strong>40×40dp</strong> box, <strong>object-fit: contain</strong></li>
+<li>Never stretch width independently</li>
+</ul>
+<h3 id="83-bank--card-logos">8.3 Bank / card logos</h3>
+<ul>
+<li>Master file: same padding standard as stores</li>
+<li>In app: <strong>32×32dp</strong> box, contain</li>
+<li>Layout: <strong>[logo] Card to use · Axis Credit Card</strong></li>
+</ul>
+<h3 id="84-product-images">8.4 Product images</h3>
+<ul>
+<li>Variable aspect — container <strong>160×160dp</strong> or 4:3, contain</li>
+<li>Placeholder if missing</li>
+</ul>
+<h3 id="85-illustrations-needed">8.5 Illustrations needed</h3>
+<table>
+<thead>
+<tr>
+<th>Use</th>
+<th>Style</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Empty deals</td>
+<td>Simple, light</td>
+</tr>
+<tr>
+<td>Empty orders</td>
+<td>Same family</td>
+</tr>
+<tr>
+<td>Timer expired</td>
+<td>Neutral, not scary</td>
+</tr>
+<tr>
+<td>Success</td>
+<td>Checkmark — minimal</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="9-notifications--deep-links">9. Notifications &amp; deep links</h2>
+<p>Design in-app notification center (bell) + push lock screen:</p>
+<ul>
+<li>Badge count on bell</li>
+<li>List: title, time, read/unread</li>
+<li>Tap → Accept / Deal detail / My Orders / Wallet</li>
+</ul>
+<hr>
+<h2 id="10-states-checklist-all-screens">10. States checklist (all screens)</h2>
+<p>For each screen, designer delivers:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Default</li>
+<li><input disabled="" type="checkbox"> Loading / skeleton</li>
+<li><input disabled="" type="checkbox"> Empty</li>
+<li><input disabled="" type="checkbox"> Error</li>
+<li><input disabled="" type="checkbox"> Disabled / blocked (where applicable)</li>
+<li><input disabled="" type="checkbox"> Success (where applicable)</li>
+</ul>
+<p><strong>Critical flows to prototype in Figma:</strong></p>
+<ol>
+<li>Accept timer running → submit success  </li>
+<li>Active placement blocks Home deals  </li>
+<li>My Orders step progression (6 steps)  </li>
+<li>Invoice locked vs unlocked  </li>
+<li>48h payment countdown</li>
+</ol>
+<hr>
+<h2 id="11-out-of-scope-for-v1-design">11. Out of scope for v1 design</h2>
+<ul>
+<li>Dark theme</li>
+<li>Live courier API auto-tracking (user selects partner + enters ID manually)</li>
+<li>Admin panel (separate product)</li>
+<li>iOS-specific variants (optional later)</li>
+<li>OCR auto-fill from screenshot</li>
+<li>Instant orders tab</li>
+<li>Tamil / other languages (after Hindi)</li>
+<li>Referral deep gamification</li>
+</ul>
+<hr>
+<h2 id="12-client-decisions-locked">12. Client decisions (locked)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Logo:</strong> New brand — client will update; use placeholder until files delivered</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>KYC fields:</strong> <strong>Name + PAN only</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>KYC timing:</strong> On <strong>first Accept</strong> (before first order)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Orders v1:</strong> <strong>Regular only</strong> — no Instant tab</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Home header:</strong> <strong>WhatsApp + YouTube</strong> icons — yes (support + tutorials)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Commission bar:</strong> <strong>Blue <code>#1A73E8</code></strong> — matches Google Material; white text; clearer than orange for v1 rebrand</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Withdraw:</strong> <strong>Full flow in v1</strong> (UPI + bank)</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Signup / promo banner:</strong> Flexible copy — designer can use placeholder</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Languages:</strong> <strong>English + Hindi</strong> in v1</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Delivery partner:</strong> <strong>Dropdown required</strong> on tracking step; courier list from client samples; auto-detect from tracking ID is a later enhancement</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="13-localization-english--hindi">13. Localization (English + Hindi)</h2>
+<p>Design deliverables:</p>
+<ul>
+<li>All user-facing strings in a <strong>Google Sheet or Figma table</strong>: key · English · Hindi.</li>
+<li>Priority screens for Hindi review: Login, Home, Deal detail money card, Accept, My Orders steps, Wallet withdraw.</li>
+<li><strong>Do not truncate</strong> Hindi button labels — allow two lines on primary CTAs if needed.</li>
+<li>Icon-only where possible (copy, paste, wallet) to reduce translation load.</li>
+</ul>
+<p>Sample:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>English</th>
+<th>Hindi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>accept_deal</td>
+<td>Accept deal</td>
+<td>डील स्वीकारें</td>
+</tr>
+<tr>
+<td>you_earn</td>
+<td>You earn</td>
+<td>आपकी कमाई</td>
+</tr>
+<tr>
+<td>withdraw</td>
+<td>Withdraw</td>
+<td>निकालें</td>
+</tr>
+<tr>
+<td>delivery_partner</td>
+<td>Delivery partner</td>
+<td>डिलीवरी पार्टनर</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="appendix-a--screen-inventory">Appendix A — Screen inventory</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Screen</th>
+<th>Artboard name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Login phone</td>
+<td><code>01_Login_Phone</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Login OTP</td>
+<td><code>02_Login_OTP</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Home</td>
+<td><code>03_Home</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Home blocked deal</td>
+<td><code>03b_Home_Blocked</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Deal detail</td>
+<td><code>04_Deal_Detail</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Accept</td>
+<td><code>05_Accept</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Accept expired</td>
+<td><code>05b_Accept_Expired</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Accept cancel dialog</td>
+<td><code>05c_Cancel_Dialog</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>KYC modal</td>
+<td><code>06_KYC_Modal</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Order success</td>
+<td><code>07_Order_Success</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>My Orders list</td>
+<td><code>08_Orders_List</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Order expanded — each step</td>
+<td><code>08a–08f_Order_Steps</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Wallet</td>
+<td><code>09_Wallet</code></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Offers</td>
+<td><code>10_Offers</code></td>
+</tr>
+<tr>
+<td>15</td>
+<td>Profile</td>
+<td><code>11_Profile</code></td>
+</tr>
+<tr>
+<td>16</td>
+<td>KYC form</td>
+<td><code>12_KYC_Form</code></td>
+</tr>
+<tr>
+<td>17</td>
+<td>Withdraw</td>
+<td><code>13_Withdraw</code></td>
+</tr>
+<tr>
+<td>18</td>
+<td>Withdraw success</td>
+<td><code>13b_Withdraw_Success</code></td>
+</tr>
+<tr>
+<td>19</td>
+<td>Language</td>
+<td><code>14_Language</code></td>
+</tr>
+<tr>
+<td>20</td>
+<td>Components page</td>
+<td><code>00_Components</code></td>
+</tr>
+<tr>
+<td>21</td>
+<td>Design tokens page</td>
+<td><code>00_Tokens</code></td>
+</tr>
+<tr>
+<td>22</td>
+<td>Hindi sample frames</td>
+<td><code>00_Hindi_QA</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="appendix-b--sample-copy-deal-detail-money">Appendix B — Sample copy (deal detail money)</h2>
+<p><strong>Rules bullets example:</strong></p>
+<ul>
+<li>Any colour acceptable  </li>
+<li>Apply coupon ₹500 at checkout  </li>
+<li>Do not use regular SBI card — use SBI Cashback card only</li>
+</ul>
+<p><strong>Fee warning:</strong></p>
+<ul>
+<li>Platform fee and card fee are not eligible for cashback.</li>
+</ul>
+<hr>
+<p><em>End of design brief — Mintzer Technologies Pvt Ltd</em></p>
+
+</body>
+</html>
