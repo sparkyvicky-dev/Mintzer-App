@@ -23,6 +23,7 @@ API, admin, and business-logic documentation for the Mintzer rebuild. Pairs with
 | 6 | Admin operations | [06-admin-operations.md](./06-admin-operations.md) |
 | 7 | Notifications | [07-notifications.md](./07-notifications.md) |
 | 8 | App config | [08-app-config.md](./08-app-config.md) |
+| 9 | Support tickets | [09-support-tickets.md](./09-support-tickets.md) |
 
 ## Core money formula (summary)
 

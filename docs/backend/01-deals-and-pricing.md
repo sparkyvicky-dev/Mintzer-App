@@ -175,11 +175,14 @@ YOU EARN
 
 ## API: `GET /deals` (list)
 
+Query params (optional): `dealType=all|direct|link` · `store=` · `card=` · `minEarn=` · `q=` (search)
+
 Return minimal fields for Home cards:
 
 ```json
 {
   "id": "deal_123",
+  "dealType": "direct",
   "productName": "IQOO Z10 Lite 5G",
   "productImageUrl": "...",
   "store": { "id", "name", "logoUrl" },
@@ -188,9 +191,16 @@ Return minimal fields for Home cards:
   "totalCheckout": 20200,
   "youEarn": 300,
   "color": "Cyber Green",
+  "gstApplicable": true,
   "isActive": true
 }
 ```
+
+| Field | Values | UI |
+|-------|--------|-----|
+| `dealType` | `direct` \| `link` | Home filter chips Direct / Link |
+| `gstApplicable` | `true` \| `false` | Badge **GST** on card only when `true` |
+| `payoutBadge` | optional later | Off v1 |
 
 ## API: `GET /deals/:id` (detail)
 

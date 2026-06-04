@@ -1,4 +1,8 @@
-# Screen: Offers
+# Screen: Offers (deferred — not in bottom nav v1)
+
+**Status:** **Not in v1 bottom nav.** Use **Wallet** tab instead. Screen kept for future promos/referrals.
+
+**Mockup (future):** `assets/mintzer-offers-mockup.png`
 
 ## Purpose
 
@@ -6,7 +10,8 @@ Promotional content: signup bonuses, referral rewards, seasonal campaigns — se
 
 ## Entry points
 
-- Bottom nav **Offers**
+- ~~Bottom nav Offers~~ — **removed v1**
+- Future: Profile link or Home banner
 
 ## UI elements
 
@@ -49,10 +54,24 @@ Promotional content: signup bonuses, referral rewards, seasonal campaigns — se
 
 - `GET /offers` — active campaigns
 
+## Colors (Figma)
+
+**Tokens:** [../design/COLORS-AND-TOKENS.md](../design/COLORS-AND-TOKENS.md)
+
+| Element | Light |
+|---------|-------|
+| Background | `#F8F9FA` |
+| Offer cards | `#FFFFFF` |
+| Links | `#1A73E8` |
+| Empty state text | `#5F6368` |
+
+## Validation
+
+None v1.
+
 ## Design
 
-- Same light Material theme as Home
-- Avoid competing visually with deal cards on Home
+- Same Material theme as Home; do not compete with deal cards
 
 ## v1 scope
 

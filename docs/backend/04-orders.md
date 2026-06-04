@@ -1,6 +1,8 @@
 # Module: Orders (lifecycle)
 
-Orders exist only after placement confirm (Order ID or screenshot in time). User completes steps on My Orders card.
+**Confirmed orders** exist after placement confirm (Order ID or screenshot in time). User completes steps on My Orders card.
+
+**Active placements** (accepted, timer running, no Order ID yet) appear in **My Orders → Ongoing** and on **Home strip** — not as full orders until confirm. See [03-placements.md](./03-placements.md).
 
 ## Status flow
 
@@ -32,9 +34,10 @@ Cancelled branch: `cancelled` (from user or admin) — before payout only.
 
 **Query:** `status=ongoing|completed`, `search=orderId`, `type=regular|instant`
 
-**Response item:**
+**Response item (confirmed order):**
 ```json
 {
+  "kind": "order",
   "id": "ORDT86KP80",
   "status": "tracking_submitted",
   "currentStep": "out_for_delivery",
@@ -56,9 +59,34 @@ Cancelled branch: `cancelled` (from user or admin) — before payout only.
     "paymentTimerEndsAt": null,
     "paidAt": null
   },
-  "invoiceUploadEnabled": false
+  "invoiceUploadEnabled": false,
+  "userNote": "optional user reference text"
 }
 ```
+
+**Response item (active placement in Ongoing list):**
+```json
+{
+  "kind": "placement",
+  "id": "PLC8K2M1",
+  "placementId": "placement_xyz",
+  "status": "active",
+  "expiresAt": "2026-06-04T12:30:00Z",
+  "timerSecondsRemaining": 754,
+  "nextActionLabel": "Continue order",
+  "productSummary": { "name", "imageUrl", "color", "store" },
+  "money": { "youEarn": 300 },
+  "userNote": "optional — copies to order on confirm"
+}
+```
+
+Sort: active placements with timer typically sort **above** other ongoing items when using `needs_action` sort.
+
+## `PATCH /orders/:id/note`
+
+**Request:** `{ "userNote": "string" }` — max 200 chars; empty string clears.
+
+**Rules:** User reference only; not shown to ops as ticket body (ops may view in admin for support context).
 
 ## `PATCH /orders/:id/tracking`
 

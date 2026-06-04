@@ -2,8 +2,26 @@ const fs = require('fs');
 const { marked } = require('marked');
 const path = require('path');
 
-const mdPath = path.join(__dirname, '../docs/design/MINTZER-UI-DESIGN-BRIEF.md');
-const htmlPath = path.join(__dirname, '../docs/design/MINTZER-UI-DESIGN-BRIEF.html');
+const presets = {
+  brief: {
+    md: 'MINTZER-UI-DESIGN-BRIEF.md',
+    html: 'MINTZER-UI-DESIGN-BRIEF.html',
+    title: 'Mintzer Mobile App',
+    subtitle: 'UI Design Brief · Version 1.0 · June 2026',
+  },
+  designer: {
+    md: 'DESIGNER-HANDOFF.md',
+    html: 'DESIGNER-HANDOFF.html',
+    title: 'Mintzer Mobile App',
+    subtitle: 'Designer Handoff · June 2026',
+  },
+};
+
+const key = process.argv[2] === 'designer' ? 'designer' : 'brief';
+const preset = presets[key];
+const designDir = path.join(__dirname, '../docs/design');
+const mdPath = path.join(designDir, preset.md);
+const htmlPath = path.join(designDir, preset.html);
 
 const md = fs.readFileSync(mdPath, 'utf8');
 const body = marked.parse(md);
@@ -12,7 +30,7 @@ const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Mintzer UI Design Brief</title>
+  <title>${preset.title}</title>
   <style>
     @page { margin: 18mm 16mm; size: A4; }
     * { box-sizing: border-box; }
@@ -33,7 +51,7 @@ const html = `<!DOCTYPE html>
     th, td { border: 1px solid #E8EAED; padding: 6px 8px; text-align: left; vertical-align: top; }
     th { background: #F8F9FA; font-weight: 600; }
     code, pre { background: #F8F9FA; font-size: 9pt; }
-    pre { padding: 10px; overflow-x: auto; border: 1px solid #E8EAED; page-break-inside: avoid; }
+    pre { padding: 10px; overflow-x: auto; border: 1px solid #E8EAED; page-break-inside: avoid; white-space: pre-wrap; }
     blockquote { border-left: 3px solid #1A73E8; margin: 8px 0; padding: 4px 12px; color: #5F6368; }
     hr { border: none; border-top: 1px solid #E8EAED; margin: 16px 0; }
     ul, ol { padding-left: 1.4em; }
@@ -49,10 +67,10 @@ const html = `<!DOCTYPE html>
 </head>
 <body>
 <div class="cover">
-  <h1>Mintzer Mobile App</h1>
-  <p><strong>UI Design Brief</strong> · Version 1.0 · June 2026</p>
+  <h1>${preset.title}</h1>
+  <p><strong>${preset.subtitle}</strong></p>
   <p>Mintzer Technologies Pvt Ltd</p>
-  <p style="margin-top:24px;font-size:10pt;">Print this document: Ctrl+P → Save as PDF</p>
+  <p style="margin-top:24px;font-size:10pt;">Ctrl+P → Save as PDF</p>
 </div>
 ${body}
 </body>
@@ -60,3 +78,4 @@ ${body}
 
 fs.writeFileSync(htmlPath, html, 'utf8');
 console.log('Written:', htmlPath);
+console.log('Open in Chrome → Ctrl+P → Save as PDF');

@@ -2,13 +2,15 @@
 
 Push (and optional SMS) to drive placement timer and order steps.
 
+**Mintzer vs PerkPay:** PerkPay often uses push (“Deal Bought”, “Update Order ID”) as the main way to return to the app. **Mintzer primary resume = Home active strip + My Orders card with timer.** Notifications are **secondary** (warnings, step reminders), not a replacement for in-app visibility.
+
 ## Events
 
 | Event | When | User action / deep link |
 |-------|------|-------------------------|
-| `placement.timer_warning` | 5 min and 1 min before expiry | Open Accept screen |
-| `placement.expired` | Timer ended, no confirm | Open Deal detail — try again |
-| `order.confirmed` | Order ID saved | My Orders |
+| `placement.timer_warning` | 5 min and 1 min before expiry | Place order (`mintzer://accept/:placementId`) |
+| `placement.expired` | Timer ended, no confirm | Deal detail — try again |
+| `order.confirmed` | Order ID saved | My Orders — that order |
 | `order.tracking_reminder` | Optional delay after order placed | My Orders — tracking step |
 | `order.parcel_received` | Admin marked received | My Orders — upload invoice |
 | `order.payment_approved` | Wallet credited | Wallet |

@@ -1,8 +1,10 @@
 # Screen: Profile
 
+**Spec:** [../design/PROFILE-REQUIREMENTS.md](../design/PROFILE-REQUIREMENTS.md) — **LOCKED v1**
+
 ## Purpose
 
-Account settings, KYC status, support, and legal links.
+Account hub: KYC, payout details, language, tickets, support, appearance (theme), legal, logout.
 
 ## Entry points
 
@@ -10,69 +12,40 @@ Account settings, KYC status, support, and legal links.
 
 ## UI elements
 
-| Element | Description |
-|---------|-------------|
-| Phone number | Display logged-in number (read-only) |
-| KYC status | Not started · Pending · Verified — tap to complete |
-| Wallet shortcut | Row → Wallet screen |
-| My Orders shortcut | Row → Orders tab |
-| Support | WhatsApp / email / in-app chat |
-| Tutorials | YouTube link |
-| Notifications settings | Toggle push |
-| Terms & Privacy | WebView or external links |
-| Log out | Confirm dialog |
+See PROFILE-REQUIREMENTS.md for full list.
 
-## KYC flow (sheet or sub-screen)
+## Sub-screens
 
-Triggered from:
-
-- Profile → Complete KYC
-- Accept screen on first order (if not verified)
-
-Minimal v1 fields (product to confirm):
-
-- Name as per bank
-- PAN
-- UPI or bank account for payout
-
-Future: DigiLocker one-tap verification.
-
-## User actions
-
-| Action | Result |
-|--------|--------|
-| Complete KYC | KYC form → submit → pending/verified |
-| Log out | Clear session → Login |
-| Support | Open WhatsApp / chat |
-
-## States
-
-| State | UI |
-|-------|-----|
-| KYC not started | Amber badge on row |
-| KYC pending | “Under review” |
-| KYC verified | Green check |
-
-## Navigation
-
-| From | To |
-|------|-----|
-| Wallet row | Wallet |
-| Orders row | My Orders |
-| KYC | KYC form sheet |
+- KYC form (Name + PAN)
+- Language (EN / HI)
+- My tickets list
+- Ticket detail
+- Delete account (sheet) · [ACCOUNT-LIFECYCLE-REQUIREMENTS.md](../design/ACCOUNT-LIFECYCLE-REQUIREMENTS.md)
 
 ## Backend notes
 
 - `GET /user/profile`
 - `POST /user/kyc`
+- `GET /tickets`
+- `GET /config/support`
 - `POST /auth/logout`
 
-## Design
+## Colors (Figma)
 
-- Simple list rows like Google account settings
-- No dark theme
+**Tokens:** [../design/COLORS-AND-TOKENS.md](../design/COLORS-AND-TOKENS.md) · [../design/PROFILE-REQUIREMENTS.md](../design/PROFILE-REQUIREMENTS.md)
 
-## Rules
+| Element | Light |
+|---------|-------|
+| Background | `#F8F9FA` |
+| List rows | `#FFFFFF` |
+| Avatar circle | `#E8F0FE`, letter `#1A73E8` |
+| Row chevrons / links | `#1A73E8` |
+| Log out | `#D93025` |
+| Delete account | `#D93025` text |
+| Appearance / toggles | track `#1A73E8` when on |
 
-- KYC **not** required at login
-- KYC required before first external order or first withdrawal (align with Accept screen gate)
+**Avatar:** Letter placeholder — no photo upload v1.
+
+## Validation
+
+Delete account blocked → message **in sheet** (order in progress). KYC / payout edits → see [../design/VALIDATION-UX.md](../design/VALIDATION-UX.md). Logout API fail → **Snackbar**.

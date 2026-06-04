@@ -37,9 +37,19 @@ A **placement** is the in-progress “place order” window between **Accept dea
   "expiresAt": "2026-06-04T12:30:00Z",
   "timerSecondsRemaining": 900,
   "dealSnapshot": { "...full deal + money..." },
-  "deliveryAddress": { "pin", "fullAddress" }
+  "deliveryAddress": {
+    "name": "Baljeet Garg",
+    "line1": "House 37 PNB Colony, Idgah Hills",
+    "line2": "Om Laxmi Prasad, Gupte Road",
+    "city": "Bhopal",
+    "state": "Madhya Pradesh",
+    "pincode": "462001",
+    "phone": "+919342002247"
+  }
 }
 ```
+
+**Address source:** Per-user pool; pincode fixed. Place order single screen. **`POST /user/address/regenerate`** — new lines, same pincode; weekly limit.
 
 **Errors:**
 - `409 ACTIVE_PLACEMENT_EXISTS` — user already has open placement
@@ -106,6 +116,28 @@ Used by Home **active order strip**.
 ```
 
 Or `{ "placement": null }`.
+
+## My Orders + Home (product)
+
+- Active placement included in `GET /orders?status=ongoing` as `kind: placement` (see [04-orders.md](./04-orders.md)).
+- Drives **Home active strip** and **My Orders** timer card — resume without push-only flow.
+
+## `POST /user/address/regenerate`
+
+**When:** User taps **Generate new address** on Place order (confirm dialog first).
+
+**Response:** New `deliveryAddress` object (same `pincode`, new line1/line2/etc.).
+
+**Rules:**
+- Decrement user’s weekly regen allowance (config e.g. `addressRegenPerWeek: 2`)
+- Return `429` if limit exceeded
+- Log for ops (address pool consumption)
+
+---
+
+## `PATCH /placements/:id/note`
+
+**Request:** `{ "userNote": "string" }` — max 200 chars. Copied to order on confirm.
 
 ## Database
 

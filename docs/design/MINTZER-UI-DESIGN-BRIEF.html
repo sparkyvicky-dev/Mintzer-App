@@ -46,6 +46,7 @@
 </div>
 <h1 id="mintzer-mobile-app--ui-design-brief">Mintzer Mobile App — UI Design Brief</h1>
 <p><strong>Document version:</strong> 1.1<br><strong>Date:</strong> June 2026<br><strong>Platform:</strong> Android (primary), iOS (future)<br><strong>Languages:</strong> English + Hindi (v1)<br><strong>Audience:</strong> UI/UX designer, Figma handoff<br><strong>Product:</strong> Mintzer — earn through card deals (Flipkart, Amazon, etc.)</p>
+<p><strong>How to use this doc:</strong> States <strong>what</strong> each page must include and <strong>how it behaves</strong>. Visual style is designer’s call. Detailed orders spec: <a href="./ORDERS-PAGES-REQUIREMENTS.md">ORDERS-PAGES-REQUIREMENTS.md</a>.</p>
 <hr>
 <h2 id="table-of-contents">Table of contents</h2>
 <ol>
@@ -723,106 +724,26 @@
 </tbody></table>
 <p>No back to Accept. White background, minimal text.</p>
 <hr>
-<h3 id="page-6--my-orders">PAGE 6 — My Orders</h3>
-<p><strong>Purpose:</strong> Track and complete all orders after Order ID confirmed.</p>
-<p><strong>Layout:</strong></p>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>Element</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Header</td>
-<td>“My Orders”</td>
-</tr>
-<tr>
-<td>Search</td>
-<td>“Search by Order ID” + calendar icon (optional)</td>
-</tr>
-<tr>
-<td>Tabs</td>
-<td><strong>Ongoing</strong> · <strong>Completed</strong> only (v1: <strong>Regular orders only</strong> — no Instant tab)</td>
-</tr>
-<tr>
-<td>List</td>
-<td>Order cards</td>
-</tr>
-<tr>
-<td>FAB</td>
-<td>Support</td>
-</tr>
-<tr>
-<td>Nav</td>
-<td>Orders tab active</td>
-</tr>
-</tbody></table>
-<p><strong>Order card — collapsed:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Element</th>
-<th>Content</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Header bar</td>
-<td>Order ID ORDT86KP80 + copy icon</td>
-</tr>
-<tr>
-<td>Progress</td>
-<td>Horizontal: Placed → Shipped → OFD → Delivered → Invoice → Paid</td>
-</tr>
-<tr>
-<td>Product</td>
-<td>Thumb · name · color · store logo</td>
-</tr>
-<tr>
-<td>Footer bar</td>
-<td><strong>Blue</strong> bar: Commission ₹300 · <strong>Payout ›</strong></td>
-</tr>
-</tbody></table>
-<p><strong>Next action label on card (one line):</strong><br>“Add tracking” / “Enter delivery OTP” / “Waiting for delivery” / “Upload invoice” / “Payment in 36h”</p>
-<p><strong>Order card — expanded (one step active):</strong></p>
-<table>
-<thead>
-<tr>
-<th>Step</th>
-<th>UI</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1 Placed</td>
-<td>✓ date</td>
-</tr>
-<tr>
-<td>2 Tracking</td>
-<td><strong>Delivery partner</strong> dropdown + Tracking ID paste field + <strong>Save</strong></td>
-</tr>
-<tr>
-<td>3 Out for delivery</td>
-<td>Last 4 digits field + OTP field (6+) + <strong>Save</strong></td>
-</tr>
-<tr>
-<td>4 Waiting</td>
-<td>Grey — “Waiting for delivery confirmation” — no upload</td>
-</tr>
-<tr>
-<td>5 Invoice</td>
-<td>Green hint when unlocked + <strong>Upload</strong> + <strong>Submit</strong></td>
-</tr>
-<tr>
-<td>6 Payment</td>
-<td><strong>48:00:00 → 0:00:00</strong> countdown + “Payment within 48 hours”</td>
-</tr>
-<tr>
-<td>7 Paid</td>
-<td>✓ — move to Completed tab</td>
-</tr>
-</tbody></table>
-<p><strong>Delivery partner dropdown:</strong> Ekart, Delhivery, Blue Dart, DTDC, India Post, etc. — list from client samples; future: suggest partner from tracking ID pattern (design dropdown + optional helper text).</p>
-<p><strong>Paste-friendly:</strong> Full-width fields, monospace-friendly Order/Tracking IDs.</p>
+<h3 id="page-6--my-orders-list">PAGE 6 — My Orders (list)</h3>
+<p>See <a href="./ORDERS-PAGES-REQUIREMENTS.md">ORDERS-PAGES-REQUIREMENTS.md</a> — list section.</p>
+<p><strong>Must have:</strong> Search (order ID, tracking ID, model), store filter, sort (newest / oldest / needs action), Ongoing + Completed tabs with badge, pull refresh, empty → browse deals, general help entry.</p>
+<p><strong>Each card must have:</strong> Status in one sentence, product + store + earn amount, one action label/button when user must act, tap → Order detail.</p>
+<hr>
+<h3 id="page-6b--order-detail-inside-one-order">PAGE 6b — Order detail (inside one order)</h3>
+<p>See <a href="./ORDERS-PAGES-REQUIREMENTS.md">ORDERS-PAGES-REQUIREMENTS.md</a> — inside order section.</p>
+<p><strong>Must have:</strong></p>
+<ul>
+<li>Header: back, order ref + copy, <strong>report issue (this order)</strong>, <strong>cancel order</strong> (while allowed)</li>
+<li>Product + earn amount</li>
+<li>Step timeline — one step open; minimal fields per step</li>
+<li>Tracking: paste ID → <strong>auto-detect courier</strong> + <strong>change if wrong</strong> + Save</li>
+<li>Delivery: last 4 + OTP only</li>
+<li>Waiting: no input until Mintzer unlocks invoice</li>
+<li>Invoice: upload when unlocked; re-upload if rejected with reason</li>
+<li>Payment: 48h countdown after invoice submit</li>
+</ul>
+<p><strong>Cancel flow:</strong> Confirm → pick <strong>preset reason</strong> (seller cancel, marketplace cancel, wrong card, price mismatch, OOS, wrong product, delivery issue, changed mind, other + 50 chars max) → order canceled for ops.</p>
+<p><strong>Report issue:</strong> Issue type list; auto-attach order id + step + deal — user does not retype.</p>
 <hr>
 <h3 id="page-7--wallet">PAGE 7 — Wallet</h3>
 <p><strong>Purpose:</strong> Balance and history.</p>

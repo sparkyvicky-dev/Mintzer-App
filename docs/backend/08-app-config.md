@@ -14,6 +14,10 @@ Global settings editable in admin without app store release.
 | `deliveryOtpMinLength` | int | 6 | Orders OFD step |
 | `minWithdrawalAmount` | decimal | 250 | Wallet |
 | `tdsPercentDefault` | decimal | 0 | Deals (optional default) |
+| `communityWhatsAppEnabled` | bool | true | Home header — community group icon |
+| `communityWhatsAppUrl` | string | — | WhatsApp group invite URL (`https://chat.whatsapp.com/...`) |
+| `communityWhatsAppLabel` | string | `Join community` | Accessibility / tooltip |
+| `tutorialVideoUrl` | string | — | First-time banner + Profile → Help |
 
 ## API
 
@@ -32,7 +36,10 @@ Global settings editable in admin without app store release.
   "deliveryOtpMinLength": 6,
   "minWithdrawalAmount": 250,
   "supportWhatsApp": "+918220507417",
-  "supportEmail": "support@mintzer.in"
+  "supportEmail": "support@mintzer.in",
+  "communityWhatsAppEnabled": true,
+  "communityWhatsAppUrl": "https://chat.whatsapp.com/EXAMPLE_INVITE",
+  "communityWhatsAppLabel": "Join community"
 }
 ```
 
@@ -45,5 +52,6 @@ Single **Settings** page:
 - Placement timer (minutes) — user requested backend-controlled
 - Payment review window (hours) — 48h invoice timer
 - Notification warning intervals
+- **Community WhatsApp:** enable toggle + group invite URL (Home header — separate from support number)
 
 Changes apply to **new** placements immediately; active placements keep original `expiresAt` unless admin policy says otherwise.

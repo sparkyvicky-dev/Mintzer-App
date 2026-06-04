@@ -7,6 +7,8 @@
 **Audience:** UI/UX designer, Figma handoff  
 **Product:** Mintzer — earn through card deals (Flipkart, Amazon, etc.)
 
+**How to use this doc:** States **what** each page must include and **how it behaves**. Visual style is designer’s call. Detailed orders spec: [ORDERS-PAGES-REQUIREMENTS.md](./ORDERS-PAGES-REQUIREMENTS.md).
+
 ---
 
 ## Table of contents
@@ -46,7 +48,7 @@ Login (phone) → Browse deals → Read deal detail → Accept deal → Place or
 - 48-hour payment countdown starts after invoice upload.
 - **v1 orders:** Regular only (no Instant tab).
 - **KYC:** Name + PAN on **first Accept**; required before first order.
-- **Withdraw:** Full flow in v1.
+- **Wallet:** Financial picture only — **no withdraw** in app.
 - **Languages:** English + Hindi.
 
 ---
@@ -166,8 +168,7 @@ Login → Home → Deal detail → Accept deal
 **Stack screens (push over tabs):**
 
 Deal detail → Accept → Order success  
-KYC sheet (modal)  
-Withdraw (future)
+KYC sheet (modal)
 
 ---
 
@@ -293,36 +294,23 @@ Design these once in Figma as components:
 
 ---
 
-### PAGE 4 — Accept / Place order
+### PAGE 4 — Place order (**LOCKED v1** — 2026-06-04)
 
-**Purpose:** Timer running; user orders on Flipkart and confirms.
+**Authoritative spec:** [PLACE-ORDER-REQUIREMENTS.md](./PLACE-ORDER-REQUIREMENTS.md)  
+**Mockups:** `mintzer-place-order-mode-choice-mockup.png` · `mintzer-place-order-external-mockup.png` · `mintzer-place-order-inapp-mockup.png`
 
-**Layout:**
+**Purpose:** Timer running; user completes store checkout and submits Order ID and/or screenshot.
 
-| # | Element |
-|---|---------|
-| Header | Back (warn if leaving) · “Place your order” |
-| **Timer** | Large mm:ss — hero; amber when &lt; 2 min |
-| Summary | Product name · color · store · card chip |
-| Compact money | You pay **₹20,200** · You earn **₹300** |
-| Actions | **Copy address** · **Copy pin** (side by side) |
-| CTA | **Open Flipkart** (primary outline or filled) |
-| Accordion | Offer details (optional) |
-| Input | Order ID — wide field + **Paste** chip |
-| Upload | **Upload screenshot** secondary |
-| Footer | **Submit order** primary |
-| Footer | **Cancel order** outline/red — confirm dialog |
+**LOCKED summary:**
 
-**KYC sheet (first Accept only):** Modal on Accept — “Complete KYC to continue” → KYC form (Name + PAN only).
-
-**States:**
-
-| State | Design |
+| Piece | Detail |
 |-------|--------|
-| Running | Normal |
-| Submitting | Button loading |
-| Expired | Full message “Time’s up” + Browse deals |
-| Cancelled | Return Home |
+| Mode choice | First-time sheet: **Order on {store} yourself** (default) vs **Shop inside Mintzer** + Remember my choice; **Change** via mode chip |
+| Mode A (default) | Timer hero · **Open Flipkart/Amazon** · bottom sheet tabs: Deal details · Delivery details · Submit order |
+| Mode B | Store WebView + collapsible same 3-tab sheet |
+| Submit tab | Order ID + Paste · screenshot · **Submit order** |
+| Cancel | **Cancel order** with confirm |
+| Gates | KYC → payout before first Place order only |
 
 **Success navigates to:** Order placed success.
 
@@ -347,69 +335,43 @@ No back to Accept. White background, minimal text.
 
 ---
 
-### PAGE 6 — My Orders
+### PAGE 6 — My Orders (list)
 
-**Purpose:** Track and complete all orders after Order ID confirmed.
+See [ORDERS-PAGES-REQUIREMENTS.md](./ORDERS-PAGES-REQUIREMENTS.md) — list section.
 
-**Layout:**
+**Must have:** Search (order ID, tracking ID, model), store filter, sort (newest / oldest / needs action), Ongoing + Completed tabs with badge, pull refresh, empty → browse deals, general help entry.
 
-| # | Element |
-|---|---------|
-| Header | “My Orders” |
-| Search | “Search by Order ID” + calendar icon (optional) |
-| Tabs | **Ongoing** · **Completed** only (v1: **Regular orders only** — no Instant tab) |
-| List | Order cards |
-| FAB | Support |
-| Nav | Orders tab active |
+**Each card must have:** Status in one sentence, product + store + earn amount, one action label/button when user must act, tap → Order detail.
 
-**Order card — collapsed:**
+---
 
-| Element | Content |
-|---------|---------|
-| Header bar | Order ID ORDT86KP80 + copy icon |
-| Progress | Horizontal: Placed → Shipped → OFD → Delivered → Invoice → Paid |
-| Product | Thumb · name · color · store logo |
-| Footer bar | **Blue** bar: Commission ₹300 · **Payout ›** |
+### PAGE 6b — Order detail (inside one order)
 
-**Next action label on card (one line):**  
-“Add tracking” / “Enter delivery OTP” / “Waiting for delivery” / “Upload invoice” / “Payment in 36h”
+See [ORDERS-PAGES-REQUIREMENTS.md](./ORDERS-PAGES-REQUIREMENTS.md) — inside order section.
 
-**Order card — expanded (one step active):**
+**Must have:**
+- Header: back, order ref + copy, **report issue (this order)**, **cancel order** (while allowed)
+- Product + earn amount
+- Step timeline — one step open; minimal fields per step
+- Tracking: paste ID → **auto-detect courier** + **change if wrong** + Save
+- Delivery: last 4 + OTP only
+- Waiting: no input until Mintzer unlocks invoice
+- Invoice: upload when unlocked; re-upload if rejected with reason
+- Payment: 48h countdown after invoice submit
 
-| Step | UI |
-|------|-----|
-| 1 Placed | ✓ date |
-| 2 Tracking | **Delivery partner** dropdown + Tracking ID paste field + **Save** |
-| 3 Out for delivery | Last 4 digits field + OTP field (6+) + **Save** |
-| 4 Waiting | Grey — “Waiting for delivery confirmation” — no upload |
-| 5 Invoice | Green hint when unlocked + **Upload** + **Submit** |
-| 6 Payment | **48:00:00 → 0:00:00** countdown + “Payment within 48 hours” |
-| 7 Paid | ✓ — move to Completed tab |
+**Cancel flow:** Confirm → pick **preset reason** (seller cancel, marketplace cancel, wrong card, price mismatch, OOS, wrong product, delivery issue, changed mind, other + 50 chars max) → order canceled for ops.
 
-**Delivery partner dropdown:** Ekart, Delhivery, Blue Dart, DTDC, India Post, etc. — list from client samples; future: suggest partner from tracking ID pattern (design dropdown + optional helper text).
-
-**Paste-friendly:** Full-width fields, monospace-friendly Order/Tracking IDs.
+**Report issue:** Issue type list; auto-attach order id + step + deal — user does not retype.
 
 ---
 
 ### PAGE 7 — Wallet
 
-**Purpose:** Balance and history.
+See [WALLET-REQUIREMENTS.md](./WALLET-REQUIREMENTS.md).
 
-**Layout:**
+**Purpose:** Clear picture of all money with Mintzer. **No withdraw.**
 
-| # | Element |
-|---|---------|
-| Header | “Wallet” · back if from Home |
-| Hero card | Available balance **₹X,XXX** large |
-| Row | Pending · Confirmed (smaller) |
-| List | Transactions — order credits, withdrawals |
-| CTA | **Withdraw** (min balance + KYC verified) |
-| Note | TDS deducted line |
-
-**Empty:** “Start earning” + link to Home.
-
-**v1:** Full withdraw flow required (see PAGE 12).
+**Must have:** Available, Pending, Total earned, full scrollable per-order earn history (Paid/Pending/Canceled), tap row → order. Optional “How it works” collapse. No banking, no withdraw button.
 
 ---
 
@@ -455,8 +417,6 @@ Light styling — don’t compete with Home deal cards.
 | PAN number | Yes |
 | Submit | Primary |
 
-Bank/UPI for withdraw collected on **Withdraw screen** (PAGE 12), not on KYC form.
-
 ---
 
 ### PAGE 10 — KYC required (modal)
@@ -477,31 +437,7 @@ Light theme — not dark/gold competitor modal.
 
 ---
 
-### PAGE 12 — Withdraw
-
-**Purpose:** User moves wallet balance to bank/UPI (v1 full flow).
-
-**Entry:** Wallet → **Withdraw**
-
-| # | Element |
-|---|---------|
-| Header | Back · “Withdraw” |
-| Summary | Available balance · Min withdrawal ₹250 |
-| Method | UPI / Bank account (tabs or radio) |
-| UPI | UPI ID field |
-| Bank | Account number · IFSC · Account holder name |
-| Amount | Enter amount (max = available) · Quick chips 100% / 50% |
-| Note | Processing time · TDS summary if applicable |
-| CTA | **Withdraw** primary |
-| Success | “Withdrawal submitted” + reference id |
-
-**Requires:** KYC verified (Name + PAN). Show blocker if not verified → Complete KYC.
-
-**States:** Insufficient balance, below minimum, invalid UPI, loading, success, failed.
-
----
-
-### PAGE 13 — Language (Profile sub-screen)
+### PAGE 12 — Language (Profile sub-screen)
 
 | Element | Content |
 |---------|---------|
@@ -511,7 +447,7 @@ Light theme — not dark/gold competitor modal.
 
 ---
 
-### PAGE 14 — Notification states (not full screens)
+### PAGE 13 — Notification states (not full screens)
 
 Design notification **banners** and **push** templates:
 
@@ -575,10 +511,26 @@ Two lines only:
 - You pay **₹20,200**
 - You earn **₹300**
 
-### 7.3 Home deal card
+### 7.3 Home deal card (LOCKED — June 2026)
 
-- Order ~₹20,000
-- **Earn ₹300** green — no full breakdown
+**Reference:** `assets/mockups/home-samples.html` · [02-home.md](../screens/02-home.md)
+
+Each fact **once** on the card:
+
+| Element | Treatment |
+|---------|-----------|
+| Store logo | Top-left badge on product image only |
+| Product image | Fixed box · object-fit contain |
+| Model | Bold title · max 2 lines |
+| Color | Meta row left · “Any color” if open |
+| GST | **`GST` pill on meta row right** — only when `gstApplicable`; never “No GST” |
+| Bank | Logo + card name row (`#F8F9FA` background) |
+| Spend | **Spend box** `#E8F0FE` — label “YOU SPEND” + **₹X** bold |
+| Earn | **Blue button** `#1A73E8` — “Earn ₹X” (not green on Home) |
+
+**Not on Home:** variant · qty · payout chip · duplicate earn/spend · store name text (logo only)
+
+**Grid:** 2 columns · same fields · Earn button pinned to card bottom
 
 ### 7.4 Formulas (for designer reference labels)
 
@@ -681,7 +633,7 @@ For each screen, designer delivers:
 | 4 | **Orders v1:** **Regular only** — no Instant tab |
 | 5 | **Home header:** **WhatsApp + YouTube** icons — yes (support + tutorials) |
 | 6 | **Commission bar:** **Blue `#1A73E8`** — matches Google Material; white text; clearer than orange for v1 rebrand |
-| 7 | **Withdraw:** **Full flow in v1** (UPI + bank) |
+| 7 | **Wallet:** No withdraw — financial picture only |
 | 8 | **Signup / promo banner:** Flexible copy — designer can use placeholder |
 | 9 | **Languages:** **English + Hindi** in v1 |
 | 10 | **Delivery partner:** **Dropdown required** on tracking step; courier list from client samples; auto-detect from tracking ID is a later enhancement |
@@ -728,12 +680,10 @@ Sample:
 | 14 | Offers | `10_Offers` |
 | 15 | Profile | `11_Profile` |
 | 16 | KYC form | `12_KYC_Form` |
-| 17 | Withdraw | `13_Withdraw` |
-| 18 | Withdraw success | `13b_Withdraw_Success` |
-| 19 | Language | `14_Language` |
-| 20 | Components page | `00_Components` |
-| 21 | Design tokens page | `00_Tokens` |
-| 22 | Hindi sample frames | `00_Hindi_QA` |
+| 17 | Language | `14_Language` |
+| 18 | Components page | `00_Components` |
+| 19 | Design tokens page | `00_Tokens` |
+| 20 | Hindi sample frames | `00_Hindi_QA` |
 
 ---
 

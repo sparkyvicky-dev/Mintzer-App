@@ -2,13 +2,15 @@
 
 Tick items as built. All use **mock data** until backend phase.
 
+**Scope:** [../screens/SCREEN-INVENTORY.md](../screens/SCREEN-INVENTORY.md) — **12 main routes**, **~10 overlays**, **~22 UI surfaces**. Mockups are reference only.
+
 ---
 
 ## Phase 1 — Shell
 
 - [ ] Project created (Flutter or Expo)
 - [ ] Material theme (Google blue primary)
-- [ ] Bottom nav: Home, Orders, Offers, Profile
+- [ ] Bottom nav: Home, Orders, Wallet, Profile
 - [ ] Support FAB placeholder
 - [ ] Router between tabs + stack screens
 
@@ -25,17 +27,16 @@ Spec: [../screens/01-login.md](../screens/01-login.md)
 
 ---
 
-## Phase 3 — Home
+## Phase 3 — Home (LOCKED)
 
-Spec: [../screens/02-home.md](../screens/02-home.md)
+Spec: [../screens/02-home.md](../screens/02-home.md) · Mockup: `assets/mockups/home-samples.html`
 
-- [ ] Header: logo, wallet balance mock, notifications
-- [ ] Search bar (UI only)
-- [ ] **Active placement banner** when mock flag true → tap opens Accept
-- [ ] Deal list from mock JSON
-- [ ] Deal card: image, name, store/card chips, order price, **Earn ₹X**
-- [ ] Block other deals when active placement (dim + message)
-- [ ] Tap deal → Deal detail
+- [ ] Header: Hi + wallet · bell · WhatsApp community
+- [ ] Search + list/grid toggle + All/Direct/Link chips
+- [ ] Tutorial banner first-time only (`tutorialSeen`)
+- [ ] DealCard — list + grid: store logo on image · meta row (color + GST if any) · bank row · spend box · blue Earn button
+- [ ] Active placement strip (mock) · blocked deal dim state
+- [ ] Tap card → Deal detail
 
 ---
 
@@ -58,19 +59,17 @@ Spec: [../screens/03-deal-detail.md](../screens/03-deal-detail.md)
 
 ---
 
-## Phase 5 — Accept
+## Phase 5 — Place order (**LOCKED v2**)
 
-Spec: [../screens/04-accept-place-order.md](../screens/04-accept-place-order.md)
+Spec: [../screens/04-accept-place-order.md](../screens/04-accept-place-order.md) · [../design/PLACE-ORDER-REQUIREMENTS.md](../design/PLACE-ORDER-REQUIREMENTS.md)  
+HTML: `assets/mockups/place-order-locked.html`
 
-- [ ] Countdown from mock 15 min (or config constant)
-- [ ] Product + card summary
-- [ ] Short money row: pay / earn
-- [ ] Copy address, copy pin, open store (toast on copy)
-- [ ] Order ID field + Paste chip
-- [ ] Upload screenshot (image picker UI)
-- [ ] Submit → Success
-- [ ] **Cancel order** + confirm dialog → Home, clears active placement
-- [ ] Timer expiry UI → Home message
+- [ ] Mode choice sheet (first time) + Remember + Change chip
+- [ ] Address block: **Copy per line** (7 rows) · optional *Copy all* link · Generate new
+- [ ] **Variant B:** WebView + 3-button bar · Submit ID mini sheet
+- [ ] **Variant C:** Show address fields ▾ on A (optional)
+- [ ] Generate new address confirm dialog + toast
+- [ ] Cancel order · timer expiry · KYC/bank gate
 
 ---
 
@@ -84,13 +83,16 @@ Spec: [../screens/05-order-placed-success.md](../screens/05-order-placed-success
 
 ---
 
-## Phase 7 — My Orders
+## Phase 7 — My Orders + Order detail
 
-Spec: [../screens/06-my-orders.md](../screens/06-my-orders.md)
+Spec: [../screens/06-my-orders.md](../screens/06-my-orders.md) · [../design/ORDERS-PAGES-REQUIREMENTS.md](../design/ORDERS-PAGES-REQUIREMENTS.md)
 
-- [ ] Tabs: Ongoing / Completed
+- [ ] Tabs: Ongoing / Completed; needs-action sort + badge
+- [ ] **Placement card** in Ongoing: timer + **Continue order** → Place order
 - [ ] Order card: id, progress bar, product, commission bar
-- [ ] Expand card — one active step:
+- [ ] **Order detail** route (`/orders/:id`): stepper, cancel, report ticket
+- [ ] **Add note** modal (user reference, 200 chars)
+- [ ] One active step on detail (or expand — match final spec):
   - [ ] Tracking ID + paste
   - [ ] Last 4 + OTP (6+ digits)
   - [ ] Waiting (invoice locked) — mock `parcelReceived: false`
@@ -100,11 +102,11 @@ Spec: [../screens/06-my-orders.md](../screens/06-my-orders.md)
 
 ---
 
-## Phase 8 — Other tabs (light)
+## Phase 8 — Wallet (LOCKED spec)
 
-- [ ] Wallet mock balance — [../screens/07-wallet.md](../screens/07-wallet.md)
-- [ ] Offers static list — [../screens/08-offers.md](../screens/08-offers.md)
-- [ ] Profile phone + KYC placeholder — [../screens/09-profile.md](../screens/09-profile.md)
+- [ ] Wallet — [../design/WALLET-REQUIREMENTS.md](../design/WALLET-REQUIREMENTS.md) — Available, Pending, Total earned, full earn history, no withdraw
+- [ ] Offers placeholder only — [../screens/08-offers.md](../screens/08-offers.md)
+- [ ] Profile — [../screens/09-profile.md](../screens/09-profile.md)
 
 ---
 

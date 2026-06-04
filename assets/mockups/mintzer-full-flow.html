@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Full app flow (Login → end)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: #E8EAED;
+      color: #202124;
+      padding: 24px 16px 48px;
+      line-height: 1.45;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 22px; color: #1A73E8; text-align: center; margin-bottom: 8px; }
+    .sub { text-align: center; font-size: 12px; color: #5F6368; margin-bottom: 20px; }
+
+    .counts {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+      margin-bottom: 24px;
+    }
+    .count {
+      background: #fff; border-radius: 10px; padding: 12px; text-align: center;
+      border: 1px solid #E8EAED;
+    }
+    .count b { display: block; font-size: 22px; color: #1A73E8; }
+    .count span { font-size: 10px; color: #5F6368; }
+
+    .phase {
+      font-size: 11px; font-weight: 700; color: #188038;
+      text-transform: uppercase; letter-spacing: .5px;
+      margin: 20px 0 10px; padding-bottom: 4px; border-bottom: 2px solid #188038;
+    }
+
+    .step {
+      display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start;
+    }
+    .num {
+      width: 28px; height: 28px; background: #1A73E8; color: #fff;
+      border-radius: 50%; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .num.alt { background: #5F6368; }
+    .num.warn { background: #D93025; }
+
+    .card {
+      flex: 1; background: #fff; border-radius: 10px; padding: 10px 12px;
+      border: 1px solid #E8EAED; box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    }
+    .card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+    .card-head h3 { font-size: 13px; font-weight: 600; }
+    .badge {
+      font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+    }
+    .page { background: #E8F0FE; color: #1A73E8; }
+    .overlay { background: #FEF7E0; color: #E37400; }
+    .layout { background: #E6F4EA; color: #188038; }
+    .locked { background: #188038; color: #fff; }
+
+    .card p { font-size: 11px; color: #5F6368; }
+    .card .copy { font-size: 10px; color: #202124; margin-top: 6px; padding: 6px 8px; background: #F8F9FA; border-radius: 6px; font-style: italic; }
+
+    .arrow { text-align: center; color: #5F6368; font-size: 16px; margin: 2px 0 2px 14px; }
+
+    .branch {
+      margin: 12px 0 12px 40px; padding: 10px 12px;
+      background: #FCE8E6; border-radius: 8px; border-left: 3px solid #D93025;
+      font-size: 11px;
+    }
+    .branch b { color: #D93025; }
+
+    .footer-note {
+      margin-top: 28px; background: #fff; border-radius: 12px; padding: 14px 16px;
+      font-size: 11px; border-left: 4px solid #1A73E8;
+    }
+    .footer-note h2 { font-size: 13px; color: #1A73E8; margin-bottom: 8px; }
+    .footer-note ul { margin-left: 16px; }
+    .footer-note li { margin: 4px 0; }
+
+    @media print {
+      body { background: #fff; padding: 12px; }
+      .step { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Mintzer — full user flow</h1>
+    <p class="sub">Login → order → wallet · every screen & overlay · June 2026</p>
+
+    <div class="counts">
+      <div class="count"><b>14</b><span>Main pages</span></div>
+      <div class="count"><b>11</b><span>Overlays</span></div>
+      <div class="count"><b>2</b><span>Place order layouts</span></div>
+    </div>
+
+    <!-- AUTH -->
+    <div class="phase">1 · Login</div>
+
+    <div class="step">
+      <div class="num">1</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Login — phone</h3></div>
+        <p>+91 mobile · Continue · Terms link</p>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="step">
+      <div class="num">2</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Login — OTP</h3></div>
+        <p>6-digit OTP · Resend timer · Verify</p>
+      </div>
+    </div>
+
+    <div class="branch">
+      <b>If account suspended</b> (ops terminated user) → skip Home<br/>
+      <strong>Page 13 — Account suspended</strong><br/>
+      <div class="copy">“Your account is not active right now. Please contact support if you want to restore access.” · Contact support · Back to login</div>
+    </div>
+
+    <div class="arrow">↓ active user</div>
+
+    <!-- MAIN -->
+    <div class="phase">2 · Browse & accept</div>
+
+    <div class="step">
+      <div class="num">3</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Home</h3><span class="badge locked">TAB</span></div>
+        <p>Deals · wallet ₹ · active order strip · bottom nav · support FAB</p>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="step">
+      <div class="num">4</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Deal detail</h3></div>
+        <p>Product · fees · earn · store/card logos · sticky Accept deal</p>
+      </div>
+    </div>
+
+    <div class="step" style="margin-top:8px">
+      <div class="num alt">↳</div>
+      <div class="card">
+        <div class="card-head"><span class="badge overlay">OVERLAY</span><h3>Finish current order first</h3></div>
+        <p>If another placement timer is already running</p>
+      </div>
+    </div>
+
+    <div class="arrow">↓ Accept</div>
+
+    <!-- GATES -->
+    <div class="phase">3 · First-time gates (overlays)</div>
+
+    <div class="step">
+      <div class="num alt">5</div>
+      <div class="card">
+        <div class="card-head"><span class="badge overlay">OVERLAY</span><h3>KYC</h3></div>
+        <p>Name + PAN · first Accept only</p>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="step">
+      <div class="num alt">6</div>
+      <div class="card">
+        <div class="card-head"><span class="badge overlay">OVERLAY</span><h3>Payout details</h3></div>
+        <p>UPI or bank · after KYC</p>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="step">
+      <div class="num alt">7</div>
+      <div class="card">
+        <div class="card-head"><span class="badge overlay">OVERLAY</span><h3>How do you want to shop?</h3></div>
+        <p>External (default) vs In-app WebView · Remember choice</p>
+      </div>
+    </div>
+
+    <!-- PLACE ORDER -->
+    <div class="phase">4 · Place order — LOCKED v3</div>
+
+    <div class="step">
+      <div class="num">8</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Place order — External</h3><span class="badge layout">LAYOUT A</span></div>
+        <p>Product · checkout ₹ · Open Flipkart · address copy · bottom dock: timer + tap-to-paste Order ID + Submit</p>
+        <p style="margin-top:4px;font-size:10px;color:#1A73E8">→ place-order-locked.html</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="num alt">8b</div>
+      <div class="card">
+        <div class="card-head"><span class="badge layout">LAYOUT B</span><h3>Place order — In-app</h3></div>
+        <p>WebView · PerkPay sheet (Deal · Delivery · Help) · <strong>one-row</strong> bottom: timer · Order ID · Submit</p>
+      </div>
+    </div>
+
+    <div class="step" style="margin-top:8px">
+      <div class="num alt">↳</div>
+      <div class="card">
+        <div class="card-head"><span class="badge overlay">OVERLAY</span><h3>Cancel order</h3></div>
+        <p>Reason picker · Place order or Order detail</p>
+      </div>
+    </div>
+
+    <div class="arrow">↓ Submit Order ID</div>
+
+    <div class="step">
+      <div class="num">9</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Order placed — success</h3></div>
+        <p>Short confirmation · Go to My Orders</p>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="phase">5 · Orders & tracking</div>
+
+    <div class="step">
+      <div class="num">10</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>My Orders</h3><span class="badge locked">TAB</span></div>
+        <p>Ongoing / Completed · Continue order · timer cards</p>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="step">
+      <div class="num">11</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Order detail</h3></div>
+        <p>Steps: tracking · delivery OTP · invoice · payment wait · Raise ticket</p>
+      </div>
+    </div>
+
+    <div class="step" style="margin-top:8px">
+      <div class="num alt">↳</div>
+      <div class="card">
+        <div class="card-head"><span class="badge overlay">OVERLAY</span><h3>Add note · Raise ticket · Cancel</h3></div>
+      </div>
+    </div>
+
+    <div class="step" style="margin-top:8px">
+      <div class="num alt">↳</div>
+      <div class="card">
+        <div class="card-head"><span class="badge overlay">OVERLAY</span><h3>Resume order (optional)</h3></div>
+        <p>Once per session when user reopens app with active timer</p>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="phase">6 · Other tabs</div>
+
+    <div class="step">
+      <div class="num">12</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Wallet</h3><span class="badge locked">TAB</span></div>
+        <p>Available · Pending · Total earned · history · <strong>no withdraw</strong></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="num">13</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Offers</h3><span class="badge locked">TAB</span></div>
+        <p>v1 placeholder · “No offers yet”</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="num">14</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Profile</h3><span class="badge locked">TAB</span></div>
+        <p>KYC · payout · appearance · tickets · help · logout · <strong>Delete account</strong></p>
+      </div>
+    </div>
+
+    <div class="step" style="margin-top:8px">
+      <div class="num alt">↳</div>
+      <div class="card">
+        <div class="card-head"><span class="badge overlay">OVERLAY</span><h3>Appearance · Delete account</h3></div>
+        <p>Delete blocked if order in progress:</p>
+        <div class="copy">“You have an order in progress. Please finish or cancel it before deleting your account.”</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="num">15</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>My tickets</h3></div>
+        <p>From Profile · ticket list · ticket detail overlay</p>
+      </div>
+    </div>
+
+    <!-- ACCOUNT END -->
+    <div class="phase">7 · Account end states</div>
+
+    <div class="step">
+      <div class="num warn">A</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Account suspended</h3></div>
+        <p>Login or mid-session · contact support · no app access</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="num warn">B</div>
+      <div class="card">
+        <div class="card-head"><span class="badge page">PAGE</span><h3>Account deleted</h3></div>
+        <p>After Profile delete succeeds</p>
+        <div class="copy">“Your account has been removed. Contact support if you need help.” · Back to login</div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <h2>Figma design order (recommended)</h2>
+      <ul>
+        <li>1–2 Login · 3 Home · 4 Deal detail · 8 Place order (use place-order-locked.html)</li>
+        <li>Overlays: KYC, Payout, Shop mode, Delete account</li>
+        <li>9 Success · 10–11 Orders · 12 Wallet · 14 Profile</li>
+        <li>Account suspended + Account deleted last</li>
+      </ul>
+      <p style="margin-top:10px"><strong>Specs:</strong> docs/screens/SCREEN-INVENTORY.md · docs/design/VALIDATION-UX.md · docs/design/DESIGNER-HANDOFF.html (PDF)</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,5 +1,7 @@
 # Screen: Deal detail
 
+**Mockup:** `assets/mintzer-deal-detail-mockup.png`
+
 ## Purpose
 
 Let the user **read and decide** before committing. No timer, no order ID, no address copy on this screen (Option B).
@@ -158,7 +160,17 @@ If admin enters fees, list each row in **YOU PAY**. Do not guess Flipkart fees.
 
 ---
 
-## 4. Other deal detail content
+## 4. Help actions (deal detail header)
+
+| Element | Behavior |
+|---------|----------|
+| **WhatsApp icon** | Opens admin WhatsApp (number from config) |
+| **Report error** | Opens same WhatsApp with **pre-filled deal details** (product, store, card, earn, deal ID, user phone) |
+| Visibility | Both hidden when admin **WhatsApp support = OFF** |
+
+Not the same as **order ticket** on order detail (guided flow). This is quick report to admin about the **deal** before/during accept.
+
+## 5. Other deal detail content
 
 | Element | Description |
 |---------|-------------|
@@ -241,8 +253,29 @@ Logo URLs must point to **pre-normalized** assets (same padding/sizing pipeline)
 - Order ID / screenshot
 - Cancel order (on Accept screen)
 
+## Colors (Figma)
+
+**Tokens:** [../design/COLORS-AND-TOKENS.md](../design/COLORS-AND-TOKENS.md)
+
+| Element | Light |
+|---------|-------|
+| Background | `#F8F9FA` |
+| Product card | `#FFFFFF` |
+| Store / bank logo box | `#E8EAED` + letter (temp) → PNG later |
+| Commission / earn lines | `#188038` |
+| Checkout / pay amount | `#202124` bold |
+| Sticky Accept button | `#1A73E8` |
+| Warning hint | `#E37400` on `#FEF7E0` if used |
+
+**Logos:** Never stretch · never recolor Flipkart/bank marks.
+
+## Validation
+
+Accept blocked → **overlay** *Finish current order first* (not snackbar). No field validation on this screen.
+
+**Full rules:** [../design/VALIDATION-UX.md](../design/VALIDATION-UX.md)
+
 ## Design
 
-- Google Material light theme; green earn, blue Mintzer payout line
 - Scrollable content; sticky **Accept deal**
-- **Money summary + logos** visible without scrolling past hero on most phones (keep product image compact if needed)
+- **Money summary + logos** visible without scrolling past hero on most phones

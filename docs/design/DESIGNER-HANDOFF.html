@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mintzer Mobile App</title>
+  <style>
+    @page { margin: 18mm 16mm; size: A4; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.45;
+      color: #202124;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 12mm;
+    }
+    h1 { font-size: 22pt; color: #1A73E8; page-break-before: always; margin-top: 0; }
+    h1:first-of-type { page-break-before: avoid; }
+    h2 { font-size: 14pt; color: #1A73E8; margin-top: 1.2em; border-bottom: 1px solid #E8EAED; padding-bottom: 4px; page-break-after: avoid; }
+    h3 { font-size: 11.5pt; margin-top: 1em; page-break-after: avoid; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 9.5pt; page-break-inside: avoid; }
+    th, td { border: 1px solid #E8EAED; padding: 6px 8px; text-align: left; vertical-align: top; }
+    th { background: #F8F9FA; font-weight: 600; }
+    code, pre { background: #F8F9FA; font-size: 9pt; }
+    pre { padding: 10px; overflow-x: auto; border: 1px solid #E8EAED; page-break-inside: avoid; white-space: pre-wrap; }
+    blockquote { border-left: 3px solid #1A73E8; margin: 8px 0; padding: 4px 12px; color: #5F6368; }
+    hr { border: none; border-top: 1px solid #E8EAED; margin: 16px 0; }
+    ul, ol { padding-left: 1.4em; }
+    li { margin: 4px 0; }
+    .cover { text-align: center; padding: 40mm 0 20mm; page-break-after: always; }
+    .cover h1 { page-break-before: avoid; font-size: 28pt; border: none; }
+    .cover p { color: #5F6368; font-size: 12pt; }
+    @media print {
+      body { padding: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="cover">
+  <h1>Mintzer Mobile App</h1>
+  <p><strong>Designer Handoff · June 2026</strong></p>
+  <p>Mintzer Technologies Pvt Ltd</p>
+  <p style="margin-top:24px;font-size:10pt;">Ctrl+P → Save as PDF</p>
+</div>
+<h1 id="mintzer-app--designer-handoff">Mintzer App — Designer Handoff</h1>
+<h2 id="get-a-pdf-for-your-designer">Get a PDF (for your designer)</h2>
+<p><strong>Easiest (no coding):</strong></p>
+<ol>
+<li>Open this file in <strong>Google Chrome</strong> after generating HTML (step 2), <strong>or</strong> open <code>docs/design/DESIGNER-HANDOFF.html</code> if it already exists.</li>
+<li>Press <strong>Ctrl+P</strong> (Print).</li>
+<li>Destination: <strong>Save as PDF</strong>.</li>
+<li>Turn on <strong>Background graphics</strong>.</li>
+<li>Save as <code>DESIGNER-HANDOFF.pdf</code>.</li>
+</ol>
+<p><strong>Generate the HTML file (once):</strong> in the project folder run:</p>
+<pre><code class="language-bash">node scripts/md-to-print-html.js designer
+</code></pre>
+<p>Then open: <code>docs/design/DESIGNER-HANDOFF.html</code> in Chrome and print to PDF.</p>
+<p><strong>PDF will be saved wherever you choose</strong> (Downloads, Desktop, etc.) — it is not auto-created in the repo unless you run a PDF tool separately.</p>
+<hr>
+<p><strong>App:</strong> Mintzer (Android first) — users accept card deals, order on Flipkart/Amazon, submit proof, get paid in Wallet.<br><strong>Style:</strong> Google Material — clean, light by default, dark mode supported. <strong>No purple gradients. No copy of PerkPay dark/gold look.</strong><br><strong>Primary blue:</strong> <code>#1A73E8</code> (light) · <code>#8AB4F8</code> (dark) — <strong>fixed</strong>; logo colors do not change app palette.</p>
+<p><strong>Colors for every screen:</strong> <a href="./COLORS-AND-TOKENS.md">COLORS-AND-TOKENS.md</a> · each <code>docs/screens/*.md</code> has a <strong>Colors (Figma)</strong> section.</p>
+<p><strong>Platform:</strong> Design fluid in Figma first (tokens + spacing). Build in <strong>Flutter</strong> (repo default) or another framework after design — same tokens map to code.</p>
+<p><strong>Validation (all screens):</strong> Wrong format → <strong>inline under field</strong>. API / duplicate / network / <em>Copied</em> → <strong>snackbar bottom-right</strong>. Full table: <a href="./VALIDATION-UX.md">VALIDATION-UX.md</a></p>
+<hr>
+<h2 id="1-how-many-screens-to-design">1. How many screens to design?</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Number</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Full screens (pages)</strong></td>
+<td><strong>14</strong></td>
+<td>User navigates between these</td>
+</tr>
+<tr>
+<td><strong>Pop-ups / sheets</strong></td>
+<td><strong>11</strong></td>
+<td>Open on top of a page</td>
+</tr>
+<tr>
+<td><strong>Place order</strong></td>
+<td><strong>2 layouts</strong></td>
+<td>External vs in-app — one route</td>
+</tr>
+</tbody></table>
+<p><strong>Total work:</strong> <strong>~25 UI pieces</strong> (14 pages + 11 overlays). Place order = 2 layouts inside page #5.<br><strong>Full flow HTML:</strong> <code>assets/mockups/mintzer-full-flow.html</code> (Login → end)<br><strong>Dark mode:</strong> same 14 pages in dark — not new flows.</p>
+<p>Reference images (if any) are in folder <code>assets/mintzer-*.png</code>. <strong>If an image disagrees with this document, follow this document.</strong></p>
+<hr>
+<h2 id="2-full-screens--list-all-14">2. Full screens — list all 14</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Screen name</th>
+<th>What user does here</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Login — phone</strong></td>
+<td>Enter +91 mobile → Continue</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Login — OTP</strong></td>
+<td>Enter 6-digit code → Verify</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Home</strong></td>
+<td>Browse deals; see wallet balance; tap a deal</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Deal detail</strong></td>
+<td>Read product, fees, earn amount → <strong>Accept deal</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Place order</strong></td>
+<td>Timer — copy address, open store / WebView, submit Order ID</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Order placed — success</strong></td>
+<td>Short “done” screen → Go to My Orders</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>My Orders — list</strong></td>
+<td>All orders; Ongoing / Completed tabs</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Order detail</strong></td>
+<td>One order — tracking, delivery OTP, invoice, payment wait</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Wallet</strong></td>
+<td>Available, Pending, Total earned, history ( <strong>no withdraw</strong> )</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Offers</strong></td>
+<td>v1 = empty / “No offers yet” + link to Home</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Profile</strong></td>
+<td>KYC, payout, theme, tickets, help, <strong>Delete account</strong>, logout</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>My tickets</strong></td>
+<td>List of support tickets from Profile</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>Account suspended</strong></td>
+<td>Ops suspended user — contact support, no app access</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>Account deleted</strong></td>
+<td>After delete account — back to login</td>
+</tr>
+</tbody></table>
+<p><strong>Bottom bar on main app (always):</strong> Home · Orders · Offers · Profile<br><strong>Floating button:</strong> Support (chat) on main tabs</p>
+<hr>
+<h2 id="3-pop-ups--sheets--list-all-11">3. Pop-ups / sheets — list all 11</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>When it appears</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>KYC</strong></td>
+<td>First time user accepts a deal — Name + PAN</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Payout details</strong></td>
+<td>Right after KYC — UPI <strong>or</strong> bank account</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>How do you want to shop?</strong></td>
+<td>First place order (or “Change” later)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Cancel order</strong></td>
+<td>User cancels — pick a reason from list</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Add note</strong></td>
+<td>Order detail — personal reminder only (200 chars max)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Finish current order first</strong></td>
+<td>User taps Accept while another order timer is active</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Resume order</strong> (optional banner)</td>
+<td>User reopens app with timer still running</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Raise ticket</strong></td>
+<td>Order detail — category → short questions → submit</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Ticket detail</strong></td>
+<td>From My tickets</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Appearance</strong></td>
+<td>Profile — Light / Dark / System</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Delete account</strong></td>
+<td>Profile → Settings — confirm, or <strong>blocked</strong> if order in progress</td>
+</tr>
+</tbody></table>
+<p><strong>Account suspended (#13)</strong> and <strong>Account deleted (#14)</strong> are full pages, not overlays.</p>
+<p><strong>Optional v1:</strong> Language picker (English / Hindi), Edit payout from Profile.</p>
+<hr>
+<h2 id="3b-account-suspended--delete-locked">3b. Account suspended &amp; delete (LOCKED)</h2>
+<p><strong>Spec:</strong> <code>docs/design/ACCOUNT-LIFECYCLE-REQUIREMENTS.md</code></p>
+<h3 id="suspended-page-13">Suspended (page 13)</h3>
+<p>Shown when ops terminates account — at login or mid-session.</p>
+<p><strong>Copy:</strong><br><em>Your account is not active right now. Please contact support if you want to restore access.</em></p>
+<p><strong>Actions:</strong> Contact support · Back to login<br><strong>No</strong> harsh “banned” wording in UI.</p>
+<h3 id="delete-account-profile-→-overlay-11">Delete account (Profile → overlay 11)</h3>
+<p><strong>Block</strong> if active placement or any order in progress.</p>
+<p><strong>Blocked copy:</strong><br><em>You have an order in progress. Please finish or cancel it before deleting your account.</em></p>
+<h3 id="account-deleted-page-14">Account deleted (page 14)</h3>
+<p><strong>Copy:</strong><br><em>Your account has been removed. Contact support if you need help.</em></p>
+<p><strong>Action:</strong> Back to login</p>
+<hr>
+<h2 id="4-place-order-screen-important--locked-v3-final">4. Place order screen (important) — LOCKED v3 final</h2>
+<p>After <strong>Accept</strong>, this is the <strong>main area</strong>. User <strong>rechecks model, color, variant</strong> here before checkout.</p>
+<p><strong>Open in Chrome (external + in-app):</strong> <code>assets/mockups/place-order-locked.html</code></p>
+<p><strong>Full spec:</strong> <code>docs/design/PLACE-ORDER-REQUIREMENTS.md</code></p>
+<h3 id="external-default--open-flipkart">External (default — Open Flipkart)</h3>
+<p>Single scroll · Open Flipkart right after checkout · address below.</p>
+<p><strong>Bottom dock (fixed — 2 rows):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⏱ Complete order in <strong>MM:SS</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Tap to paste Order ID</strong> field + <strong>Submit</strong></td>
+</tr>
+</tbody></table>
+<h3 id="in-app-flipkart-webview">In-app (Flipkart WebView)</h3>
+<p>WebView + PerkPay drag-up sheet (Deal · Delivery · Help tabs when expanded).</p>
+<p><strong>Bottom dock (fixed — 1 row):</strong></p>
+<p><code>[ ⏱ MM:SS ]</code> · <code>[ Order ID field ]</code> · <code>[ Submit ]</code></p>
+<h3 id="tap-to-paste-order-id-both-modes--locked">Tap-to-paste Order ID (both modes) — LOCKED</h3>
+<ul>
+<li><strong>No separate Paste button</strong></li>
+<li>User copies Order ID on Flipkart → returns → <strong>one tap on field</strong> = focus + paste from clipboard</li>
+<li>Empty field: <em>Tap to paste Order ID</em> · toast <em>Pasted</em> · if clipboard empty: <em>Copy Order ID from Flipkart first</em></li>
+<li>Field filled → tap to edit manually</li>
+</ul>
+<h3 id="also-on-screen">Also on screen</h3>
+<p>Product · checkout ₹ · discount · earn · address Copy each line · Generate new address · Cancel · mode chip</p>
+<p><strong>External:</strong> no tabs. <strong>In-app:</strong> 3 sheet tabs only (not on external).</p>
+<hr>
+<h2 id="5-main-user-journey-draw-this-flow">5. Main user journey (draw this flow)</h2>
+<pre><code>Login → Home → Deal detail → Accept
+         ↓ (first time only)
+      KYC → Bank/UPI details
+         ↓
+      [Choose: order yourself OR shop in app]
+         ↓
+      Place order (timer) → Submit Order ID
+         ↓
+      Success screen → My Orders
+         ↓
+      Tracking → Delivery OTP → Wait (Mintzer confirms) → Invoice → 48h wait → Paid → Wallet
+</code></pre>
+<hr>
+<h2 id="6-deal-detail--money-block-must-be-clear">6. Deal detail — money block (must be clear)</h2>
+<p>Show a <strong>card</strong> with rows (example numbers):</p>
+<ul>
+<li>Order value  </li>
+<li>Platform fee, Card fee (if any)  </li>
+<li>Total you pay at checkout  </li>
+<li>Bank cashback (user’s card — not from Mintzer)  </li>
+<li>Wallet credit from Mintzer  </li>
+<li><strong>You earn (commission)</strong> — <strong>largest green number</strong></li>
+</ul>
+<p>Footer note: cashback comes from bank billing cycle; Mintzer wallet after order completes.</p>
+<p><strong>Bottom of screen:</strong> sticky <strong>Accept deal</strong> button (blue).</p>
+<p><strong>Top:</strong> WhatsApp icon + <strong>Report error</strong> (opens WhatsApp with deal info prefilled).</p>
+<hr>
+<h2 id="7-my-orders--list-card-types">7. My Orders — list card types</h2>
+<h3 id="card-type-a--timer-still-running-not-submitted-order-id-yet">Card type A — Timer still running (not submitted Order ID yet)</h3>
+<ul>
+<li>Timer: “Complete order in 12:34”  </li>
+<li>Product image + name + store  </li>
+<li>Earn amount  </li>
+<li>Button: <strong>Continue order</strong></li>
+</ul>
+<h3 id="card-type-b--order-submitted-normal-order">Card type B — Order submitted (normal order)</h3>
+<ul>
+<li>Order ID + copy  </li>
+<li>Progress: Placed → Shipped → Out for delivery → Invoice → Payment  </li>
+<li>One line: what user must do next (e.g. “Add tracking ID”)  </li>
+<li>Tap card → <strong>Order detail</strong> full page</li>
+</ul>
+<hr>
+<h2 id="8-order-detail--steps-vertical-timeline">8. Order detail — steps (vertical timeline)</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>User action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Accepted / Placed</td>
+<td>Show date + external Order ID (read-only)</td>
+</tr>
+<tr>
+<td>Tracking</td>
+<td>Paste tracking ID + choose courier (auto-guess + “change if wrong”)</td>
+</tr>
+<tr>
+<td>Out for delivery</td>
+<td>Last 4 digits of delivery phone + OTP (6+ digits)</td>
+</tr>
+<tr>
+<td>Waiting</td>
+<td>Grey — “Waiting for Mintzer” — no upload</td>
+</tr>
+<tr>
+<td>Invoice</td>
+<td>Upload photo/PDF (only after Mintzer unlocks)</td>
+</tr>
+<tr>
+<td>Payment</td>
+<td>48-hour countdown after invoice uploaded</td>
+</tr>
+<tr>
+<td>Paid</td>
+<td>Done — moves to Completed tab</td>
+</tr>
+</tbody></table>
+<p><strong>Header:</strong> Order ID · <strong>Add note</strong> · Cancel order · Report issue (ticket)</p>
+<hr>
+<h2 id="9-wallet-locked--do-not-add-withdraw">9. Wallet (locked — do not add withdraw)</h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Available</strong></td>
+<td>Money user can count on now</td>
+</tr>
+<tr>
+<td><strong>Pending</strong></td>
+<td>Earned but not approved yet</td>
+</tr>
+<tr>
+<td><strong>Total earned</strong></td>
+<td>Lifetime</td>
+</tr>
+<tr>
+<td><strong>List below</strong></td>
+<td>Every order — Paid / Pending / Canceled + amount</td>
+</tr>
+</tbody></table>
+<p><strong>No</strong> bank transfer button · <strong>No</strong> withdraw in app.</p>
+<hr>
+<h2 id="10-profile-locked">10. Profile (locked)</h2>
+<ul>
+<li>Hi {name} + avatar initial  </li>
+<li>KYC status  </li>
+<li>Payout details (edit)  </li>
+<li>Language  </li>
+<li><strong>Appearance</strong> (Light / Dark / System)  </li>
+<li>My tickets  </li>
+<li>Help / Tutorials / Notifications / Terms  </li>
+<li>Logout (red text)</li>
+</ul>
+<p><strong>Do not put</strong> Wallet or My Orders shortcuts here (they are in bottom bar).</p>
+<hr>
+<h2 id="11-colors">11. Colors</h2>
+<h3 id="light-mode-default">Light mode (default)</h3>
+<table>
+<thead>
+<tr>
+<th>Use</th>
+<th>Color</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Primary buttons, links</td>
+<td><code>#1A73E8</code></td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#F8F9FA</code></td>
+</tr>
+<tr>
+<td>Cards</td>
+<td><code>#FFFFFF</code></td>
+</tr>
+<tr>
+<td>Earn / success</td>
+<td><code>#188038</code></td>
+</tr>
+<tr>
+<td>Warning (timer low)</td>
+<td><code>#F9AB00</code></td>
+</tr>
+<tr>
+<td>Error / cancel</td>
+<td><code>#D93025</code></td>
+</tr>
+<tr>
+<td>Text main</td>
+<td><code>#202124</code></td>
+</tr>
+<tr>
+<td>Text secondary</td>
+<td><code>#5F6368</code></td>
+</tr>
+</tbody></table>
+<h3 id="dark-mode">Dark mode</h3>
+<table>
+<thead>
+<tr>
+<th>Use</th>
+<th>Color</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Background</td>
+<td><code>#121212</code></td>
+</tr>
+<tr>
+<td>Cards</td>
+<td><code>#1E1E1E</code></td>
+</tr>
+<tr>
+<td>Primary</td>
+<td><code>#8AB4F8</code></td>
+</tr>
+<tr>
+<td>Text main</td>
+<td><code>#E8EAED</code></td>
+</tr>
+<tr>
+<td>Earn</td>
+<td><code>#81C995</code></td>
+</tr>
+</tbody></table>
+<p><strong>Rule:</strong> Same layout in light and dark — only colors change.</p>
+<hr>
+<h2 id="12-logos-store--bank-on-deal-cards">12. Logos (store + bank on deal cards)</h2>
+<ul>
+<li>Fixed box size — logo <strong>never stretched</strong>  </li>
+<li>Store logo ~40×40 · Bank/card logo ~32×32  </li>
+<li>Logo on <strong>left</strong>, text on <strong>right</strong>  </li>
+<li>Missing logo → grey circle with letter (F, A, etc.)</li>
+</ul>
+<hr>
+<h2 id="13-what-not-to-design-for-v1">13. What NOT to design for v1</h2>
+<ul>
+<li>Admin website  </li>
+<li>Withdraw / add money to bank from app  </li>
+<li>Instant orders tab  </li>
+<li>In-app WhatsApp chat (only opens real WhatsApp)  </li>
+<li>Auto-tracking courier map</li>
+</ul>
+<hr>
+<h2 id="14-deliverables-for-designer">14. Deliverables for designer</h2>
+<ol>
+<li><strong>Figma</strong> — all <strong>14</strong> screens (light) + same 14 (dark)  </li>
+<li><strong>11 overlays</strong> as components  </li>
+<li><strong>Place order</strong> — <code>place-order-locked.html</code> · full journey — <code>mintzer-full-flow.html</code>  </li>
+<li><strong>Design system</strong> — colors, type, buttons, input fields, cards  </li>
+<li><strong>Export</strong> — store/bank logo placeholders, product image frame</li>
+</ol>
+<hr>
+<h2 id="15-detailed-specs-if-designer-needs-more">15. Detailed specs (if designer needs more)</h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>File in project</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Screen list &amp; routes</td>
+<td><code>docs/screens/SCREEN-INVENTORY.md</code></td>
+</tr>
+<tr>
+<td>Place order (locked)</td>
+<td><code>docs/design/PLACE-ORDER-REQUIREMENTS.md</code></td>
+</tr>
+<tr>
+<td>Account suspend / delete</td>
+<td><code>docs/design/ACCOUNT-LIFECYCLE-REQUIREMENTS.md</code></td>
+</tr>
+<tr>
+<td>Full flow mockup</td>
+<td><code>assets/mockups/mintzer-full-flow.html</code></td>
+</tr>
+<tr>
+<td>Orders list + detail</td>
+<td><code>docs/design/ORDERS-PAGES-REQUIREMENTS.md</code></td>
+</tr>
+<tr>
+<td>Wallet (locked)</td>
+<td><code>docs/design/WALLET-REQUIREMENTS.md</code></td>
+</tr>
+<tr>
+<td>Profile (locked)</td>
+<td><code>docs/design/PROFILE-REQUIREMENTS.md</code></td>
+</tr>
+<tr>
+<td>KYC + bank</td>
+<td><code>docs/design/BANK-AND-PAYOUT-DETAILS.md</code></td>
+</tr>
+<tr>
+<td>Light / dark</td>
+<td><code>docs/design/THEME-LIGHT-DARK-MODE.md</code></td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>Version:</strong> June 2026 · Mintzer rebuild v1</p>
+
+</body>
+</html>

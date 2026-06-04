@@ -1,86 +1,74 @@
-# Screen: Accept / place order
+# Screen: Place order (after Accept) — LOCKED v3 final
+
+**Status:** LOCKED v3 — final bottom dock + tap-to-paste  
+**Spec:** [../design/PLACE-ORDER-REQUIREMENTS.md](../design/PLACE-ORDER-REQUIREMENTS.md)  
+**HTML mockup:** `assets/mockups/place-order-locked.html`
 
 ## Purpose
 
-User places the external order (Flipkart, etc.) within the backend timer and confirms with Order ID or screenshot. Everything needed to **do** the order is on this screen.
+Main area after Accept: user **checks model, color, variant**, copies address, orders on store, submits Order ID before timer ends.
+
+## External (Open Flipkart)
+
+Single scroll · product · checkout · **Open Flipkart** (no scroll) · address copy · Generate new.
+
+**Bottom dock (2 rows, fixed):** timer · tap-to-paste Order ID + Submit
+
+## In-app (WebView)
+
+Flipkart WebView · PerkPay drag-up sheet (Deal · Delivery · Help).
+
+**Bottom dock (1 row, fixed):** `timer · Order ID field · Submit`
+
+## Tap-to-paste Order ID (LOCKED)
+
+One tap on empty field = paste from clipboard. No Paste button. See spec for empty/filled states.
+
+## Shopping mode choice
+
+Unchanged — first-time sheet + Remember + Change chip. Mockup: `mintzer-place-order-mode-choice-mockup.png`
+
+## Generate new address
+
+Link under address → confirm → new lines, **same pincode**. Weekly limit from backend.
 
 ## Entry points
 
-- Deal detail → **Accept deal**
-- Home → **Active order strip**
-- Notification → “Complete your order”
+Deal Accept · Home strip · My Orders Continue order · push/deep link
 
-## UI elements
+## Rules
 
-| Element | Description |
-|---------|-------------|
-| Back | Warn if timer active: “Order in progress” |
-| **Countdown timer** | Large; duration from backend config |
-| Product summary | Name, color, store |
-| Card to use | Chip |
-| Money row | You pay ₹X · You earn ₹Y |
-| **Copy address** | Full delivery address to clipboard |
-| **Copy pin** | Pin code to clipboard |
-| **Open Flipkart** (or store) | Deep link / browser |
-| Collapsible **Offer details** | Same as deal detail (optional refresh) |
-| Order ID field | Paste-friendly text input + **Paste** chip |
-| **Upload screenshot** | Order confirmation image |
-| **Submit order** | Primary — sends Order ID and/or screenshot |
-| **Cancel order** | Secondary/outline — releases placement slot |
+One placement · timer from backend · cancel · KYC/bank first Accept only · duplicate Order ID blocked
 
-## User actions
+## Backend
 
-| Action | Result |
-|--------|--------|
-| Copy address / pin | Toast “Copied” |
-| Open store | External browser / app |
-| Paste Order ID + Submit | Success → **Order placed success**; order in backend + My Orders |
-| Upload screenshot + Submit | Same (screenshot stored; Order ID may be manual or future OCR) |
-| Cancel order | Confirm dialog → placement cancelled → user can accept other deals |
-| Timer expires | Auto-navigate or banner; see Expired state |
+`POST /placements/:id/confirm` · `POST /user/address/regenerate` · `GET /placements/active`
 
-## KYC (if required)
+## Colors (Figma)
 
-- On first **Open store** or **Submit** (product decision): show KYC sheet if not completed
-- PerkPay-style: not at login, at order time
-- Minimal fields until DigiLocker integration
+**Tokens:** [../design/COLORS-AND-TOKENS.md](../design/COLORS-AND-TOKENS.md) · mockup: `place-order-locked.html`
 
-## Business rules
+| Element | Light |
+|---------|-------|
+| Background | `#F8F9FA` |
+| Checkout box border | `#1A73E8` |
+| Open Flipkart zone | bg `#E8F0FE`, dashed `#1A73E8` |
+| Copy buttons | bg `#E8F0FE`, text `#1A73E8` |
+| Timer | bg `#FEF7E0`, text `#E37400`, time `#D93025` |
+| Bottom dock border | `#188038` |
+| Submit button | `#1A73E8` |
+| Generate new link | `#1A73E8` |
 
-- Timer length from **backend config** (not hardcoded 10/15 in app)
-- **Submit before expiry** → order saved to backend and My Orders
-- **No submit before expiry** → order **not** in user backend; **admin logs only**
-- Push notifications to user when timer near expiry and after expiry (re-engage)
-- Only **one** open placement at a time
-- **Cancel** frees slot for new Accept on Home
+**Store/card logos:** Grey placeholder tiles until PNG.
 
-## States
+## Validation
 
-| State | UI |
-|-------|-----|
-| Timer running | Normal UI; timer amber under 2 min |
-| Submitting | Loading on button |
-| Success | Navigate to Order placed success |
-| Expired | “Time’s up” + **Browse deals** / notification CTA to try again |
-| Cancelled | Toast + Home |
+| Trigger | UX |
+|---------|-----|
+| Empty Order ID on Submit | **Inline** on field · button disabled |
+| Bad paste / empty clipboard | **Snackbar** bottom-right |
+| Duplicate Order ID | **Snackbar** |
+| Timer expired | Block submit · **Snackbar** or banner |
+| Copy address line | **Snackbar** *Copied* |
 
-## Navigation
-
-| From | To |
-|------|-----|
-| Submit success | Order placed success |
-| Cancel | Home |
-| Timer expired | Home (+ admin log) |
-
-## Backend notes
-
-- `POST /placements/:id/confirm` — body: `{ orderId?, screenshotUrl? }`
-- `POST /placements/:id/cancel`
-- On expiry: webhook/job marks `expired`; write **admin log** row; no user order record
-- Push: timer warning (e.g. 5 min, 1 min), expired
-
-## Design
-
-- Timer is hero element
-- One screen — no separate “confirm order” page
-- Google blue submit; red or grey cancel with confirmation
+**Full rules:** [../design/VALIDATION-UX.md](../design/VALIDATION-UX.md)

@@ -1,5 +1,7 @@
 # Screen: Login (OTP)
 
+**Mockups:** `assets/mintzer-login-mockup.png` · `assets/mintzer-login-otp-mockup.png`
+
 ## Purpose
 
 Let the user into the app with minimal friction. Phone number is the only identifier required at entry.
@@ -31,11 +33,12 @@ Let the user into the app with minimal friction. Phone number is the only identi
 | State | UI |
 |-------|-----|
 | Empty | Continue disabled |
-| Invalid phone | Inline error under field |
+| Invalid phone | **Inline** under field: *Enter a valid 10-digit mobile number* |
 | OTP sent | Show OTP fields + resend timer |
-| Wrong OTP | Shake or error message, allow retry |
+| Wrong OTP | **Snackbar** bottom-right: *Incorrect code. Try again.* · optional field shake |
+| **Account suspended** | After verify — **Account suspended** screen (not Home) |
 | Loading | Button spinner, disable inputs |
-| Success | Navigate away; no extra profile form |
+| Success | Navigate to **Home** (if `status = active`) |
 
 ## Rules
 
@@ -46,7 +49,8 @@ Let the user into the app with minimal friction. Phone number is the only identi
 
 | From | To |
 |------|-----|
-| Success | Home |
+| Success | Home (active users only) |
+| Suspended | [10-account-suspended.md](./10-account-suspended.md) |
 | Back on OTP | Phone entry |
 
 ## Backend notes
@@ -55,7 +59,33 @@ Let the user into the app with minimal friction. Phone number is the only identi
 - Return auth token + user id on verify
 - Store session locally for auto-login
 
+## Colors (Figma)
+
+**Tokens:** [../design/COLORS-AND-TOKENS.md](../design/COLORS-AND-TOKENS.md) · [../design/THEME-LIGHT-DARK-MODE.md](../design/THEME-LIGHT-DARK-MODE.md)
+
+| Element | Light | Dark |
+|---------|-------|------|
+| Background | `#F8F9FA` | `#121212` |
+| Surface / inputs | `#FFFFFF` | `#1E1E1E` |
+| Mintzer logo (placeholder) | Text `#1A73E8` or grey box `#E8EAED` | Text `#8AB4F8` |
+| Continue / Verify button | `#1A73E8` on `#FFFFFF` text | `#8AB4F8` |
+| OTP boxes | border `#E8EAED`, focus `#1A73E8` | border `#3C4043` |
+| Error (wrong OTP) | `#D93025` | `#F28B82` |
+| Terms link | `#1A73E8` | `#8AB4F8` |
+
+**Logo:** Placeholder only — swap asset when ready; **keep button blue unchanged**.
+
+## Validation
+
+**Full rules:** [../design/VALIDATION-UX.md](../design/VALIDATION-UX.md)
+
+| Trigger | UX |
+|---------|-----|
+| Bad phone format | **Inline** under phone field |
+| Wrong / expired OTP | **Snackbar** bottom-right |
+| Resend before timer | Button disabled |
+| API / network fail | **Snackbar** *Something went wrong. Try again.* |
+
 ## Design
 
-- White background, blue primary button
 - Large tap targets for OTP boxes

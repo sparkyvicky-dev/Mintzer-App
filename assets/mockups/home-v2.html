@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Home v2</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #E8EAED;
+      padding: 24px 12px 48px;
+      color: #202124;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .page-title {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #1A73E8;
+    }
+    .page-sub {
+      text-align: center;
+      font-size: 12px;
+      color: #5F6368;
+      margin-bottom: 20px;
+      max-width: 360px;
+      line-height: 1.5;
+    }
+
+    .phone {
+      width: 360px;
+      max-width: 100%;
+      height: 780px;
+      background: #F8F9FA;
+      border-radius: 28px;
+      border: 5px solid #202124;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      position: relative;
+    }
+
+    .status-bar {
+      height: 24px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #202124;
+      flex-shrink: 0;
+    }
+
+    /* Header */
+    .header {
+      background: #fff;
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid #E8EAED;
+      flex-shrink: 0;
+    }
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .greeting h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #202124;
+      line-height: 1.2;
+    }
+    .greeting p {
+      font-size: 11px;
+      color: #5F6368;
+      margin-top: 2px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .wallet-pill {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 10px;
+      border: 1px solid #E8EAED;
+      border-radius: 20px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1A73E8;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .icon-btn:active { background: #F1F3F4; }
+    .notif-dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 8px;
+      height: 8px;
+      background: #D93025;
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+    .wa-btn {
+      background: #E7F8EE;
+    }
+    .wa-btn svg { display: block; }
+
+    /* Scroll area */
+    .scroll {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+      padding-bottom: 8px;
+    }
+
+    /* Search */
+    .search-row {
+      padding: 12px 16px 0;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .search-field {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border: 1px solid #E8EAED;
+      border-radius: 24px;
+      padding: 10px 14px;
+      min-width: 0;
+    }
+    .search-field svg { flex-shrink: 0; color: #5F6368; }
+    .search-field input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 14px;
+      background: transparent;
+      color: #202124;
+      min-width: 0;
+    }
+    .search-field input::placeholder { color: #5F6368; }
+
+    /* Chips */
+    .chips-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .chips-row::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid #E8EAED;
+      background: #fff;
+      color: #5F6368;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .chip.active {
+      border-color: #1A73E8;
+      color: #1A73E8;
+      background: #fff;
+      font-weight: 600;
+    }
+    .filter-btn {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid #E8EAED;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #5F6368;
+    }
+
+    /* Banner */
+    .banner {
+      margin: 0 16px 12px;
+      background: #E8F0FE;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .banner-play {
+      width: 32px;
+      height: 32px;
+      background: #1A73E8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .banner-text {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1A73E8;
+    }
+    .banner-chevron { color: #1A73E8; flex-shrink: 0; }
+
+    /* List meta */
+    .list-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px 10px;
+      font-size: 12px;
+    }
+    .list-meta .count { color: #5F6368; }
+    .list-meta .sort {
+      color: #1A73E8;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 12px;
+    }
+
+    /* Deal cards */
+    .deals { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
+
+    .deal-card {
+      background: #fff;
+      border: 1px solid #E8EAED;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .deal-card:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+    .deal-card.hidden { display: none; }
+
+    .deal-image-col {
+      flex-shrink: 0;
+      width: 88px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .deal-image {
+      width: 88px;
+      height: 88px;
+      background: #F8F9FA;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .deal-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .color-hint {
+      font-size: 10px;
+      color: #5F6368;
+      text-align: center;
+    }
+
+    .deal-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .badge-earn {
+      background: #E6F4EA;
+      color: #188038;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+    .badge-speed {
+      background: #FEF7E0;
+      color: #E37400;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+    .deal-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #202124;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .store-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #5F6368;
+    }
+    .store-logo {
+      width: 20px;
+      height: 20px;
+      background: #E8EAED;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: #5F6368;
+      flex-shrink: 0;
+    }
+    .card-chip {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      color: #1A73E8;
+      background: #E8F0FE;
+      border: 1px solid #1A73E8;
+      border-radius: 12px;
+      padding: 4px 10px;
+      letter-spacing: 0.3px;
+      align-self: flex-start;
+    }
+    .deal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 2px;
+    }
+    .order-price {
+      font-size: 12px;
+      font-weight: 500;
+      color: #202124;
+    }
+    .btn-view {
+      flex-shrink: 0;
+      background: #1A73E8;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-view:active { opacity: 0.9; }
+
+    /* FAB */
+    .fab {
+      position: absolute;
+      right: 16px;
+      bottom: 72px;
+      width: 56px;
+      height: 56px;
+      background: #1A73E8;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
+      z-index: 10;
+    }
+    .fab:active { transform: scale(0.96); }
+
+    /* Bottom nav */
+    .bottom-nav {
+      background: #fff;
+      border-top: 1px solid #E8EAED;
+      height: 56px;
+      display: flex;
+      flex-shrink: 0;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #5F6368;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 6px 0;
+    }
+    .nav-item.active { color: #1A73E8; }
+    .nav-item svg { display: block; }
+
+    /* Toast demo */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #323232;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.25s;
+      pointer-events: none;
+      z-index: 100;
+      max-width: 280px;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 400px) {
+      body { padding: 12px 8px 32px; }
+      .phone { border-width: 3px; border-radius: 20px; height: min(780px, 92vh); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="page-title">Mintzer — Home v2</h1>
+  <p class="page-sub">Material light · community WhatsApp · deal chips · power cards<br/>Open <code>assets/mockups/home-v2.html</code> in your browser · drop PNGs into 88×88 boxes</p>
+
+  <div class="phone" role="img" aria-label="Mintzer Home screen mockup">
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>●●●</span>
+    </div>
+
+    <header class="header">
+      <div class="header-top">
+        <div class="greeting">
+          <h1>Hi, Arun</h1>
+          <p>Deals &amp; earn with your card</p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="wallet-pill" id="walletBtn" title="Wallet">₹1,240</button>
+          <button type="button" class="icon-btn" id="bellBtn" title="Notifications" aria-label="Notifications">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5F6368" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="notif-dot"></span>
+          </button>
+          <button type="button" class="icon-btn wa-btn" id="waBtn" title="Join community" aria-label="WhatsApp community">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="scroll">
+      <div class="search-row">
+        <div class="search-field">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input type="search" id="searchInput" placeholder="Search deals..." aria-label="Search deals" />
+        </div>
+      </div>
+
+      <div class="chips-row" role="tablist" aria-label="Deal type filters">
+        <button type="button" class="chip active" data-filter="all" role="tab" aria-selected="true">All Deals</button>
+        <button type="button" class="chip" data-filter="direct" role="tab" aria-selected="false">Direct</button>
+        <button type="button" class="chip" data-filter="link" role="tab" aria-selected="false">Link</button>
+        <button type="button" class="filter-btn" id="filterBtn" title="More filters" aria-label="More filters">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="banner" id="bannerBtn">
+        <div class="banner-play">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <span class="banner-text">Watch how Mintzer works</span>
+        <span class="banner-chevron">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+      </div>
+
+      <div class="list-meta">
+        <span class="count" id="dealCount">3 deals live</span>
+        <button type="button" class="sort" id="sortBtn">Sort ↓</button>
+      </div>
+
+      <div class="deals" id="dealList">
+        <!-- Deal 1 -->
+        <article class="deal-card" data-type="direct" data-name="motorola g57">
+          <div class="deal-image-col">
+            <div class="deal-image" aria-hidden="true">
+              <!-- Replace src with your product PNG; object-fit: contain in CSS -->
+              <span style="font-size:32px;line-height:1">📱</span>
+            </div>
+            <span class="color-hint">Any color</span>
+          </div>
+          <div class="deal-body">
+            <div class="badge-row">
+              <span class="badge-earn">Earn ₹300</span>
+              <span class="badge-speed">Instant</span>
+            </div>
+            <h2 class="deal-title">Motorola G57 Power 5G</h2>
+            <div class="store-row">
+              <span class="store-logo">FK</span>
+              <span>Flipkart</span>
+            </div>
+            <span class="card-chip">ANY CARD</span>
+            <div class="deal-footer">
+              <span class="order-price">Order ₹17,519</span>
+              <button type="button" class="btn-view deal-btn">View deal →</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Deal 2 -->
+        <article class="deal-card" data-type="direct" data-name="samsung galaxy m35">
+          <div class="deal-image-col">
+            <div class="deal-image" aria-hidden="true">
+              <span style="font-size:32px;line-height:1">📱</span>
+            </div>
+            <span class="color-hint">Midnight Blue</span>
+          </div>
+          <div class="deal-body">
+            <div class="badge-row">
+              <span class="badge-earn">Earn ₹450</span>
+            </div>
+            <h2 class="deal-title">Samsung Galaxy M35 5G</h2>
+            <div class="store-row">
+              <span class="store-logo">AX</span>
+              <span>Amazon</span>
+            </div>
+            <span class="card-chip">HDFC CREDIT</span>
+            <div class="deal-footer">
+              <span class="order-price">Order ₹22,999</span>
+              <button type="button" class="btn-view deal-btn">View deal →</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Deal 3 -->
+        <article class="deal-card" data-type="link" data-name="samsung hd tv">
+          <div class="deal-image-col">
+            <div class="deal-image" aria-hidden="true">
+              <span style="font-size:32px;line-height:1">📺</span>
+            </div>
+            <span class="color-hint">32 inch</span>
+          </div>
+          <div class="deal-body">
+            <div class="badge-row">
+              <span class="badge-earn">Earn ₹380</span>
+              <span class="badge-speed">48h review</span>
+            </div>
+            <h2 class="deal-title">Samsung HD TV 32"</h2>
+            <div class="store-row">
+              <span class="store-logo">FK</span>
+              <span>Flipkart</span>
+            </div>
+            <span class="card-chip">ANY CARD</span>
+            <div class="deal-footer">
+              <span class="order-price">Order ₹12,499</span>
+              <button type="button" class="btn-view deal-btn">View deal →</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <button type="button" class="fab" id="fabBtn" title="Support" aria-label="Support chat">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    </button>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button type="button" class="nav-item active" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        Home
+      </button>
+      <button type="button" class="nav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        Orders
+      </button>
+      <button type="button" class="nav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/>
+        </svg>
+        Wallet
+      </button>
+      <button type="button" class="nav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    function showToast(msg) {
+      clearTimeout(toastTimer);
+      toast.textContent = msg;
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    /* Community WhatsApp — replace URL from GET /config/public */
+    const COMMUNITY_WA_URL = 'https://chat.whatsapp.com/EXAMPLE_INVITE';
+
+    document.getElementById('waBtn').addEventListener('click', () => {
+      showToast('Opening WhatsApp community…');
+      window.open(COMMUNITY_WA_URL, '_blank', 'noopener');
+    });
+
+    document.getElementById('walletBtn').addEventListener('click', () => showToast('→ Wallet'));
+    document.getElementById('bellBtn').addEventListener('click', () => showToast('→ Notifications'));
+    document.getElementById('fabBtn').addEventListener('click', () => showToast('→ Support / tickets'));
+    document.getElementById('bannerBtn').addEventListener('click', () => showToast('→ Tutorial video'));
+    document.getElementById('filterBtn').addEventListener('click', () => showToast('Filter sheet: store · card · min earn'));
+    document.getElementById('sortBtn').addEventListener('click', () => showToast('Sort: newest / highest earn'));
+
+    document.querySelectorAll('.deal-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        showToast('→ Deal detail');
+      });
+    });
+
+    document.querySelectorAll('.deal-card').forEach(card => {
+      card.addEventListener('click', () => showToast('→ Deal detail'));
+    });
+
+    /* Chip filter */
+    const chips = document.querySelectorAll('.chip');
+    const cards = document.querySelectorAll('.deal-card');
+    const dealCount = document.getElementById('dealCount');
+
+    function updateCount() {
+      const visible = [...cards].filter(c => !c.classList.contains('hidden')).length;
+      dealCount.textContent = visible + (visible === 1 ? ' deal live' : ' deals live');
+    }
+
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => {
+          c.classList.remove('active');
+          c.setAttribute('aria-selected', 'false');
+        });
+        chip.classList.add('active');
+        chip.setAttribute('aria-selected', 'true');
+        const filter = chip.dataset.filter;
+        cards.forEach(card => {
+          const show = filter === 'all' || card.dataset.type === filter;
+          card.classList.toggle('hidden', !show);
+        });
+        updateCount();
+      });
+    });
+
+    /* Search */
+    document.getElementById('searchInput').addEventListener('input', e => {
+      const q = e.target.value.trim().toLowerCase();
+      cards.forEach(card => {
+        const name = card.dataset.name || '';
+        const activeChip = document.querySelector('.chip.active');
+        const typeOk = !activeChip || activeChip.dataset.filter === 'all' || card.dataset.type === activeChip.dataset.filter;
+        card.classList.toggle('hidden', !typeOk || (q && !name.includes(q)));
+      });
+      updateCount();
+    });
+  </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Show balance, pending vs confirmed earnings, and withdrawal history. Accessed from Home header and Profile.
+Show full financial picture with Mintzer — balance + per-order earnings history. No withdraw. Accessed from Home header and Profile.
 
 ## Entry points
 
@@ -14,47 +14,60 @@ Show balance, pending vs confirmed earnings, and withdrawal history. Accessed fr
 
 | Element | Description |
 |---------|-------------|
-| Balance card | Available balance (large ₹) |
-| Pending | Amount in 48h review or processing |
-| Confirmed | Ready to withdraw |
-| Transaction list | Credits per order, debits, withdrawals |
-| Withdraw CTA | Primary when above minimum threshold |
-| TDS note | Short line on TDS deducted per order |
+| Balance cards | **Pending** (left) · **Available** (right) · optional **Total earned** below |
+| **Transactions** header | Download Excel icon · Date range (calendar) icon |
+| Filter chips | **All** · **Paid** · **Pending** · **Canceled** |
+| Earnings list | Full scroll — product, ref, earn, status, date |
+| TDS note | Optional footnote if needed |
+
+**No Withdraw button on Wallet** (v1 glimpse only).
 
 ## User actions
 
 | Action | Result |
 |--------|--------|
-| Withdraw | Withdraw flow (bank/UPI — detail in Profile/KYC) |
-| Tap transaction | Order detail or receipt |
-| Pull refresh | Reload balance |
+| Tap row | That order (order detail / My Orders) |
+| Filter chip | Filter list by Paid / Pending / Canceled |
+| Date range | Calendar overlay → filter list + export |
+| Download Excel | Export filtered rows |
+| Pull refresh | Reload balance + list |
 
 ## States
 
 | State | UI |
 |-------|-----|
-| Zero balance | Encouragement + link to Home deals |
-| Pending items | Badge or separate section |
-| Loading | Skeleton |
+| Zero balance | Encouragement + Browse deals |
+| Loading | Skeleton list |
 
 ## Navigation
 
 | From | To |
 |------|-----|
-| Transaction | My Orders order (Completed) or detail sheet |
-| Back | Home or Profile |
+| Transaction row | Order detail |
+| Header wallet icon (Home) | Wallet |
 
 ## Backend notes
 
-- `GET /wallet` — balance, pending, confirmed
-- `GET /wallet/transactions`
-- Withdrawal requires KYC complete
+- `GET /wallet` — available, pending, totalEarned
+- `GET /wallet/transactions` — all order credits with earnAmount per order
 
-## Design
+## Colors (Figma)
 
-- Google Pay–like clarity: big number, simple list
-- Green for credits, neutral for pending
+**Tokens:** [../design/COLORS-AND-TOKENS.md](../design/COLORS-AND-TOKENS.md) · detail: [../design/WALLET-REQUIREMENTS.md](../design/WALLET-REQUIREMENTS.md)
 
-## v1 scope
+| Element | Light |
+|---------|-------|
+| Background | `#F8F9FA` |
+| Summary cards | `#FFFFFF` |
+| Available / earn amounts | `#188038` |
+| Pending | `#E37400` |
+| Text secondary | `#5F6368` |
+| **No** withdraw button | — |
 
-- Can ship read-only wallet first; withdrawal in Profile phase 2
+## Validation
+
+Read-only v1 — no input validation.
+
+## Design spec
+
+See WALLET-REQUIREMENTS.md

@@ -1,6 +1,6 @@
 # Module: Wallet & payouts
 
-Wallet credit after order review. Commission (you earn) is the primary Mintzer payout to user; full wallet amount may include reimbursement formula from deal.
+Wallet credit after order review. **v1 app: no user withdraw** — wallet is read-only financial picture. Payout to user bank (if any) is **ops/admin outside app** or future version.
 
 ## Concepts
 
@@ -19,7 +19,7 @@ Wallet credit after order review. Commission (you earn) is the primary Mintzer p
 |--------|------|-------------|
 | GET | `/wallet` | Balance summary |
 | GET | `/wallet/transactions` | Ledger |
-| POST | `/wallet/withdraw` | Withdraw to bank/UPI (KYC required) |
+| POST | `/wallet/withdraw` | **Not v1** — reserved for future if product adds withdraw |
 
 ## `GET /wallet`
 

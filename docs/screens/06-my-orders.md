@@ -1,8 +1,12 @@
 # Screen: My Orders
 
+**Mockup:** `assets/mintzer-my-orders-list-mockup.png` (list) · Order detail: `assets/mintzer-order-inside-mockup.png`
+
 ## Purpose
 
-Hub for all orders after Order ID confirmed. User completes tracking, delivery verification, and invoice on **each order card** — paste-friendly, one next action at a time.
+Hub for **active placements** (timer running, Order ID not yet submitted) and **confirmed orders**. User resumes checkout from here, then completes tracking, delivery verification, and invoice — paste-friendly, one next action at a time.
+
+**LOCKED:** [../design/ORDERS-PAGES-REQUIREMENTS.md](../design/ORDERS-PAGES-REQUIREMENTS.md)
 
 ## Entry points
 
@@ -19,7 +23,21 @@ Hub for all orders after Order ID confirmed. User completes tracking, delivery v
 | Tabs row 1 | Regular orders · Instant orders (if product needs both) |
 | Tabs row 2 | **Ongoing** · **Completed** |
 
-## Order card (collapsed)
+## Placement card (collapsed) — before Order ID submit
+
+Shown at top of **Ongoing** when user has active placement:
+
+| Element | Description |
+|---------|-------------|
+| Reference | Placement ref + copy |
+| **Timer** | **Complete order in `MM:SS`** (sync with Place order screen) |
+| Product thumb, name, store |
+| Earn ₹X | From deal |
+| Status line | e.g. “Finish checkout and submit Order ID” |
+| Primary action | **Continue order** → Place order |
+| Tap card | Place order (same as Continue) |
+
+## Order card (collapsed) — after Order ID confirmed
 
 Each card shows:
 
@@ -27,6 +45,7 @@ Each card shows:
 - Horizontal progress: **Order placed → Shipped → Out for delivery → Delivered → Invoice → Payment**
 - Product thumb, name, color, store logo
 - Commission bar (orange/blue): **Commission ₹X** + **Open ›** or tap card to expand
+- **48h payment timer** on card when invoice step active (existing rule)
 
 ## Order card (expanded) — inline steps
 
@@ -93,10 +112,18 @@ Move to **Completed** tab; link to Wallet history.
 | Copy order id | Clipboard |
 | Search | Filter list |
 
+## Order detail — notes
+
+- **Add note** / **Edit note** in header — user reference only (max 200 chars)
+- Modal: “For your reference” · Save / Cancel
+- Note on placement copies to order when Order ID confirmed
+
 ## Business rules
 
-- Orders without Order ID in time **never appear here** (admin logs only)
-- Multiple ongoing orders allowed (each at different step)
+- **Active placement** appears in Ongoing **immediately after Accept** (with timer)
+- Expired placement without Order ID → **does not** stay in Ongoing (admin log only)
+- Multiple **confirmed** ongoing orders allowed (each at different step)
+- Only **one** active placement timer at a time
 - 48h timer is **frontend display**; starts at invoice upload timestamp from server
 - Invoice upload enabled only when backend flag `parcelReceived = true`
 
@@ -121,14 +148,34 @@ Move to **Completed** tab; link to Wallet history.
 
 ## Backend notes
 
-- `GET /orders?status=ongoing|completed`
+- `GET /orders?status=ongoing|completed` — includes **placement** rows (`kind: placement`) and **order** rows (`kind: order`)
+- `GET /placements/active` — used with orders list for Home strip + timer sync
+- `PATCH /placements/:id/note` · `PATCH /orders/:id/note` — user note (optional)
 - `PATCH /orders/:id/tracking` — `{ trackingId }`
 - `PATCH /orders/:id/out-for-delivery` — `{ phoneLast4, otp }`
 - Admin: `POST /admin/orders/:id/mark-received`
 - `POST /orders/:id/invoice` — file upload; returns `paymentTimerEndsAt`
 - Push notifications per step reminder (optional)
 
+## Colors (Figma)
+
+**Tokens:** [../design/COLORS-AND-TOKENS.md](../design/COLORS-AND-TOKENS.md)
+
+| Element | Light |
+|---------|-------|
+| Background | `#F8F9FA` |
+| Order cards | `#FFFFFF` |
+| Timer on ongoing card | `#E37400` / `#FEF7E0` |
+| Status strip (needs action) | `#E8F0FE` + `#1A73E8` |
+| Continue / primary CTA | `#1A73E8` |
+| Paid / earn | `#188038` |
+| Cancel / destructive | `#D93025` |
+
+## Validation
+
+Tracking · OTP · invoice · note · cancel reason — **inline under field**; API errors **Snackbar** bottom-right. See [../design/VALIDATION-UX.md](../design/VALIDATION-UX.md) and [../design/ORDERS-PAGES-REQUIREMENTS.md](../design/ORDERS-PAGES-REQUIREMENTS.md).
+
 ## Design
 
-- Paste-friendly wide inputs on card (not separate Payout screen required)
-- Show **only next action** label on collapsed card: “Add tracking”, “Enter delivery OTP”, “Waiting for delivery”, “Upload invoice”, “Payment in 36h”
+- Paste-friendly wide inputs on card
+- Show **only next action** label on collapsed card
