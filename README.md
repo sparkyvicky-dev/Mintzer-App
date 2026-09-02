@@ -1,7 +1,11 @@
 # Mintzer App — Project README
 
+**Project folder:** `D:\dev\mintzer-app` (local dev copy)  
 **Last updated:** June 2026  
 **Your status:** All page **content/specs are ready**. Next step is **UI design in Figma**.
+
+**New Cursor agent?** Read **`AGENTS.md`** then **`docs/AGENT-DEV-PROCESS.md`**.  
+**Everything we discussed:** open **`assets/mockups/mintzer-decisions-log.html`** in Chrome (or `docs/COMPLETE-DECISIONS-LOG.html`)
 
 ---
 
@@ -20,6 +24,7 @@ You paused before a trip. Nothing is broken. The hard part (deciding **what** ea
 | Place order, Wallet, Profile rules locked | `docs/design/` |
 | Backend field names for deals | `docs/backend/` |
 | HTML mockups you can open in Chrome | `assets/mockups/` |
+| **Affiliate marketing spec + demo v2.4** | `docs/design/AFFILIATE-MARKETING-REQUIREMENTS.md` · `mintzer-app-demo.html` |
 | Full designer handoff package | `docs/design/FOR-DESIGNER.md` |
 
 **Bottom nav (fixed):** Home · Orders · Wallet · Profile — no Offers tab.
@@ -103,6 +108,7 @@ Do these in order. Check off as you go.
 | I want to… | Open this |
 |------------|-----------|
 | See locked Home in browser | `assets/mockups/home-samples.html` |
+| **Try full app (interactive demo)** | **`assets/mockups/mintzer-app-demo.html`** |
 | Full app flow mockup | `assets/mockups/mintzer-full-flow.html` |
 | Place order screen | `assets/mockups/place-order-locked.html` |
 | Give everything to a designer | `docs/design/FOR-DESIGNER.md` |
@@ -130,14 +136,16 @@ Full list: `docs/design/FOR-DESIGNER.md` §21.
 
 ```
 Mintzer-App/
+├── AGENTS.md                 ← new agents: read first
 ├── README.md                 ← you are here
 ├── assets/
 │   ├── mockups/              ← open .html files in Chrome
 │   └── mintzer-*.png         ← reference images
 └── docs/
+    ├── AGENT-DEV-PROCESS.md  ← full app dev process for agents
     ├── screens/              ← each app screen (content ready)
     ├── design/               ← designer handoff + colors + rules
-    ├── backend/              ← API / data fields
+    ├── backend- for developer reference/
     └── frontend/             ← dev checklist (after design)
 ```
 

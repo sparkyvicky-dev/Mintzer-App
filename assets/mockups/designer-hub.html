@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Designer hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #F8F9FA; color: #202124; line-height: 1.5;
+      padding: 28px 16px 48px; max-width: 720px; margin: 0 auto;
+    }
+    h1 { font-size: 22px; color: #1A73E8; margin-bottom: 6px; }
+    .sub { font-size: 13px; color: #5F6368; margin-bottom: 20px; }
+    .tag {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      background: #E6F4EA; color: #188038; padding: 4px 10px; border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 12px;
+      padding: 16px 18px; margin-bottom: 12px;
+    }
+    .card h2 { font-size: 14px; margin-bottom: 8px; }
+    .card p { font-size: 12px; color: #5F6368; margin-bottom: 10px; }
+    a.link {
+      display: block; font-size: 13px; color: #1A73E8; font-weight: 600;
+      text-decoration: none; padding: 8px 0; border-top: 1px solid #F1F3F4;
+    }
+    a.link:first-of-type { border-top: 0; }
+    a.link:hover { text-decoration: underline; }
+    .note {
+      font-size: 12px; color: #5F6368; background: #FEF7E0; border: 1px solid #F9AB00;
+      border-radius: 10px; padding: 12px 14px; margin-top: 20px; line-height: 1.5;
+    }
+    .note b { color: #E37400; }
+  </style>
+</head>
+<body>
+  <h1>Mintzer — Designer hub</h1>
+  <p class="sub">One page with live links. After we push updates to GitHub, refresh — no new zip needed.</p>
+  <span class="tag">Demo v2.4 affiliate · Specs LOCKED</span>
+
+  <div class="card">
+    <h2>1. Open these first (interactive)</h2>
+    <p>HTML mockups — open in Chrome. Best view of the product.</p>
+    <a class="link" href="./mintzer-app-demo.html">Full app demo (v2.4 affiliate) →</a>
+    <a class="link" href="./home-samples.html">Home — locked deal cards →</a>
+    <a class="link" href="./place-order-locked.html">Place order — locked →</a>
+    <a class="link" href="./card-apply-placements.html">Affiliate placements (4 examples) →</a>
+  </div>
+
+  <div class="card">
+    <h2>2. Read these (specs)</h2>
+    <p>On GitHub after push — markdown opens in browser.</p>
+    <a class="link" href="../../docs/design/FOR-DESIGNER.md">FOR-DESIGNER (start here) →</a>
+    <a class="link" href="../../docs/design/AFFILIATE-MARKETING-REQUIREMENTS.md">Affiliate marketing (LOCKED) →</a>
+    <a class="link" href="../../docs/design/DESIGNER-WA-BRIEF.md">Short WhatsApp brief →</a>
+    <a class="link" href="../../docs/COMPLETE-DECISIONS-LOG.md">Complete decisions log →</a>
+  </div>
+
+  <div class="card">
+    <h2>3. Repo (all files)</h2>
+    <a class="link" href="https://github.com/sparkyvicky-dev/Mintzer-App">GitHub: sparkyvicky-dev/Mintzer-App →</a>
+  </div>
+
+  <div class="note">
+    <b>How updates work:</b> Client pushes to GitHub → you refresh this page / demo.
+    No zip. If a link 404s, the latest push may not be live yet — ask for “pushed to main”.
+  </div>
+</body>
+</html>

@@ -104,5 +104,5 @@ Login → Home → Deal detail → Accept → [KYC/bank if first] → Place orde
 
 - **Support FAB:** Chat / WhatsApp (visible on main tabs)
 
-- **Notifications:** Deep-link to Place order, My Orders, or Deal detail (see backend notifications — not the primary resume path; Home + My Orders are)
+- **Notifications:** Push + bell inbox — deal viewed follow-up, accept abandon, timer warnings, order steps. Deep-link to Place order, Deal detail, My Orders, or Wallet. See [../backend- for developer reference/07-notifications.md](../backend-%20for%20developer%20reference/07-notifications.md). In-app Home strip + My Orders remain the primary resume path.
 

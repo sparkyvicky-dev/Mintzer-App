@@ -178,4 +178,22 @@ Load fail → snackbar bottom-right. [../design/VALIDATION-UX.md](../design/VALI
 | `Home — First visit` | + tutorial banner |
 | `Home — Active order` | + placement strip (optional v1) |
 
-**Match mockup:** `assets/mockups/home-samples.html`
+**Match mockup:** `assets/mockups/home-samples.html` (deal card layout)  
+**Affiliate layer (carousel, badges, social proof):** `assets/mockups/mintzer-app-demo.html` v2.4 · [../design/AFFILIATE-MARKETING-REQUIREMENTS.md](../design/AFFILIATE-MARKETING-REQUIREMENTS.md)
+
+---
+
+## Affiliate addendum (September 2026 — does not change locked card fields)
+
+These sit **above** the deal list. Deal card rows/columns stay LOCKED.
+
+| # | Element | Rule |
+|---|---------|------|
+| A1 | **Promo carousel** | 118dp height · below chips · auto-rotate ~5s · admin slides |
+| A2 | Slide 1 | WhatsApp community |
+| A3 | Slide 2 | Tutorial video |
+| A4 | Slide 3 | **Partner cards** — blue gradient + card art · CTA → partner cards sheet |
+| A5 | **Social proof strip** | One line below carousel · e.g. “₹8.2L+ earned this week” |
+| A6 | **Urgency badges** | On product image bottom-left: Hot · Trending · N slots left (API-driven) |
+
+Badges are **additive** — see affiliate spec for API fields `badge`, `slotsLeft`.

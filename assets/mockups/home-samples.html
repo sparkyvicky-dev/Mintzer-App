@@ -93,6 +93,64 @@
     .tutorial-text { flex: 1; font-size: 12px; color: #1A73E8; font-weight: 500; cursor: pointer; }
     .tutorial-close { border: none; background: none; font-size: 18px; color: #5F6368; cursor: pointer; line-height: 1; }
 
+    /* Promo banner carousel (admin-driven — reference layout) */
+    .promo-carousel { margin: 0 16px 10px; position: relative; }
+    .promo-track {
+      position: relative; height: 118px; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(26, 115, 232, .12);
+    }
+    .promo-slide {
+      position: absolute; inset: 0; padding: 12px 12px 10px;
+      display: flex; align-items: stretch; gap: 8px;
+      background: linear-gradient(135deg, #E8F0FE 0%, #E6F4EA 55%, #F0F4FF 100%);
+      border: 1px solid #D2E3FC; border-radius: 12px;
+      opacity: 0; pointer-events: none; transition: opacity .4s ease;
+    }
+    .promo-slide.active { opacity: 1; pointer-events: auto; }
+    .promo-body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; }
+    .promo-kicker {
+      font-size: 9px; font-weight: 700; color: #1A73E8; text-transform: uppercase;
+      letter-spacing: .35px; margin-bottom: 2px;
+    }
+    .promo-title { font-size: 12px; font-weight: 800; color: #202124; line-height: 1.25; margin-bottom: 4px; }
+    .promo-bullets { list-style: none; margin: 0; padding: 0; }
+    .promo-bullets li {
+      font-size: 9px; color: #5F6368; line-height: 1.35; padding-left: 10px; position: relative;
+    }
+    .promo-bullets li::before { content: '•'; position: absolute; left: 0; color: #1A73E8; font-weight: 700; }
+    .promo-cta {
+      align-self: flex-start; margin-top: 6px; border: none; border-radius: 16px;
+      background: #1A73E8; color: #fff; font-size: 10px; font-weight: 700;
+      padding: 6px 12px; cursor: pointer; box-shadow: 0 2px 6px rgba(26, 115, 232, .25);
+    }
+    .promo-art {
+      width: 72px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    }
+    .promo-wa-phone {
+      width: 58px; height: 88px; background: #fff; border-radius: 8px; border: 2px solid #202124;
+      padding: 4px 3px; box-shadow: 0 4px 12px rgba(0,0,0,.12); position: relative; overflow: hidden;
+    }
+    .promo-wa-phone::before {
+      content: ''; position: absolute; top: 2px; left: 50%; transform: translateX(-50%);
+      width: 16px; height: 3px; background: #E8EAED; border-radius: 2px;
+    }
+    .promo-wa-screen {
+      margin-top: 8px; background: #E7F8EE; border-radius: 4px; height: calc(100% - 10px);
+      padding: 4px; display: flex; flex-direction: column; gap: 3px;
+    }
+    .promo-wa-bubble { background: #fff; border-radius: 4px; padding: 2px 4px; font-size: 5px; color: #202124; line-height: 1.2; }
+    .promo-play-art {
+      width: 56px; height: 56px; border-radius: 50%; background: #1A73E8;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(26, 115, 232, .35);
+    }
+    .promo-dots { display: flex; justify-content: center; gap: 5px; margin-top: 6px; }
+    .promo-dot {
+      width: 6px; height: 6px; border-radius: 50%; border: none; padding: 0;
+      background: #DADCE0; cursor: pointer;
+    }
+    .promo-dot.active { background: #1A73E8; width: 14px; border-radius: 3px; }
+
     .list-meta {
       display: flex; justify-content: space-between; align-items: center;
       padding: 0 16px 10px; font-size: 11px;
@@ -120,27 +178,37 @@
     .img-box {
       background: #F8F9FA; border: 1px solid #F1F3F4; border-radius: 10px;
       display: flex; align-items: center; justify-content: center; overflow: hidden;
-      width: 100%; height: 100%;
+      width: 100%; position: relative;
     }
+    .img-box > img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; padding: 6px; display: block; }
     .img-box .ph { font-size: 30px; line-height: 1; }
+    .img-slider { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; }
+    .img-slide {
+      position: absolute; max-width: calc(100% - 12px); max-height: calc(100% - 12px);
+      width: auto; height: auto; object-fit: contain; opacity: 0; transition: opacity .35s ease;
+      pointer-events: none;
+    }
+    .img-slide.active { opacity: 1; }
 
     .store-pin {
-      position: absolute; top: 6px; left: 6px; z-index: 2;
+      position: absolute; top: 6px; left: 6px; z-index: 3;
       width: 24px; height: 24px; border-radius: 6px;
       border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.12);
       overflow: hidden; background: #fff;
     }
     .store-pin img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .gst-pin {
+      position: absolute; top: 6px; right: 6px; z-index: 3;
+      font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+      text-transform: uppercase; background: #FEF7E0; color: #E37400; border: 1px solid #F9AB00;
+      line-height: 1.2; box-shadow: 0 1px 2px rgba(0,0,0,.08);
+    }
 
     .meta-line {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      display: flex; align-items: center; gap: 8px;
       margin-top: 2px; min-height: 18px;
     }
     .color-text { font-size: 11px; color: #5F6368; }
-    .gst-tag {
-      flex-shrink: 0; font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px;
-      text-transform: uppercase; background: #FEF7E0; color: #E37400; border: 1px solid #F9AB00;
-    }
 
     .title {
       font-size: 13px; font-weight: 700; line-height: 1.35; color: #202124;
@@ -186,8 +254,8 @@
       display: grid; grid-template-columns: 80px 1fr;
       column-gap: 12px; row-gap: 4px; align-items: start;
     }
-    #dealList:not(.grid-view) .img-wrap { grid-column: 1; grid-row: 1 / span 3; height: 80px; }
-    #dealList:not(.grid-view) .img-box { height: 80px; }
+    #dealList:not(.grid-view) .img-wrap { grid-column: 1; grid-row: 1 / span 3; height: 80px; width: 80px; }
+    #dealList:not(.grid-view) .img-box { height: 80px; width: 80px; }
     #dealList:not(.grid-view) .title { grid-column: 2; }
     #dealList:not(.grid-view) .meta-line { grid-column: 2; }
     #dealList:not(.grid-view) .bank-row { grid-column: 1 / -1; }
@@ -196,17 +264,19 @@
 
     /* GRID layout */
     #dealList.grid-view .deal-card {
-      display: flex; flex-direction: column; gap: 4px; padding: 10px; height: 100%;
+      display: flex; flex-direction: column; gap: 4px; padding: 10px; height: 100%; min-width: 0;
     }
-    #dealList.grid-view .img-wrap { height: 88px; flex-shrink: 0; }
+    #dealList.grid-view .img-wrap { height: 88px; max-height: 88px; flex-shrink: 0; width: 100%; overflow: hidden; }
+    #dealList.grid-view .img-box { height: 88px; max-height: 88px; width: 100%; }
+    #dealList.grid-view .img-slide { max-width: calc(100% - 8px); max-height: calc(100% - 8px); }
     #dealList.grid-view .title {
       font-size: 11px; line-height: 1.3;
       -webkit-line-clamp: 2;
-      min-height: 2.6em; /* reserve 2 lines — buttons align in a row */
+      min-height: 2.6em;
     }
-    #dealList.grid-view .bank-row { padding: 5px 6px; margin-top: 4px; min-height: 32px; }
-    #dealList.grid-view .meta-line { margin-top: 0; }
-    #dealList.grid-view .spend-box { padding: 6px 8px; margin-top: 4px; }
+    #dealList.grid-view .meta-line { margin-top: 0; min-height: 18px; }
+    #dealList.grid-view .bank-row { padding: 5px 6px; margin-top: 4px; min-height: 34px; }
+    #dealList.grid-view .spend-box { padding: 6px 8px; margin-top: 4px; min-height: 34px; box-sizing: border-box; }
     #dealList.grid-view .spend-box .spend-lbl { font-size: 9px; }
     #dealList.grid-view .spend-box .spend-val { font-size: 13px; }
     #dealList.grid-view .bank-logo { width: 22px; height: 22px; }
@@ -250,7 +320,7 @@
 
   <div class="page-note">
     <h1>Mintzer — Home (LOCKED)</h1>
-    <p>FK on image · GST beside color · spend box · blue Earn button</p>
+    <p>FK on image · GST on image · spend box · blue Earn · promo carousel</p>
   </div>
 
   <div class="phone" id="app">
@@ -306,6 +376,54 @@
         </button>
       </div>
 
+      <div class="promo-carousel" id="promoCarousel">
+        <div class="promo-track">
+          <article class="promo-slide active" data-promo="wa">
+            <div class="promo-body">
+              <div>
+                <div class="promo-kicker">Mintzer community</div>
+                <div class="promo-title">Join our WhatsApp announcement channel</div>
+                <ul class="promo-bullets">
+                  <li>New deals before Home</li>
+                  <li>Instant payout updates</li>
+                </ul>
+              </div>
+              <button type="button" class="promo-cta" data-toast="→ WhatsApp community">Join now ↗</button>
+            </div>
+            <div class="promo-art">
+              <div class="promo-wa-phone" aria-hidden="true">
+                <div class="promo-wa-screen">
+                  <div class="promo-wa-bubble">🔥 New deal live!</div>
+                  <div class="promo-wa-bubble">Earn ₹450 on M35</div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="promo-slide" data-promo="tutorial">
+            <div class="promo-body">
+              <div>
+                <div class="promo-kicker">New here?</div>
+                <div class="promo-title">Watch how Mintzer works in 2 minutes</div>
+                <ul class="promo-bullets">
+                  <li>Accept → order → submit proof</li>
+                  <li>Earnings land in your Wallet</li>
+                </ul>
+              </div>
+              <button type="button" class="promo-cta" data-toast="→ Tutorial video">Watch tutorial ▶</button>
+            </div>
+            <div class="promo-art">
+              <div class="promo-play-art" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div class="promo-dots" id="promoDots">
+          <button type="button" class="promo-dot active" data-idx="0" aria-label="Slide 1"></button>
+          <button type="button" class="promo-dot" data-idx="1" aria-label="Slide 2"></button>
+        </div>
+      </div>
+
       <div class="tutorial" id="tutorialBanner">
         <div class="tutorial-play" id="tutorialPlay"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>
         <span class="tutorial-text" id="tutorialText">New here? Watch how Mintzer works</span>
@@ -321,13 +439,15 @@
 
         <article class="deal-card" data-type="direct" data-name="motorola g57">
           <div class="img-wrap">
-            <span class="store-pin"><img src="../logos/flipkart.svg" alt="Flipkart" /></span>
-            <div class="img-box"><span class="ph">📱</span></div>
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/flipkart.svg" alt="Flipkart" /></span>
+              <span class="gst-pin">GST</span>
+              <div class="img-slider" data-interval="1000"><img class="img-slide active" src="../images/motorola-g57.jpg" alt="" /><img class="img-slide" src="../images/motorola-g57.jpg" alt="" /></div>
+            </div>
           </div>
           <h3 class="title">Motorola G57 Power 5G</h3>
           <div class="meta-line">
             <span class="color-text">Midnight Blue</span>
-            <span class="gst-tag">GST</span>
           </div>
           <div class="bank-row">
             <div class="bank-logo"><img src="../logos/any-card.svg" alt="" /></div>
@@ -342,8 +462,10 @@
 
         <article class="deal-card" data-type="direct" data-name="samsung m35">
           <div class="img-wrap">
-            <span class="store-pin"><img src="../logos/amazon.svg" alt="Amazon" /></span>
-            <div class="img-box"><span class="ph">📱</span></div>
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/amazon.svg" alt="Amazon" /></span>
+              <div class="img-slider" data-interval="1000"><img class="img-slide active" src="../images/samsung-m35.png" alt="" /><img class="img-slide" src="../images/samsung-m35.png" alt="" /></div>
+            </div>
           </div>
           <h3 class="title">Samsung Galaxy M35 5G</h3>
           <div class="meta-line">
@@ -362,13 +484,15 @@
 
         <article class="deal-card" data-type="link" data-name="samsung tv">
           <div class="img-wrap">
-            <span class="store-pin"><img src="../logos/flipkart.svg" alt="Flipkart" /></span>
-            <div class="img-box"><span class="ph">📺</span></div>
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/flipkart.svg" alt="Flipkart" /></span>
+              <span class="gst-pin">GST</span>
+              <div class="img-slider" data-interval="1000"><img class="img-slide active" src="../images/samsung-tv-32.jpg" alt="" /><img class="img-slide" src="../images/samsung-tv-32.jpg" alt="" /></div>
+            </div>
           </div>
           <h3 class="title">Samsung HD TV 32"</h3>
           <div class="meta-line">
             <span class="color-text">Black</span>
-            <span class="gst-tag">GST</span>
           </div>
           <div class="bank-row">
             <div class="bank-logo"><img src="../logos/axis.svg" alt="" /></div>
@@ -472,6 +596,40 @@
       refresh();
     }));
     document.getElementById('searchInput').addEventListener('input', refresh);
+
+    function initImageSliders(root = document) {
+      root.querySelectorAll('.img-slider').forEach(slider => {
+        if (slider.dataset.started) return;
+        slider.dataset.started = '1';
+        const slides = [...slider.querySelectorAll('.img-slide')];
+        if (slides.length <= 1) return;
+        let idx = 0;
+        setInterval(() => {
+          slides[idx].classList.remove('active');
+          idx = (idx + 1) % slides.length;
+          slides[idx].classList.add('active');
+        }, +(slider.dataset.interval || 1000));
+      });
+    }
+    initImageSliders();
+
+    (function initPromoCarousel() {
+      const slides = [...document.querySelectorAll('.promo-slide')];
+      const dots = [...document.querySelectorAll('.promo-dot')];
+      if (!slides.length) return;
+      let idx = 0;
+      function go(n) {
+        idx = (n + slides.length) % slides.length;
+        slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+      dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.idx)));
+      setInterval(() => go(idx + 1), 5000);
+      document.querySelector('.promo-slide[data-promo="wa"] .promo-cta')?.addEventListener('click', () => {
+        showToast('→ WhatsApp community');
+        window.open('https://chat.whatsapp.com/EXAMPLE', '_blank');
+      });
+    })();
   </script>
 </body>
 </html>

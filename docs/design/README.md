@@ -22,6 +22,7 @@ Complete design handoff for Figma / designer.
 | Mockups | `assets/mintzer-*.png` — **reference only**; specs in `.md` win if conflict |
 | [WALLET-REQUIREMENTS.md](./WALLET-REQUIREMENTS.md) | **LOCKED** — Wallet + mockup `assets/mintzer-wallet-mockup.png` |
 | [PROFILE-REQUIREMENTS.md](./PROFILE-REQUIREMENTS.md) | **LOCKED** — Profile + mockup |
+| **[AFFILIATE-MARKETING-REQUIREMENTS.md](./AFFILIATE-MARKETING-REQUIREMENTS.md)** | **LOCKED** — Carousel, badges, referral, success promos, partner cards |
 | [VALIDATION-UX.md](./VALIDATION-UX.md) | **LOCKED** — inline + snackbar rules per screen |
 | [COLORS-AND-TOKENS.md](./COLORS-AND-TOKENS.md) | **All hex colors** · logo placeholders · Figma → any platform |
 | [THEME-LIGHT-DARK-MODE.md](./THEME-LIGHT-DARK-MODE.md) | **Required** — entire app light + dark |

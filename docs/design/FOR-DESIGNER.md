@@ -5,7 +5,8 @@
 **Languages:** English + Hindi (v1)
 
 **Give your designer this file + the repo folder `docs/` and `assets/mockups/`.**  
-Shorter index + PDF instructions: [DESIGNER-HANDOFF.md](./DESIGNER-HANDOFF.md)
+Shorter index + PDF instructions: [DESIGNER-HANDOFF.md](./DESIGNER-HANDOFF.md)  
+**Master checklist (nothing missed):** [../COMPLETE-DECISIONS-LOG.md](../COMPLETE-DECISIONS-LOG.md)
 
 ---
 
@@ -56,7 +57,8 @@ Layout and product rules are **locked on key screens** (Home, Place order, Walle
 | 1 | This file | Overview + locked Home |
 | 2 | [SCREEN-INVENTORY.md](../screens/SCREEN-INVENTORY.md) | All 14 routes + 11 overlays |
 | 3 | [MINTZER-UI-DESIGN-BRIEF.md](./MINTZER-UI-DESIGN-BRIEF.md) | Full product + every screen element |
-| 4 | `assets/mockups/home-samples.html` | **Open in Chrome** — locked Home reference |
+| 4 | `assets/mockups/home-samples.html` | **Open in Chrome** — locked Home deal card |
+| 4b | `assets/mockups/mintzer-app-demo.html` | **v2.4 affiliate** — carousel, badges, referral, success promos |
 | 5 | `assets/mockups/place-order-locked.html` | Locked Place order |
 | 6 | `assets/mockups/mintzer-full-flow.html` | Login → end journey |
 | 7 | Per-screen specs in `docs/screens/*.md` | Copy, colors, states per route |
@@ -229,6 +231,38 @@ Same fields · 2 columns · **Earn button pinned to card bottom** · title min-h
 | Motorola G57 Power 5G | Midnight Blue | Yes | Flipkart | Any card | ₹17,519 | ₹300 |
 | Samsung Galaxy M35 | Any color | No | Amazon | HDFC Credit Card | ₹22,999 | ₹450 |
 | Samsung TV 32" | Black | Yes | Flipkart | Axis Credit Card | ₹12,499 | ₹380 |
+
+---
+
+## 6b. Affiliate marketing layer (September 2026 — LOCKED direction)
+
+Mintzer is an **affiliate hub**, not only order-and-earn. **Full spec:** [AFFILIATE-MARKETING-REQUIREMENTS.md](./AFFILIATE-MARKETING-REQUIREMENTS.md)  
+**Interactive demo:** `assets/mockups/mintzer-app-demo.html` (**v2.4 affiliate**) — open in Chrome at `D:\dev\mintzer-app\...`
+
+### Designer must include
+
+| Surface | What to design |
+|---------|----------------|
+| **Home carousel slide 3** | Partner cards — 118dp banner · blue gradient · card stack art · “Browse cards →” |
+| **Home social proof** | One-line strip below carousel |
+| **Deal badges** | Hot · Trending · slots left — bottom-left on product image |
+| **Order success promo** | **One** rotating template per visit (order more / partner cards / referral / WA) |
+| **Refer & earn** | Profile gold banner + referral sheet (code, copy, WA share) |
+| **Partner cards sheet** | HDFC + Axis rows · Apply CTA |
+
+### Do NOT design (deferred)
+
+- 5th bottom nav tab · Profile card-catalog hero · full PiePay-style card mall screen
+
+### Figma frames to add
+
+| Frame | Content |
+|-------|---------|
+| `Home — Carousel partner cards` | Slide 3 in 118dp banner |
+| `Home — Badges` | Hot + slots on deal cards |
+| `Order success — Promo partner cards` | Upsell card variant |
+| `Order success — Promo referral` | Gold refer variant |
+| `Profile — Refer banner` | Gold banner + sheet |
 
 ---
 

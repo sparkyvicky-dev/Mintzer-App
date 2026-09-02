@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Everything we discussed</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #F8F9FA; color: #202124; line-height: 1.55;
+    }
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: #1A73E8; color: #fff; padding: 12px 20px;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    .topbar h1 { font-size: 16px; font-weight: 700; flex: 1; min-width: 200px; }
+    .topbar a {
+      color: #fff; text-decoration: none; font-size: 12px; font-weight: 600;
+      background: rgba(255,255,255,.2); padding: 6px 12px; border-radius: 20px;
+    }
+    .topbar a:hover { background: rgba(255,255,255,.35); }
+    .layout { display: flex; max-width: 1200px; margin: 0 auto; min-height: calc(100vh - 52px); }
+    .sidebar {
+      width: 260px; flex-shrink: 0; background: #fff; border-right: 1px solid #E8EAED;
+      padding: 16px 12px; position: sticky; top: 52px; height: calc(100vh - 52px);
+      overflow-y: auto; display: none;
+    }
+    .sidebar h2 { font-size: 11px; text-transform: uppercase; color: #5F6368; margin-bottom: 10px; letter-spacing: .5px; }
+    .sidebar a {
+      display: block; font-size: 12px; color: #1A73E8; text-decoration: none;
+      padding: 6px 8px; border-radius: 6px; margin-bottom: 2px;
+    }
+    .sidebar a:hover { background: #E8F0FE; }
+    .main {
+      flex: 1; min-width: 0; padding: 24px 20px 60px;
+      background: #fff; margin: 16px; border-radius: 12px;
+      border: 1px solid #E8EAED; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .main :first-child { margin-top: 0; }
+    .main h1 { font-size: 26px; color: #1A73E8; margin-bottom: 12px; }
+    .main h2 {
+      font-size: 18px; color: #1A73E8; margin: 28px 0 12px; padding-bottom: 6px;
+      border-bottom: 2px solid #E8F0FE; scroll-margin-top: 70px;
+    }
+    .main h3 { font-size: 14px; margin: 16px 0 8px; color: #202124; }
+    .main p { margin: 8px 0; font-size: 14px; }
+    .main ul, .main ol { margin: 8px 0 12px 20px; font-size: 14px; }
+    .main li { margin: 4px 0; }
+    .main table {
+      width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px;
+    }
+    .main th, .main td {
+      border: 1px solid #E8EAED; padding: 8px 10px; text-align: left; vertical-align: top;
+    }
+    .main th { background: #F8F9FA; font-weight: 600; }
+    .main tr:nth-child(even) td { background: #FAFBFC; }
+    .main code {
+      background: #F1F3F4; padding: 1px 5px; border-radius: 4px; font-size: 12px;
+    }
+    .main pre {
+      background: #F8F9FA; border: 1px solid #E8EAED; border-radius: 8px;
+      padding: 14px; overflow-x: auto; font-size: 12px; margin: 12px 0;
+    }
+    .main pre code { background: none; padding: 0; }
+    .main a { color: #1A73E8; }
+    .main hr { border: none; border-top: 1px solid #E8EAED; margin: 24px 0; }
+    .main strong { font-weight: 600; }
+    .banner {
+      background: #E8F0FE; border: 1px solid #D2E3FC; border-radius: 10px;
+      padding: 14px 16px; margin-bottom: 20px; font-size: 13px;
+    }
+    .banner b { color: #1A73E8; }
+    @media (min-width: 900px) { .sidebar { display: block; } .main { margin: 16px 16px 16px 0; } }
+    @media print {
+      .topbar, .sidebar { display: none; }
+      .main { margin: 0; box-shadow: none; border: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Mintzer — Everything we discussed</h1>
+    
+    <a href="../assets/mockups/mintzer-app-demo.html">▶ Try app demo</a>
+    <a href="../assets/mockups/home-samples.html">Home mockup</a>
+    <a href="design/FOR-DESIGNER.md">Designer MD</a>
+  </header>
+  <div class="layout">
+    <nav class="sidebar">
+      <h2>Jump to section</h2>
+      <a href="#s1">What Mintzer is</a>
+<a href="#s2">Full user journey</a>
+<a href="#s3">Global rules (never break)</a>
+<a href="#s4">Style & theme</a>
+<a href="#s5">Money formulas</a>
+<a href="#s6">All 14 main screens</a>
+<a href="#s7">All 11 overlays / gates</a>
+<a href="#s8">KYC + payout (LOCKED)</a>
+<a href="#s9">Resume after Accept (LOCKED)</a>
+<a href="#s10">Notifications (summary)</a>
+<a href="#s11">App config (backend-controlled)</a>
+<a href="#s12">Backend business rules (summary)</a>
+<a href="#s13">Design polish notes (from client Figma attempt)</a>
+<a href="#s14">Out of scope v1 (do not build)</a>
+<a href="#s15">Open / TBD (client or ops to supply later)</a>
+<a href="#s16">Known doc gaps (fix when editing)</a>
+<a href="#s17">Implementation status (September 2026)</a>
+<a href="#s18">Mockup & spec file index</a>
+<a href="#s19">Client locked decisions (master table)</a>
+    </nav>
+    <article class="main">
+      <div class="banner">
+        <b>Master checklist</b> — all screens, rules, overlays, and locked decisions.
+        Use sidebar (desktop) to jump. <b>Ctrl+P</b> to save as PDF.
+      </div>
+      <h1 id="mintzer--complete-decisions-log-everything-we-discussed">Mintzer — Complete decisions log (everything we discussed)</h1>
+<p><strong>Purpose:</strong> Single checklist so <strong>nothing is missed</strong> — for you, designer, and developers.<br><strong>Last updated:</strong> September 2026<br><strong>Rule:</strong> If this file disagrees with a screen <code>.md</code>, <strong>fix the <code>.md</code></strong> — this log summarizes all of them.</p>
+<p><strong>Also read:</strong> <a href="./AGENT-DEV-PROCESS.md">AGENT-DEV-PROCESS.md</a> · <a href="../design/FOR-DESIGNER.md">FOR-DESIGNER.md</a> · <a href="../screens/SCREEN-INVENTORY.md">SCREEN-INVENTORY.md</a></p>
+<hr>
+<h2 id="1-what-mintzer-is"><span id="s1"></span>1. What Mintzer is</h2>
+<p>Android-first Indian fintech app. Users browse Flipkart/Amazon <strong>card deals</strong>, read full money breakdown, <strong>Accept</strong> a deal, place an order on the store within a <strong>timer</strong>, complete tracking → delivery OTP → invoice → <strong>48h payment wait</strong>, earnings show in <strong>Wallet</strong>.</p>
+<p><strong>v1 languages:</strong> English + Hindi<br><strong>Not a bank.</strong> Wallet = view earnings history. <strong>No withdraw in app.</strong></p>
+<hr>
+<h2 id="2-full-user-journey"><span id="s2"></span>2. Full user journey</h2>
+<pre><code>Login (phone + OTP only)
+  → Home (browse deals)
+  → Deal detail (read money + rules)
+  → Accept deal
+  → [First time: KYC Name+PAN → Payout UPI/bank]
+  → [First time: How do you want to shop? External vs In-app]
+  → Place order (timer, copy address, Open store, paste Order ID, Submit)
+  → Order placed success
+  → My Orders (Ongoing → steps → Completed)
+  → Order detail (tracking, OTP, invoice, payment countdown)
+  → Wallet (balance + history + Excel export)
+  → Profile (settings, tickets, delete account, logout)
+</code></pre>
+<p><strong>Alternate paths:</strong> Account suspended at login · Delete account (blocked if order in progress) · Account deleted screen</p>
+<hr>
+<h2 id="3-global-rules-never-break"><span id="s3"></span>3. Global rules (never break)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Bottom nav:</strong> Home · Orders · Wallet · Profile — <strong>no Offers tab</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Login:</strong> phone + OTP only — <strong>no</strong> name, email, KYC, bank at login</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>KYC:</strong> Name + PAN — <strong>first Accept only</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Payout:</strong> UPI <strong>or</strong> bank — right after KYC on first Accept; edit in Profile</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Deal flow:</strong> Home → Deal detail → Accept (read before commit — Option B)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>One active placement</strong> at a time until Order ID submitted or cancelled/expired</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Timer duration</strong> from backend config — not hardcoded in app</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Expired placement</strong> → admin log only — <strong>not</strong> a user order in My Orders</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Wallet:</strong> no withdraw, no add bank on Wallet screen</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Primary color:</strong> <code>#1A73E8</code> (dark: <code>#8AB4F8</code>) — fixed when logo updates</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Style:</strong> Google Material 3 Light default + <strong>full dark mode</strong> required</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>Not:</strong> purple gradients · dark/orange PerkPay clone · glassmorphism</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>v1 orders:</strong> Regular only — <strong>no Instant tab</strong></td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>No auto courier GPS</strong> — user picks partner + pastes tracking ID</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>Invoice upload</strong> only after admin marks parcel received</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>48h payment countdown</strong> starts at invoice upload (configurable hours)</td>
+</tr>
+<tr>
+<td>17</td>
+<td><strong>Validation:</strong> field errors <strong>inline</strong> · API/copy → <strong>snackbar bottom-right</strong></td>
+</tr>
+<tr>
+<td>18</td>
+<td><strong>Markdown specs beat PNG mockups</strong> · exploration HTML (<code>home-v2</code>, <code>home-v3</code>, <code>home-card-variants</code>) <strong>not</strong> source of truth</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="4-style--theme"><span id="s4"></span>4. Style &amp; theme</h2>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Light</th>
+<th>Dark</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Primary</td>
+<td><code>#1A73E8</code></td>
+<td><code>#8AB4F8</code></td>
+</tr>
+<tr>
+<td>Background</td>
+<td><code>#F8F9FA</code></td>
+<td><code>#121212</code></td>
+</tr>
+<tr>
+<td>Surface / cards</td>
+<td><code>#FFFFFF</code></td>
+<td><code>#1E1E1E</code></td>
+</tr>
+<tr>
+<td>Text primary</td>
+<td><code>#202124</code></td>
+<td><code>#E8EAED</code></td>
+</tr>
+<tr>
+<td>Text secondary</td>
+<td><code>#5F6368</code></td>
+<td><code>#9AA0A6</code></td>
+</tr>
+<tr>
+<td>Earn hero (Deal detail)</td>
+<td><code>#188038</code></td>
+<td><code>#81C995</code></td>
+</tr>
+<tr>
+<td>Home Earn <strong>button</strong></td>
+<td><code>#1A73E8</code> blue</td>
+<td>not green</td>
+</tr>
+<tr>
+<td>Spend box</td>
+<td><code>#E8F0FE</code> / border <code>#D2E3FC</code></td>
+<td>per THEME doc</td>
+</tr>
+<tr>
+<td>Error</td>
+<td><code>#D93025</code></td>
+<td><code>#F28B82</code></td>
+</tr>
+<tr>
+<td>GST pill</td>
+<td><code>#E37400</code> on <code>#FEF7E0</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Timer accent</td>
+<td><code>#E37400</code> on <code>#FEF7E0</code></td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p><strong>Appearance:</strong> Profile → Light · Dark · System (follow phone)</p>
+<p><strong>Logos:</strong> Fixed box · <code>object-fit: contain</code> · never stretch · placeholder until brand files arrive</p>
+<p>Detail: <a href="../design/COLORS-AND-TOKENS.md">design/COLORS-AND-TOKENS.md</a> · <a href="../design/THEME-LIGHT-DARK-MODE.md">design/THEME-LIGHT-DARK-MODE.md</a></p>
+<hr>
+<h2 id="5-money-formulas"><span id="s5"></span>5. Money formulas</h2>
+<pre><code>totalCheckout      = orderValue − discount + platformFee + cardFee
+walletFromMintzer  = orderValue − cashback − discount + commission
+youEarn            = commission − tds
+</code></pre>
+<ul>
+<li>Bank <strong>cashback</strong> is user&#39;s card — not paid twice by Mintzer  </li>
+<li>Fees may not be eligible for cashback — show in YOU PAY block  </li>
+<li>Admin calculates; app displays exact rupees from API</li>
+</ul>
+<hr>
+<h2 id="6-all-14-main-screens"><span id="s6"></span>6. All 14 main screens</h2>
+<h3 id="61-login--phone--otp">6.1 Login — phone + OTP</h3>
+<ul>
+<li>+91 · 10 digits · Continue disabled until valid  </li>
+<li>OTP 4–6 digits · resend timer  </li>
+<li>Wrong OTP → snackbar · invalid phone → inline  </li>
+<li>Success → Home (or <strong>Account suspended</strong> if ops suspended user)  </li>
+<li><strong>No</strong> KYC / bank / mandatory notification permission  </li>
+<li>Spec: <a href="../screens/01-login.md">screens/01-login.md</a></li>
+</ul>
+<h3 id="62-home--locked-layout">6.2 Home — <strong>LOCKED layout</strong></h3>
+<p><strong>Reference:</strong> <code>assets/mockups/home-samples.html</code> · <a href="../screens/02-home.md">screens/02-home.md</a></p>
+<p><strong>Chrome:</strong></p>
+<ul>
+<li>Hi, {firstName} · “Earn with your card”  </li>
+<li>Wallet pill ₹X → Wallet  </li>
+<li>Bell + notification dot → notification center (design brief)  </li>
+<li><strong>WhatsApp community</strong> icon (green) → <code>communityWhatsAppUrl</code> from config  </li>
+<li>Search “Search deals…”  </li>
+<li>List / Grid toggle — persist <code>homeViewPreference</code>  </li>
+<li>Chips: <strong>All Deals · Direct · Link</strong> + filter funnel → <strong>sheet:</strong> store, card, min earn  </li>
+<li>Tutorial banner <strong>first visit only</strong> — dismiss → <code>tutorialSeen</code> — never every session  </li>
+<li>“N deals live” · <strong>Highest earn ↓</strong> sort  </li>
+<li><strong>Active order strip</strong> when placement timer running  </li>
+<li>Support FAB → tickets/help  </li>
+<li>Bottom nav</li>
+</ul>
+<p><strong>Deal card — each fact ONCE:</strong></p>
+<table>
+<thead>
+<tr>
+<th>On card</th>
+<th>Not on Home card</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Store logo <strong>top-left on image</strong></td>
+<td>Store name text</td>
+</tr>
+<tr>
+<td>Product image (contain)</td>
+<td>Variant, qty</td>
+</tr>
+<tr>
+<td>Model (bold, max 2 lines)</td>
+<td>Payout speed chip</td>
+</tr>
+<tr>
+<td>Color on meta row left</td>
+<td>Duplicate earn/spend</td>
+</tr>
+<tr>
+<td>GST pill meta row <strong>right</strong> — <strong>only if</strong> <code>gstApplicable</code></td>
+<td>“No GST” label</td>
+</tr>
+<tr>
+<td>Bank row: logo + card name</td>
+<td>Order value before fees</td>
+</tr>
+<tr>
+<td>Spend box <code>#E8F0FE</code> “YOU SPEND” + ₹</td>
+<td></td>
+</tr>
+<tr>
+<td>Blue button “Earn ₹X” <code>#1A73E8</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>Grid:</strong> 2 columns · Earn button pinned bottom · title min-height 2 lines  </p>
+<p><strong>States:</strong> loading skeleton · empty · blocked deals dimmed · first visit tutorial  </p>
+<p><strong>Rejected (Home):</strong> green Earn button · duplicate earn/spend · GST on image · variant/qty on card · Offers tab · purple/dark-orange clone UI  </p>
+<h3 id="63-deal-detail">6.3 Deal detail</h3>
+<ul>
+<li>Product image, name, color, <strong>variant</strong>, <strong>qty</strong>  </li>
+<li>Store + bank <strong>LogoRow</strong> (fixed size, contain)  </li>
+<li><strong>Money card:</strong> order value, platform fee, card fee, discount, total checkout, bank cashback, wallet from Mintzer, <strong>you earn (largest green)</strong>  </li>
+<li>Footer note on billing cycle  </li>
+<li>Optional expand “How wallet is calculated”  </li>
+<li>Collapsible: Offer details · Links · How to use (YouTube)  </li>
+<li>Header: <strong>WhatsApp</strong> + <strong>Report error</strong> → prefilled WA message with deal info (hidden if admin WA OFF)  </li>
+<li>Sticky <strong>Accept deal</strong> blue button  </li>
+<li><strong>No</strong> timer · address · Order ID on this screen  </li>
+<li>Active placement exists → overlay “Finish current order first”  </li>
+<li>Spec: <a href="../screens/03-deal-detail.md">screens/03-deal-detail.md</a> · <a href="../design/DEAL-AND-ACCEPT-REQUIREMENTS.md">design/DEAL-AND-ACCEPT-REQUIREMENTS.md</a></li>
+</ul>
+<h3 id="64-place-order--locked-v3">6.4 Place order — <strong>LOCKED v3</strong></h3>
+<p><strong>Reference:</strong> <code>assets/mockups/place-order-locked.html</code> · <a href="../design/PLACE-ORDER-REQUIREMENTS.md">design/PLACE-ORDER-REQUIREMENTS.md</a></p>
+<p><strong>Must show:</strong> product model · color · variant · qty · store · card · checkout ₹ · discount · earn · timer · address · actions  </p>
+<p><strong>Address — copy per line:</strong> Name · Addr1 · Addr2 · City · State · Pin · Phone — <strong>Copy</strong> each · optional small “Copy all” link · <strong>Generate new address</strong> (same pincode, weekly limit)  </p>
+<p><strong>Order ID — LOCKED:</strong> <strong>Tap field to paste</strong> from clipboard — <strong>no separate Paste button</strong>  </p>
+<p><strong>External mode (default):</strong> scroll · Open Flipkart after checkout · <strong>2-row bottom dock:</strong> timer row + Order ID + Submit  </p>
+<p><strong>In-app mode:</strong> WebView + PerkPay drag-up sheet · <strong>3 tabs:</strong> Deal · Delivery · Help · <strong>1-row dock:</strong> timer · Order ID · Submit  </p>
+<p><strong>Cancel order</strong> on this screen · duplicate external Order ID → <strong>hard block</strong>  </p>
+<p><strong>First time:</strong> overlay “How do you want to shop?” · mode chip + Change  </p>
+<h3 id="65-order-placed-success">6.5 Order placed success</h3>
+<ul>
+<li>Short confirmation · <strong>Go to My Orders</strong>  </li>
+<li>Spec: <a href="../screens/05-order-placed-success.md">screens/05-order-placed-success.md</a></li>
+</ul>
+<h3 id="66-my-orders-list">6.6 My Orders list</h3>
+<ul>
+<li>Tabs: <strong>Ongoing | Completed</strong>  </li>
+<li><strong>Search:</strong> Order ID · Tracking ID · <strong>product name / model</strong>  </li>
+<li><strong>Filter:</strong> Store (All + each store)  </li>
+<li><strong>Sort:</strong> Newest (default) · Oldest · <strong>Needs action first</strong>  </li>
+<li><strong>Badge</strong> on Ongoing = count needing user action  </li>
+<li>Pull to refresh  </li>
+<li>Empty Ongoing → Browse deals</li>
+</ul>
+<p><strong>Each card:</strong> Mintzer ref + copy · one status sentence · product · store · earn · timer on placement · one primary action when needed  </p>
+<p><strong>Active placement in Ongoing immediately after Accept</strong> (before Order ID) — <strong>Continue order</strong>  </p>
+<p><strong>Resume rule — LOCKED:</strong> Home strip + My Orders timer — <strong>not</strong> notification-only (unlike PerkPay pattern)  </p>
+<p><strong>Completed tab:</strong> Paid + <strong>Canceled</strong> (labeled separately)  </p>
+<p>Spec: <a href="../screens/06-my-orders.md">screens/06-my-orders.md</a> · <a href="../design/ORDERS-PAGES-REQUIREMENTS.md">design/ORDERS-PAGES-REQUIREMENTS.md</a></p>
+<h3 id="67-order-detail">6.7 Order detail</h3>
+<p><strong>Header:</strong> back · ref + copy · <strong>Add note</strong> · <strong>Report issue</strong> · <strong>Cancel order</strong>  </p>
+<p><strong>Notes — LOCKED:</strong></p>
+<ul>
+<li>User reminder only (e.g. “Used Raj’s HDFC card”)  </li>
+<li>Order detail header · modal/sheet · max <strong>200 chars</strong>  </li>
+<li>Save · reopen · edit · save again  </li>
+<li>On placement → copies to order on confirm</li>
+</ul>
+<p><strong>Steps (one expanded at a time):</strong></p>
+<ol>
+<li>Order placed — external Order ID read-only + copy  </li>
+<li>Tracking — paste ID · delivery partner · <strong>auto-detect courier</strong> + change dropdown  </li>
+<li>Out for delivery — last 4 digits of phone · delivery OTP (6+)  </li>
+<li>Waiting — Mintzer confirms parcel (no upload)  </li>
+<li>Invoice — locked until admin unlocks · re-upload if rejected + ops reason  </li>
+<li>Payment — <strong>48h countdown</strong> from invoice upload  </li>
+<li>Paid → Completed tab</li>
+</ol>
+<p><strong>Cancel:</strong> until before delivered (includes out for delivery) · <strong>reason required</strong> from preset list  </p>
+<p><strong>Raise ticket (guided):</strong> category → short questions → optional message → ticket ID · track in Profile → My tickets  </p>
+<p><strong>v1:</strong> ticket flow only on order help — <strong>no WhatsApp button</strong> on order detail (admin toggle for future)  </p>
+<h3 id="68-wallet--locked">6.8 Wallet — <strong>LOCKED</strong></h3>
+<ul>
+<li><strong>Available</strong> · <strong>Pending</strong> · <strong>Total earned</strong>  </li>
+<li>No withdraw · no add bank  </li>
+<li>Collapsible “How it works”  </li>
+<li><strong>Transactions</strong> + <strong>Download Excel</strong> + <strong>Date range</strong>  </li>
+<li>Filter chips: All · Paid · Pending · Canceled  </li>
+<li>Tap row → Order detail  </li>
+<li>Spec: <a href="../design/WALLET-REQUIREMENTS.md">design/WALLET-REQUIREMENTS.md</a></li>
+</ul>
+<h3 id="69-profile--locked">6.9 Profile — <strong>LOCKED</strong></h3>
+<ul>
+<li>Avatar initial · Hi {name} · phone read-only  </li>
+<li>KYC · Payout details · Language EN/HI · <strong>Appearance</strong>  </li>
+<li>My tickets · Help · Tutorials · Notification toggles (master + tiers)  </li>
+<li>Terms · Privacy · <strong>Delete account</strong>  </li>
+<li>Logout (red)  </li>
+<li><strong>No</strong> Wallet / My Orders shortcuts (use bottom nav)  </li>
+<li>Spec: <a href="../design/PROFILE-REQUIREMENTS.md">design/PROFILE-REQUIREMENTS.md</a></li>
+</ul>
+<h3 id="610-my-tickets-route-12">6.10 My tickets (route 12)</h3>
+<ul>
+<li>List newest first · ticket ID · order ref · category · status · date  </li>
+<li>Tap → ticket detail  </li>
+<li>Spec: ORDERS-PAGES-REQUIREMENTS.md</li>
+</ul>
+<h3 id="611-account-suspended--locked">6.11 Account suspended — <strong>LOCKED</strong></h3>
+<ul>
+<li>After OTP if <code>status = suspended</code> or mid-session 403  </li>
+<li>Copy: account not active · contact support — no harsh “banned” wording  </li>
+<li>Spec: <a href="../design/ACCOUNT-LIFECYCLE-REQUIREMENTS.md">design/ACCOUNT-LIFECYCLE-REQUIREMENTS.md</a></li>
+</ul>
+<h3 id="612-account-deleted--locked">6.12 Account deleted — <strong>LOCKED</strong></h3>
+<ul>
+<li>After delete account · back to login  </li>
+<li>Spec: same</li>
+</ul>
+<h3 id="613-offers--retired-from-nav">6.13 <del>Offers</del> — <strong>Retired from nav</strong></h3>
+<ul>
+<li>Deferred · see <a href="../screens/08-offers.md">screens/08-offers.md</a></li>
+</ul>
+<hr>
+<h2 id="7-all-11-overlays--gates"><span id="s7"></span>7. All 11 overlays / gates</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Overlay</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>KYC (Name + PAN)</td>
+<td>First Accept</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Payout (UPI or bank)</td>
+<td>After KYC, first Accept</td>
+</tr>
+<tr>
+<td>3</td>
+<td>How do you want to shop?</td>
+<td>First Place order</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Cancel order + reason</td>
+<td>Place order / Order detail</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Add note</strong></td>
+<td>Order detail</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Finish current order first</td>
+<td>Accept blocked</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Resume order banner (optional)</td>
+<td>App reopen, once/session</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Raise ticket</td>
+<td>Order detail</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Ticket detail</td>
+<td>My tickets</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Appearance</td>
+<td>Profile</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Delete account</td>
+<td>Profile — block if order in progress</td>
+</tr>
+</tbody></table>
+<p><strong>Optional v1:</strong> Language picker · Payout edit sheet · My Orders filter sheet · Timer expired state</p>
+<hr>
+<h2 id="8-kyc--payout-locked"><span id="s8"></span>8. KYC + payout (LOCKED)</h2>
+<p><strong>KYC:</strong> Name · PAN<br><strong>Payout:</strong> UPI (with confirm) <strong>or</strong> Bank (holder name, account, confirm, IFSC)<br><strong>Gate:</strong> both required before first placement<br><strong>Later:</strong> Profile → edit<br><strong>Not on:</strong> Login · Deal detail · Wallet  </p>
+<p>Spec: <a href="../design/BANK-AND-PAYOUT-DETAILS.md">design/BANK-AND-PAYOUT-DETAILS.md</a></p>
+<hr>
+<h2 id="9-resume-after-accept-locked"><span id="s9"></span>9. Resume after Accept (LOCKED)</h2>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Must show</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Home</td>
+<td>Active order strip + countdown + continue</td>
+</tr>
+<tr>
+<td>My Orders Ongoing</td>
+<td>Placement card top + timer + Continue order</td>
+</tr>
+<tr>
+<td>App reopen</td>
+<td>Home + strip; optional once/session banner</td>
+</tr>
+<tr>
+<td>Deep link</td>
+<td>→ Place order (not deal detail)</td>
+</tr>
+</tbody></table>
+<p>Timer syncs: list card · order detail · place order · home strip — same <code>expiresAt</code></p>
+<hr>
+<h2 id="10-notifications-summary"><span id="s10"></span>10. Notifications (summary)</h2>
+<ul>
+<li>Bell on Home · badge count · in-app list  </li>
+<li>Push tiers in Profile: Deal alerts · Order updates · Payment &amp; wallet  </li>
+<li>Quiet hours · frequency caps (config)  </li>
+<li>Push is <strong>supplementary</strong> — user finds active order via Home + My Orders</li>
+</ul>
+<p>Spec: <a href="../backend-%20for%20developer%20reference/07-notifications.md">backend- for developer reference/07-notifications.md</a></p>
+<hr>
+<h2 id="11-app-config-backend-controlled"><span id="s11"></span>11. App config (backend-controlled)</h2>
+<ul>
+<li><code>placementTimerMinutes</code> (default 15)  </li>
+<li><code>paymentReviewHours</code> (default 48)  </li>
+<li><code>communityWhatsAppUrl</code> + enable toggle  </li>
+<li><code>tutorialVideoUrl</code>  </li>
+<li>OTP expiry / resend seconds  </li>
+<li>Support WhatsApp / email</li>
+</ul>
+<p>Spec: <a href="../backend-%20for%20developer%20reference/08-app-config.md">backend- for developer reference/08-app-config.md</a></p>
+<hr>
+<h2 id="12-backend-business-rules-summary"><span id="s12"></span>12. Backend business rules (summary)</h2>
+<ul>
+<li>One active placement  </li>
+<li>Expired placement → admin log only  </li>
+<li>Duplicate external Order ID → block  </li>
+<li>Invoice gated by <code>parcelReceived</code>  </li>
+<li>Money from admin fields — formulas in deals module  </li>
+<li>Placements → orders on confirm</li>
+</ul>
+<p>Modules: <a href="../backend-%20for%20developer%20reference/README.md">backend- for developer reference/README.md</a></p>
+<hr>
+<h2 id="13-design-polish-notes-from-client-figma-attempt"><span id="s13"></span>13. Design polish notes (from client Figma attempt)</h2>
+<p>Light Material can feel empty without:</p>
+<ul>
+<li>Real product photos in mocks  </li>
+<li>Filled spend box <code>#E8F0FE</code> (not label line only)  </li>
+<li>Card shadows + 12dp padding rhythm  </li>
+<li>Colored bank logo tiles  </li>
+<li>3+ deals visible in Home frame</li>
+</ul>
+<p>Designer owns visual polish; <strong>layout locked</strong> on Home, Place order, Wallet, Profile.</p>
+<hr>
+<h2 id="14-out-of-scope-v1-do-not-build"><span id="s14"></span>14. Out of scope v1 (do not build)</h2>
+<ul>
+<li>Admin panel (separate product)  </li>
+<li>Wallet withdraw / transfer to bank from app  </li>
+<li>Offers tab in navigation  </li>
+<li>Instant orders tab  </li>
+<li>In-app WhatsApp chat UI (external links OK)  </li>
+<li>Live courier GPS map  </li>
+<li>OCR from screenshots  </li>
+<li>Tamil / other languages (after Hindi)  </li>
+<li>Referral gamification  </li>
+<li>Profile photo upload  </li>
+<li>iOS-specific variants</li>
+</ul>
+<hr>
+<h2 id="15-open--tbd-client-or-ops-to-supply-later"><span id="s15"></span>15. Open / TBD (client or ops to supply later)</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Courier tracking ID patterns per partner</td>
+<td>Client samples TBD</td>
+</tr>
+<tr>
+<td>Exact ticket question sets per category</td>
+<td>Ops to define</td>
+</tr>
+<tr>
+<td>Exact WhatsApp prefill message template</td>
+<td>TBD</td>
+</tr>
+<tr>
+<td>Final Mintzer logo files</td>
+<td>Placeholder until delivered</td>
+</tr>
+<tr>
+<td>Hindi string table</td>
+<td>Google Sheet / Figma table needed</td>
+</tr>
+<tr>
+<td>Promo banner carousel copy</td>
+<td>Flexible placeholder OK</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="16-known-doc-gaps-fix-when-editing"><span id="s16"></span>16. Known doc gaps (fix when editing)</h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Issue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>My Orders search in <code>06-my-orders.md</code></td>
+<td>Says “Order ID only” — should match design doc (+ model + tracking)</td>
+</tr>
+<tr>
+<td>Backend <code>GET /orders</code> search param</td>
+<td>Should document product name search</td>
+</tr>
+<tr>
+<td><code>MINTZER-UI-DESIGN-BRIEF.md</code> §2</td>
+<td>Once said “light only” — <strong>THEME doc wins:</strong> light + dark required</td>
+</tr>
+<tr>
+<td><code>07-wallet.md</code> entry</td>
+<td>Says Profile → Wallet — Profile spec says <strong>no</strong> Wallet shortcut (use nav/header)</td>
+</tr>
+<tr>
+<td>Notes on list card preview</td>
+<td><strong>Not locked</strong> — notes are on Order detail only unless you add list preview</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="17-implementation-status-september-2026"><span id="s17"></span>17. Implementation status (September 2026)</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Screen + design specs</td>
+<td><strong>Done</strong></td>
+</tr>
+<tr>
+<td>Backend API specs</td>
+<td><strong>Done</strong></td>
+</tr>
+<tr>
+<td>HTML locked references</td>
+<td>Home, Place order, full-flow diagram</td>
+</tr>
+<tr>
+<td>Interactive demo</td>
+<td><code>assets/mockups/mintzer-app-demo.html</code> — <strong>partial</strong> (happy path; missing search, notes, Wallet filters, tickets, etc.)</td>
+</tr>
+<tr>
+<td>Figma</td>
+<td>Client paused — designer handoff ready</td>
+</tr>
+<tr>
+<td>Flutter / backend code</td>
+<td><strong>Not started</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="18-mockup--spec-file-index"><span id="s18"></span>18. Mockup &amp; spec file index</h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>This master log</strong></td>
+<td><code>docs/COMPLETE-DECISIONS-LOG.md</code></td>
+</tr>
+<tr>
+<td>Agent process</td>
+<td><code>docs/AGENT-DEV-PROCESS.md</code></td>
+</tr>
+<tr>
+<td>Designer package</td>
+<td><code>docs/design/FOR-DESIGNER.md</code></td>
+</tr>
+<tr>
+<td>All screens</td>
+<td><code>docs/screens/01-login.md</code> … <code>11-account-deleted.md</code></td>
+</tr>
+<tr>
+<td>Screen count</td>
+<td><code>docs/screens/SCREEN-INVENTORY.md</code></td>
+</tr>
+<tr>
+<td>Home LOCKED</td>
+<td><code>docs/screens/02-home.md</code> · <code>assets/mockups/home-samples.html</code></td>
+</tr>
+<tr>
+<td>Place order LOCKED</td>
+<td><code>docs/design/PLACE-ORDER-REQUIREMENTS.md</code> · <code>place-order-locked.html</code></td>
+</tr>
+<tr>
+<td>Orders + notes + search</td>
+<td><code>docs/design/ORDERS-PAGES-REQUIREMENTS.md</code></td>
+</tr>
+<tr>
+<td>Wallet</td>
+<td><code>docs/design/WALLET-REQUIREMENTS.md</code></td>
+</tr>
+<tr>
+<td>Profile</td>
+<td><code>docs/design/PROFILE-REQUIREMENTS.md</code></td>
+</tr>
+<tr>
+<td>KYC + payout</td>
+<td><code>docs/design/BANK-AND-PAYOUT-DETAILS.md</code></td>
+</tr>
+<tr>
+<td>Account lifecycle</td>
+<td><code>docs/design/ACCOUNT-LIFECYCLE-REQUIREMENTS.md</code></td>
+</tr>
+<tr>
+<td>Colors / validation</td>
+<td><code>docs/design/COLORS-AND-TOKENS.md</code> · <code>VALIDATION-UX.md</code></td>
+</tr>
+<tr>
+<td>Interactive demo</td>
+<td><code>assets/mockups/mintzer-app-demo.html</code></td>
+</tr>
+<tr>
+<td>Flow diagram</td>
+<td><code>assets/mockups/mintzer-full-flow.html</code></td>
+</tr>
+<tr>
+<td>Add note mockup PNG</td>
+<td><code>assets/mintzer-add-note-mockup.png</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="19-client-locked-decisions-master-table"><span id="s19"></span>19. Client locked decisions (master table)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>New logo coming — placeholder OK; app blue stays <code>#1A73E8</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>KYC: Name + PAN on first Accept</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Login: phone + OTP only</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Flow: Home → Deal detail → Accept</td>
+</tr>
+<tr>
+<td>5</td>
+<td>One active placement timer</td>
+</tr>
+<tr>
+<td>6</td>
+<td>v1: Regular orders only</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Wallet: no withdraw</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Languages: English + Hindi</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Nav: Home · Orders · Wallet · Profile</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Home deal card layout LOCKED June 2026</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Place order dock + tap-to-paste LOCKED</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Resume via Home strip + My Orders (not notification-only)</td>
+</tr>
+<tr>
+<td>13</td>
+<td>My Orders search includes <strong>model name</strong></td>
+</tr>
+<tr>
+<td>14</td>
+<td>User notes on order — 200 chars, save/edit</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Duplicate Order ID hard block</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Invoice upload after admin parcel received</td>
+</tr>
+<tr>
+<td>17</td>
+<td>48h payment timer after invoice</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Cancel with reason presets</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Guided support tickets + My tickets list</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Delete account blocked if order in progress</td>
+</tr>
+<tr>
+<td>21</td>
+<td>Light + dark theme entire app</td>
+</tr>
+<tr>
+<td>22</td>
+<td>WhatsApp community on Home header (config URL)</td>
+</tr>
+<tr>
+<td>23</td>
+<td>Tutorial banner first visit only</td>
+</tr>
+<tr>
+<td>24</td>
+<td>Deal detail Report error = WA prefilled (not ticket wizard)</td>
+</tr>
+<tr>
+<td>25</td>
+<td>Order detail Raise ticket = guided flow (not WA v1)</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>When in doubt:</strong> open this file → find the screen → open linked spec → for Home/Place order open HTML mockup in Chrome.</p>
+<p><strong>Version:</strong> September 2026</p>
+
+    </article>
+  </div>
+</body>
+</html>

@@ -16,6 +16,18 @@
 
 ---
 
+## Refer & earn (LOCKED — affiliate v1)
+
+| Element | Behavior |
+|---------|----------|
+| **Gold banner** | Below avatar — “Refer & earn ₹{bonus} per friend” · tap → referral sheet |
+| **Menu row** | Refer & earn · sub “₹{bonus} each” |
+
+**Sheet:** unique code · Copy · Share on WhatsApp · stats (friends joined, bonus earned).  
+See [AFFILIATE-MARKETING-REQUIREMENTS.md](./AFFILIATE-MARKETING-REQUIREMENTS.md).
+
+---
+
 ## List (no Wallet / Orders shortcuts — use bottom nav)
 
 ### Account
@@ -33,7 +45,10 @@
 | Video tutorials | YouTube |
 
 ### Settings
-| Push notifications | Toggle |
+| Push notifications | Master toggle — OFF disables all push |
+| Deal alerts | Tier 1: viewed follow-up, new deals, ending soon, comeback — default ON |
+| Order updates | Tier 2: timer warnings, tracking, parcel — default ON |
+| Payment & wallet | Tier 3: payout, KYC — default ON |
 | Terms of Service | Link |
 | Privacy Policy | Link |
 | **Delete account** | Confirm sheet · see [ACCOUNT-LIFECYCLE-REQUIREMENTS.md](./ACCOUNT-LIFECYCLE-REQUIREMENTS.md) |
@@ -60,7 +75,7 @@ Confirm → Login
 |---------|----------------|
 | Profile photo upload | Avatar tap → upload |
 | **Payout details** | Collected right after KYC on first Accept |
-| Referral / invite | Refer & earn |
+| Referral / invite | **v1 affiliate** — Refer & earn banner + row · see AFFILIATE-MARKETING-REQUIREMENTS.md |
 | Rate the app | Play Store |
 | App version | Footer “Version 1.0.0” |
 | Change phone number | OTP re-verify |

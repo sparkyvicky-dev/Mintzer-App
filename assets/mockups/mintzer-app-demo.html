@@ -1,0 +1,2941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Mintzer — Full app demo v2.5</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #202124; color: #202124;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      padding: 16px 12px 32px;
+    }
+    .demo-header { text-align: center; max-width: 420px; margin-bottom: 14px; color: #E8EAED; }
+    .demo-header h1 { font-size: 18px; color: #8AB4F8; margin-bottom: 6px; }
+    .demo-header p { font-size: 11px; line-height: 1.55; color: #9AA0A6; }
+    .demo-header kbd { background: #3C4043; padding: 1px 5px; border-radius: 4px; font-size: 10px; }
+
+    .phone {
+      width: 390px; max-width: 100%; height: 844px;
+      background: #F8F9FA; border-radius: 32px; border: 6px solid #3C4043;
+      overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 12px 40px rgba(0,0,0,.45); position: relative;
+    }
+    .status-bar {
+      height: 24px; background: #fff; padding: 0 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11px; font-weight: 600; flex-shrink: 0;
+    }
+    .screen { display: none; flex: 1; flex-direction: column; min-height: 0; overflow: hidden; }
+    .screen.active { display: flex; }
+    .scroll { flex: 1; overflow-y: auto; min-height: 0; }
+    .appbar {
+      background: #fff; padding: 10px 14px; border-bottom: 1px solid #E8EAED;
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+    }
+    .appbar h1 { flex: 1; text-align: center; font-size: 16px; font-weight: 600; margin-right: 28px; }
+    .back-btn, .text-btn { border: none; background: none; color: #1A73E8; font-size: 13px; font-weight: 500; cursor: pointer; padding: 4px; }
+    .text-btn.danger { color: #D93025; }
+
+    /* Login */
+    .login-body { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 32px 24px 24px; background: #F8F9FA; }
+    .logo { font-size: 28px; font-weight: 800; color: #1A73E8; margin-bottom: 8px; }
+    .login-sub { font-size: 13px; color: #5F6368; margin-bottom: 32px; text-align: center; }
+    .field-group { width: 100%; margin-bottom: 16px; }
+    .field-label { font-size: 12px; color: #5F6368; margin-bottom: 6px; }
+    .phone-row { display: flex; gap: 8px; }
+    .prefix { background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 14px 12px; font-weight: 600; color: #202124; }
+    .text-input {
+      width: 100%; border: 1px solid #E8EAED; border-radius: 12px; padding: 14px 16px;
+      font-size: 16px; background: #fff; outline: none;
+    }
+    .text-input:focus { border-color: #1A73E8; }
+    .text-input.error { border-color: #D93025; }
+    .field-error { font-size: 11px; color: #D93025; margin-top: 4px; display: none; }
+    .field-error.show { display: block; }
+    .btn-primary {
+      width: 100%; border: none; border-radius: 24px; padding: 14px;
+      background: #1A73E8; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-primary.danger { background: #D93025; }
+    .otp-row { display: flex; gap: 8px; justify-content: center; margin: 16px 0; }
+    .otp-box {
+      width: 44px; height: 52px; border: 1px solid #E8EAED; border-radius: 10px;
+      text-align: center; font-size: 20px; font-weight: 700; background: #fff;
+    }
+    .otp-box:focus { border-color: #1A73E8; outline: none; }
+    .resend { font-size: 12px; color: #5F6368; text-align: center; margin-top: 12px; }
+    .resend button { border: none; background: none; color: #1A73E8; font-weight: 600; cursor: pointer; }
+
+    /* Home header */
+    .header { background: #fff; padding: 10px 16px; border-bottom: 1px solid #E8EAED; flex-shrink: 0; }
+    .header-row { display: flex; align-items: center; justify-content: space-between; }
+    .greeting h2 { font-size: 17px; font-weight: 700; }
+    .greeting p { font-size: 11px; color: #5F6368; }
+    .header-actions { display: flex; align-items: center; gap: 4px; }
+    .wallet-pill {
+      padding: 6px 11px; border: 1px solid #D2E3FC; border-radius: 18px;
+      font-size: 13px; font-weight: 700; color: #1A73E8; background: #E8F0FE; cursor: pointer; border: none;
+    }
+    .icon-btn {
+      width: 36px; height: 36px; border: none; background: transparent; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;
+    }
+    .notif-dot { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; background: #D93025; border-radius: 50%; border: 2px solid #fff; }
+    .wa-btn { background: #E7F8EE; }
+
+    .toolbar { padding: 10px 16px 0; display: flex; gap: 8px; align-items: center; }
+    .search-field {
+      flex: 1; display: flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid #E8EAED; border-radius: 24px; padding: 9px 14px;
+    }
+    .search-field input { border: none; outline: none; flex: 1; font-size: 14px; background: transparent; }
+    .view-toggle { display: flex; border: 1px solid #E8EAED; border-radius: 10px; overflow: hidden; background: #fff; }
+    .view-btn { width: 36px; height: 36px; border: none; background: #fff; cursor: pointer; color: #5F6368; display: flex; align-items: center; justify-content: center; }
+    .view-btn.active { background: #E8F0FE; color: #1A73E8; }
+    .view-btn + .view-btn { border-left: 1px solid #E8EAED; }
+
+    .chips-row { display: flex; gap: 8px; padding: 10px 16px; overflow-x: auto; }
+    .chip {
+      flex-shrink: 0; padding: 6px 13px; border-radius: 18px; font-size: 12px; font-weight: 500;
+      border: 1px solid #E8EAED; background: #fff; color: #5F6368; cursor: pointer;
+    }
+    .chip.active { border-color: #1A73E8; color: #1A73E8; font-weight: 600; background: #E8F0FE; }
+
+    .tutorial {
+      margin: 0 16px 10px; background: #E8F0FE; border-radius: 10px; padding: 10px 12px;
+      display: flex; align-items: center; gap: 10px; border: 1px solid #D2E3FC;
+    }
+    .tutorial.hidden { display: none; }
+    .tutorial-play { width: 28px; height: 28px; background: #1A73E8; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
+    .tutorial-text { flex: 1; font-size: 12px; color: #1A73E8; font-weight: 500; cursor: pointer; }
+    .tutorial-close { border: none; background: none; font-size: 18px; color: #5F6368; cursor: pointer; }
+
+    .promo-carousel { margin: 0 16px 10px; position: relative; }
+    .promo-track {
+      position: relative; height: 118px; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(26, 115, 232, .12);
+    }
+    .promo-slide {
+      position: absolute; inset: 0; padding: 12px 12px 10px;
+      display: flex; align-items: stretch; gap: 8px;
+      background: linear-gradient(135deg, #E8F0FE 0%, #E6F4EA 55%, #F0F4FF 100%);
+      border: 1px solid #D2E3FC; border-radius: 12px;
+      opacity: 0; pointer-events: none; transition: opacity .4s ease;
+    }
+    .promo-slide.active { opacity: 1; pointer-events: auto; }
+    .promo-body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; }
+    .promo-kicker { font-size: 9px; font-weight: 700; color: #1A73E8; text-transform: uppercase; letter-spacing: .35px; margin-bottom: 2px; }
+    .promo-title { font-size: 12px; font-weight: 800; color: #202124; line-height: 1.25; margin-bottom: 4px; }
+    .promo-bullets { list-style: none; margin: 0; padding: 0; }
+    .promo-bullets li { font-size: 9px; color: #5F6368; line-height: 1.35; padding-left: 10px; position: relative; }
+    .promo-bullets li::before { content: '•'; position: absolute; left: 0; color: #1A73E8; font-weight: 700; }
+    .promo-cta {
+      align-self: flex-start; margin-top: 6px; border: none; border-radius: 16px;
+      background: #1A73E8; color: #fff; font-size: 10px; font-weight: 700;
+      padding: 6px 12px; cursor: pointer; box-shadow: 0 2px 6px rgba(26, 115, 232, .25);
+    }
+    .promo-art { width: 72px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .promo-wa-phone {
+      width: 58px; height: 88px; background: #fff; border-radius: 8px; border: 2px solid #202124;
+      padding: 4px 3px; box-shadow: 0 4px 12px rgba(0,0,0,.12); position: relative; overflow: hidden;
+    }
+    .promo-wa-phone::before {
+      content: ''; position: absolute; top: 2px; left: 50%; transform: translateX(-50%);
+      width: 16px; height: 3px; background: #E8EAED; border-radius: 2px;
+    }
+    .promo-wa-screen {
+      margin-top: 8px; background: #E7F8EE; border-radius: 4px; height: calc(100% - 10px);
+      padding: 4px; display: flex; flex-direction: column; gap: 3px;
+    }
+    .promo-wa-bubble { background: #fff; border-radius: 4px; padding: 2px 4px; font-size: 5px; color: #202124; line-height: 1.2; }
+    .promo-play-art {
+      width: 56px; height: 56px; border-radius: 50%; background: #1A73E8;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(26, 115, 232, .35);
+    }
+    .promo-slide-cards {
+      background: linear-gradient(135deg, #174EA6 0%, #1A73E8 55%, #4285F4 100%);
+      border: none;
+    }
+    .promo-slide-cards .promo-kicker { color: rgba(255,255,255,.88); }
+    .promo-slide-cards .promo-title { color: #fff; font-size: 11px; }
+    .promo-slide-cards .promo-sub { font-size: 9px; color: rgba(255,255,255,.92); line-height: 1.35; margin-bottom: 2px; }
+    .promo-slide-cards .promo-cta { background: #fff; color: #1A73E8; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+    .promo-card-stack { position: relative; width: 58px; height: 40px; }
+    .promo-card-stack .pc {
+      position: absolute; width: 52px; height: 32px; border-radius: 5px;
+      border: 1px solid rgba(255,255,255,.4); display: flex; align-items: center; justify-content: center;
+      font-size: 7px; font-weight: 800; color: #fff; box-shadow: 0 3px 8px rgba(0,0,0,.2);
+    }
+    .promo-card-stack .pc:nth-child(1) { top: 0; right: 0; transform: rotate(7deg); background: linear-gradient(135deg, #003399, #0052cc); }
+    .promo-card-stack .pc:nth-child(2) { top: 5px; right: 6px; transform: rotate(-5deg); background: linear-gradient(135deg, #7B1FA2, #AB47BC); }
+    .promo-dots { display: flex; justify-content: center; gap: 5px; margin-top: 6px; }
+    .promo-dot { width: 6px; height: 6px; border-radius: 50%; border: none; padding: 0; background: #DADCE0; cursor: pointer; }
+    .promo-dot.active { background: #1A73E8; width: 14px; border-radius: 3px; }
+
+    .active-strip {
+      margin: 0 16px 10px; background: #FEF7E0; border: 1px solid #F9AB00; border-radius: 10px;
+      padding: 10px 12px; display: none; align-items: center; gap: 10px; cursor: pointer;
+    }
+    .active-strip.show { display: flex; }
+    .active-strip .timer { font-size: 12px; font-weight: 700; color: #E37400; }
+    .active-strip .info { flex: 1; font-size: 11px; }
+    .active-strip .go { font-size: 11px; color: #1A73E8; font-weight: 700; }
+
+    .list-meta { display: flex; justify-content: space-between; padding: 0 16px 10px; font-size: 11px; }
+    .list-meta .count { color: #5F6368; }
+    .list-meta .sort { color: #1A73E8; font-weight: 600; border: none; background: none; cursor: pointer; }
+
+    #dealList { padding: 0 16px 88px; display: flex; flex-direction: column; gap: 12px; }
+    #dealList.grid-view { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: stretch; }
+
+    .deal-card {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.06); cursor: pointer;
+    }
+    .deal-card.hidden { display: none !important; }
+    .deal-card.dim { opacity: .45; pointer-events: none; }
+    .img-wrap { position: relative; flex-shrink: 0; width: 100%; }
+    .img-box { background: #F8F9FA; border: 1px solid #F1F3F4; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; width: 100%; }
+    .img-box > img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; padding: 6px; display: block; }
+    .img-box .ph { font-size: 32px; }
+    .img-slider { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; }
+    .img-slide {
+      position: absolute; max-width: calc(100% - 12px); max-height: calc(100% - 12px);
+      width: auto; height: auto; object-fit: contain; opacity: 0; transition: opacity .35s ease; pointer-events: none;
+    }
+    .img-slide.active { opacity: 1; }
+    .store-pin {
+      position: absolute; top: 6px; left: 6px; z-index: 3;
+      width: 24px; height: 24px; border-radius: 6px; border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.12); overflow: hidden; background: #fff;
+    }
+    .store-pin img { width: 100%; height: 100%; object-fit: contain; }
+    .gst-pin {
+      position: absolute; top: 6px; right: 6px; z-index: 3;
+      font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+      background: #FEF7E0; color: #E37400; border: 1px solid #F9AB00;
+      line-height: 1.2; box-shadow: 0 1px 2px rgba(0,0,0,.08);
+    }
+    .deal-badge {
+      position: absolute; bottom: 6px; left: 6px; z-index: 3;
+      font-size: 8px; font-weight: 800; padding: 2px 7px; border-radius: 4px;
+      line-height: 1.2; box-shadow: 0 1px 2px rgba(0,0,0,.08); white-space: nowrap;
+    }
+    .deal-badge.hot { background: #FCE8E6; color: #D93025; border: 1px solid #F9ABAB; }
+    .deal-badge.trending { background: #E8F0FE; color: #1A73E8; border: 1px solid #D2E3FC; }
+    .deal-badge.slots { background: #FEF7E0; color: #E37400; border: 1px solid #F9AB00; }
+    .deal-badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .deal-badge-pill {
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 12px;
+    }
+    .deal-badge-pill.hot { background: #FCE8E6; color: #D93025; }
+    .deal-badge-pill.trending { background: #E8F0FE; color: #1A73E8; }
+    .deal-badge-pill.slots { background: #FEF7E0; color: #E37400; }
+    .social-proof-strip {
+      margin: 0 16px 10px; padding: 8px 12px; border-radius: 10px;
+      background: #fff; border: 1px solid #E8EAED; font-size: 11px; color: #5F6368;
+      display: flex; align-items: center; gap: 6px; line-height: 1.35;
+    }
+    .social-proof-strip b { color: #188038; font-weight: 800; }
+    .social-proof-strip em { font-style: normal; color: #1A73E8; font-weight: 600; }
+    .profile-ref-banner {
+      background: linear-gradient(135deg, #FEF7E0 0%, #FFF8E1 100%);
+      border: 1px solid #F9AB00; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;
+      cursor: pointer; text-align: left; width: 100%;
+    }
+    .profile-ref-banner b { display: block; font-size: 14px; color: #E37400; margin-bottom: 4px; }
+    .profile-ref-banner span { font-size: 11px; color: #5F6368; line-height: 1.4; }
+    .ref-code-box {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      background: #F8F9FA; border: 2px dashed #1A73E8; border-radius: 12px;
+      padding: 14px 16px; margin: 14px 0;
+    }
+    .ref-code-box code { font-size: 22px; font-weight: 800; color: #1A73E8; letter-spacing: 2px; }
+    .ref-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+    .ref-stat { background: #F8F9FA; border-radius: 10px; padding: 12px; text-align: center; }
+    .ref-stat .num { font-size: 20px; font-weight: 800; color: #1A73E8; }
+    .ref-stat .lbl { font-size: 10px; color: #5F6368; margin-top: 2px; }
+    .title { font-size: 13px; font-weight: 700; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .meta-line { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+    .color-text { font-size: 11px; color: #5F6368; }
+    .bank-row { display: flex; align-items: center; gap: 8px; border: 1px solid #E8EAED; background: #F8F9FA; border-radius: 8px; padding: 6px 8px; margin-top: 6px; }
+    .bank-logo { width: 26px; height: 26px; border-radius: 6px; overflow: hidden; background: #fff; border: 1px solid #E8EAED; }
+    .bank-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .bank-label { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .spend-box { display: flex; align-items: center; justify-content: space-between; background: #E8F0FE; border: 1px solid #D2E3FC; border-radius: 8px; padding: 8px 10px; margin-top: 6px; }
+    .spend-lbl { font-size: 10px; font-weight: 700; color: #1A73E8; text-transform: uppercase; }
+    .spend-val { font-size: 15px; font-weight: 800; }
+    .btn-earn { width: 100%; border: none; border-radius: 10px; margin-top: 8px; background: #1A73E8; color: #fff; font-size: 14px; font-weight: 700; padding: 11px; cursor: pointer; }
+
+    #dealList:not(.grid-view) .deal-card { display: grid; grid-template-columns: 80px 1fr; column-gap: 12px; row-gap: 4px; align-items: start; }
+    #dealList:not(.grid-view) .img-wrap { grid-column: 1; grid-row: 1 / span 3; height: 80px; width: 80px; }
+    #dealList:not(.grid-view) .img-box { height: 80px; width: 80px; }
+    #dealList:not(.grid-view) .title, #dealList:not(.grid-view) .meta-line { grid-column: 2; }
+    #dealList:not(.grid-view) .bank-row, #dealList:not(.grid-view) .spend-box, #dealList:not(.grid-view) .btn-earn { grid-column: 1 / -1; }
+
+    #dealList.grid-view .deal-card { display: flex; flex-direction: column; gap: 4px; padding: 10px; height: 100%; min-width: 0; }
+    #dealList.grid-view .img-wrap { height: 88px; max-height: 88px; flex-shrink: 0; width: 100%; overflow: hidden; }
+    #dealList.grid-view .img-box { height: 88px; max-height: 88px; width: 100%; }
+    #dealList.grid-view .img-slide { max-width: calc(100% - 8px); max-height: calc(100% - 8px); }
+    #dealList.grid-view .title { font-size: 11px; line-height: 1.3; min-height: 2.6em; -webkit-line-clamp: 2; }
+    #dealList.grid-view .meta-line { margin-top: 0; min-height: 18px; }
+    #dealList.grid-view .bank-row { padding: 5px 6px; margin-top: 4px; min-height: 34px; }
+    #dealList.grid-view .bank-logo { width: 22px; height: 22px; }
+    #dealList.grid-view .bank-label { font-size: 10px; }
+    #dealList.grid-view .spend-box { padding: 6px 8px; margin-top: 4px; min-height: 34px; box-sizing: border-box; }
+    #dealList.grid-view .spend-box .spend-lbl { font-size: 9px; }
+    #dealList.grid-view .spend-box .spend-val { font-size: 13px; }
+    #dealList.grid-view .btn-earn { margin-top: auto; font-size: 12px; padding: 9px 8px; border-radius: 8px; }
+
+    /* Deal detail */
+    .detail-pad { padding: 16px; padding-bottom: 100px; }
+    .detail-hero {
+      display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px;
+    }
+    .detail-img-wrap {
+      width: 80px; height: 80px; flex-shrink: 0;
+      background: #F8F9FA; border: 1px solid #E8EAED; border-radius: 10px;
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .detail-img-wrap img { max-width: calc(100% - 6px); max-height: calc(100% - 6px); width: auto; height: auto; object-fit: contain; display: block; }
+    .detail-gst-pin {
+      position: absolute; top: 4px; left: 4px; z-index: 2;
+      font-size: 7px; font-weight: 800; padding: 2px 5px; border-radius: 4px;
+      background: #FEF7E0; color: #E37400; border: 1px solid #F9AB00; line-height: 1.2;
+    }
+    .detail-hero-text { flex: 1; min-width: 0; padding-top: 2px; }
+    .detail-hero-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .detail-earn-tag {
+      flex-shrink: 0; font-size: 12px; font-weight: 800; color: #188038;
+      background: #E6F4EA; border: 1px solid #CEEAD6; border-radius: 8px;
+      padding: 4px 8px; white-space: nowrap; line-height: 1.2;
+    }
+    .detail-title { font-size: 15px; font-weight: 700; line-height: 1.3; margin: 0; flex: 1; min-width: 0; }
+    .detail-meta { font-size: 12px; color: #5F6368; margin: 0; line-height: 1.4; }
+    .logo-rows { background: #fff; border: 1px solid #E8EAED; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; }
+    .logo-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+    .logo-row + .logo-row { border-top: 1px solid #F1F3F4; }
+    .logo-box { width: 36px; height: 36px; border-radius: 8px; border: 1px solid #E8EAED; overflow: hidden; flex-shrink: 0; }
+    .logo-box img { width: 100%; height: 100%; object-fit: contain; }
+    .money-card { background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+    .money-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; color: #5F6368; }
+    .money-row b { color: #202124; font-weight: 600; }
+    .money-row.total { border-top: 1px solid #E8EAED; margin-top: 6px; padding-top: 10px; font-weight: 600; color: #202124; }
+    .money-row.earn { font-size: 18px; font-weight: 800; color: #188038; border: none; margin-top: 4px; }
+    .money-note { font-size: 10px; color: #5F6368; line-height: 1.45; margin-top: 8px; }
+    .gst-alert-sheet { position: relative; }
+    .gst-alert-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-right: 32px; }
+    .gst-alert-head h2 { font-size: 17px; margin: 0; color: #E37400; }
+    .gst-alert-icon {
+      width: 32px; height: 32px; border-radius: 50%; background: #FEF7E0; color: #E37400;
+      display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0;
+    }
+    .gst-close {
+      position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%;
+      border: none; background: #F1F3F4; color: #5F6368; font-size: 18px; cursor: pointer; line-height: 1;
+    }
+    .gst-alert-list { list-style: none; margin: 0 0 16px; padding: 0; }
+    .gst-alert-list li {
+      font-size: 13px; color: #202124; line-height: 1.5; padding: 8px 0 8px 28px; position: relative;
+      border-bottom: 1px solid #F1F3F4;
+    }
+    .gst-alert-list li:last-child { border-bottom: 0; }
+    .gst-alert-list li::before { content: '•'; position: absolute; left: 8px; color: #1A73E8; font-weight: 700; }
+    .sticky-bottom {
+      position: absolute; bottom: 56px; left: 0; right: 0; padding: 12px 16px;
+      background: linear-gradient(transparent, #F8F9FA 20%); z-index: 4;
+    }
+
+    /* Place order */
+    .place-scroll { padding: 10px 14px 120px; }
+    .place-prod {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 10px;
+      padding: 10px; margin-bottom: 8px;
+    }
+    .place-prod-top { display: flex; gap: 10px; align-items: flex-start; }
+    .prod-thumb { width: 56px; height: 56px; background: #F8F9FA; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; border: 1px solid #F1F3F4; }
+    .prod-thumb img, .order-card .thumb img, .pc-thumb img { width: 100%; height: 100%; object-fit: contain; padding: 2px; display: block; }
+    .place-prod-body { flex: 1; min-width: 0; }
+    .place-prod-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
+    .place-prod-name { font-weight: 700; font-size: 13px; line-height: 1.3; flex: 1; min-width: 0; }
+    .place-earn-tag { flex-shrink: 0; font-size: 11px; font-weight: 800; color: #188038; background: #E6F4EA; border: 1px solid #CEEAD6; border-radius: 8px; padding: 3px 8px; white-space: nowrap; }
+    .place-prod-meta { font-size: 11px; color: #5F6368; line-height: 1.35; }
+    .place-prod-store { font-size: 11px; color: #202124; margin-top: 4px; font-weight: 600; }
+    .place-prod-rules {
+      margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F3F4;
+    }
+    .place-prod-rules summary {
+      font-size: 11px; font-weight: 600; color: #1A73E8; cursor: pointer; list-style: none;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .place-prod-rules summary::-webkit-details-marker { display: none; }
+    .place-prod-rules .rules-body { margin-top: 6px; font-size: 11px; color: #5F6368; line-height: 1.45; }
+    .place-prod-rules ul { margin: 4px 0 0; padding-left: 16px; }
+    .place-prod-rules li + li { margin-top: 2px; }
+    .place-checkout {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      background: #fff; border: 2px solid #1A73E8; border-radius: 10px;
+      padding: 10px 14px; margin-bottom: 8px;
+    }
+    .place-checkout .pay-lbl { font-size: 10px; color: #5F6368; font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
+    .place-checkout .pay-amt { font-size: 22px; font-weight: 800; color: #202124; line-height: 1.1; }
+    .place-checkout .pay-disc { font-size: 10px; color: #188038; margin-top: 2px; }
+    .open-zone { background: #E8F0FE; border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: center; border: 1px dashed #1A73E8; }
+    .open-zone .open-lbl { font-size: 11px; color: #1A73E8; font-weight: 700; margin-bottom: 10px; }
+    .open-actions { display: flex; gap: 8px; }
+    .btn-open { flex: 1; border: none; border-radius: 20px; padding: 12px; background: #1A73E8; color: #fff; font-weight: 600; cursor: pointer; font-size: 13px; }
+    .btn-copy-link {
+      flex: 1; border: 2px solid #1A73E8; border-radius: 20px; padding: 10px 8px;
+      background: #fff; color: #1A73E8; font-weight: 600; cursor: pointer; font-size: 13px;
+      transition: background .2s, color .2s, transform .15s, border-color .2s;
+    }
+    .btn-copy-link:active { transform: scale(.96); }
+    .btn-copy-link.copied {
+      background: #E6F4EA; border-color: #188038; color: #188038;
+      animation: copyPop .35s ease;
+    }
+    @keyframes copyPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+    .place-step-hdr { font-size: 11px; font-weight: 700; color: #5F6368; margin: 4px 0 6px; text-transform: uppercase; letter-spacing: .3px; }
+    .addr-card { background: #fff; border: 1px solid #E8EAED; border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; }
+    .addr-card-hint { font-size: 10px; color: #5F6368; padding: 0 2px 6px; line-height: 1.4; border-bottom: 1px solid #F1F3F4; margin-bottom: 4px; }
+    .addr-regen-warn {
+      margin-top: 8px; padding: 10px; border-radius: 8px;
+      background: #FCE8E6; border: 1px solid #F9ABAB;
+    }
+    .addr-regen-warn p { font-size: 10px; color: #5F6368; line-height: 1.45; margin-bottom: 8px; }
+    .btn-gen-addr {
+      width: 100%; border: 1px dashed #D93025; background: #fff; color: #D93025;
+      border-radius: 8px; padding: 8px; font-size: 11px; font-weight: 600; cursor: pointer;
+    }
+    .card-apply-cta {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: linear-gradient(135deg, #F8F9FA 0%, #E8F0FE 100%);
+      border: 1px solid #D2E3FC; border-radius: 10px; padding: 12px; margin-bottom: 12px;
+    }
+    .card-apply-cta .ca-icon {
+      width: 40px; height: 40px; border-radius: 8px; background: #fff;
+      border: 1px solid #E8EAED; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .card-apply-cta .ca-icon img { width: 28px; height: 28px; object-fit: contain; }
+    .card-apply-cta b { font-size: 12px; display: block; margin-bottom: 3px; }
+    .card-apply-cta p { font-size: 11px; color: #5F6368; line-height: 1.4; margin-bottom: 8px; }
+    .btn-card-apply {
+      border: none; border-radius: 8px; padding: 8px 12px;
+      background: #1A73E8; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .addr-row { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 1px solid #F1F3F4; font-size: 11px; }
+    .addr-row:last-child { border: 0; }
+    .addr-row .lbl { width: 52px; color: #5F6368; flex-shrink: 0; }
+    .addr-row .val { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .copy-pill { border: none; background: #E8F0FE; color: #1A73E8; border-radius: 4px; padding: 3px 8px; font-size: 10px; font-weight: 700; cursor: pointer; }
+    .place-dock {
+      position: absolute; bottom: 0; left: 0; right: 0; background: #fff;
+      border-top: 1px solid #E8EAED; padding: 10px 14px 14px; z-index: 6;
+    }
+    .dock-timer { text-align: center; font-size: 13px; font-weight: 700; color: #E37400; background: #FEF7E0; padding: 8px; border-radius: 8px; margin-bottom: 8px; }
+    .dock-timer.low { color: #D93025; background: #FCE8E6; animation: pulse 1s infinite; }
+    @keyframes pulse { 50% { opacity: .7; } }
+    .dock-row { display: flex; gap: 8px; }
+    .order-id-field {
+      flex: 1; border: 1px solid #E8EAED; border-radius: 10px; padding: 12px;
+      font-size: 13px; background: #F8F9FA; cursor: pointer;
+    }
+    .order-id-field:focus { border-color: #1A73E8; outline: none; background: #fff; }
+    .btn-submit { border: none; background: #1A73E8; color: #fff; border-radius: 10px; padding: 12px 18px; font-weight: 700; cursor: pointer; }
+    .btn-submit:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* Success */
+    .success-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 20px 32px; text-align: center; background: linear-gradient(180deg, #E8F0FE 0%, #F8F9FA 45%); }
+    .success-icon { width: 72px; height: 72px; background: #E6F4EA; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 12px; box-shadow: 0 4px 16px rgba(24,128,56,.2); animation: popIn .4s ease; }
+    @keyframes popIn { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-body h2 { font-size: 22px; margin-bottom: 6px; }
+    .success-body > p { font-size: 13px; color: #5F6368; margin-bottom: 14px; line-height: 1.5; max-width: 280px; }
+    .success-earn-chip {
+      background: #fff; border: 1px solid #C6DAFC; border-radius: 20px; padding: 6px 14px;
+      font-size: 12px; color: #1A73E8; font-weight: 600; margin-bottom: 18px;
+    }
+    .success-earn-chip b { color: #188038; font-size: 14px; }
+    .success-actions { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 10px; }
+    .order-more-card {
+      width: 100%; border: none; border-radius: 16px; padding: 14px 16px; cursor: pointer; text-align: left;
+      background: linear-gradient(135deg, #1A73E8 0%, #174EA6 100%); color: #fff;
+      display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 20px rgba(26,115,232,.35);
+      transition: transform .15s ease;
+    }
+    .order-more-card:active { transform: scale(.98); }
+    .omc-spark { font-size: 28px; line-height: 1; animation: wiggle 1.2s ease infinite; }
+    @keyframes wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-8deg); } 75% { transform: rotate(8deg); } }
+    .omc-text { flex: 1; }
+    .omc-text b { display: block; font-size: 15px; margin-bottom: 2px; }
+    .omc-text span { font-size: 11px; opacity: .9; line-height: 1.35; }
+    .omc-arrow { font-size: 22px; font-weight: 700; opacity: .85; }
+    .success-promo-tag {
+      font-size: 10px; color: #5F6368; margin-bottom: 8px; padding: 4px 10px;
+      background: #FEF7E0; border-radius: 8px; width: 100%; max-width: 300px;
+    }
+    .success-upsell {
+      width: 100%; text-align: left; border-radius: 14px; padding: 14px 16px;
+      background: #fff; border: 2px solid #1A73E8;
+      box-shadow: 0 6px 20px rgba(26,115,232,.2); cursor: pointer;
+    }
+    .success-upsell .su-badge {
+      display: inline-block; font-size: 9px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .3px; color: #1A73E8; background: #E8F0FE;
+      padding: 3px 8px; border-radius: 6px; margin-bottom: 6px;
+    }
+    .success-upsell h4 { font-size: 14px; line-height: 1.3; margin-bottom: 6px; color: #202124; }
+    .success-upsell p { font-size: 11px; color: #5F6368; line-height: 1.45; margin-bottom: 10px; }
+    .success-card-chips { display: flex; gap: 8px; margin-bottom: 10px; }
+    .success-card-chip {
+      flex: 1; padding: 8px; border-radius: 8px; background: #F8F9FA;
+      border: 1px solid #E8EAED; text-align: center; font-size: 10px; font-weight: 700;
+    }
+    .success-card-chip span { display: block; font-size: 16px; margin-bottom: 2px; }
+    .success-upsell .su-cta {
+      width: 100%; border: none; border-radius: 10px; padding: 10px;
+      background: linear-gradient(135deg, #1A73E8, #174EA6); color: #fff;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .success-wa-card {
+      width: 100%; border: none; border-radius: 14px; padding: 14px 16px; cursor: pointer; text-align: left;
+      background: linear-gradient(135deg, #128C7E 0%, #25D366 100%); color: #fff;
+      box-shadow: 0 6px 20px rgba(37,211,102,.3);
+    }
+    .success-wa-card b { display: block; font-size: 14px; margin-bottom: 4px; }
+    .success-wa-card span { font-size: 11px; opacity: .92; line-height: 1.35; }
+    .success-ref-card {
+      width: 100%; border: none; border-radius: 14px; padding: 14px 16px; cursor: pointer; text-align: left;
+      background: linear-gradient(135deg, #FEF7E0 0%, #FFF8E1 100%); color: #202124;
+      border: 1px solid #F9AB00; box-shadow: 0 4px 14px rgba(249,171,0,.2);
+    }
+    .success-ref-card b { display: block; font-size: 14px; margin-bottom: 4px; color: #E37400; }
+    .success-ref-card span { font-size: 11px; color: #5F6368; line-height: 1.35; }
+    /* Apply for cards — PiePay-style list, Mintzer blue */
+    .apply-cards-pad { padding: 12px 16px 24px; }
+    .apply-cards-intro {
+      font-size: 12px; color: #5F6368; line-height: 1.45; margin-bottom: 14px;
+    }
+    .pcard {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 14px;
+      padding: 14px; margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .pcard-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+    .pcard-visual {
+      width: 88px; height: 56px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .3px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15); position: relative; overflow: hidden;
+    }
+    .pcard-visual::after {
+      content: ''; position: absolute; top: -10px; right: -10px;
+      width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.15);
+    }
+    .pcard-visual img {
+      width: 28px; height: 28px; object-fit: contain; background: #fff;
+      border-radius: 6px; padding: 3px; position: relative; z-index: 1;
+    }
+    .pcard-meta { flex: 1; min-width: 0; }
+    .pcard-bank { font-size: 11px; color: #5F6368; margin-bottom: 2px; }
+    .pcard-name { font-size: 14px; font-weight: 800; line-height: 1.25; margin-bottom: 4px; }
+    .pcard-fee {
+      font-size: 11px; font-weight: 700; color: #188038;
+      background: #E6F4EA; display: inline-block; padding: 2px 8px; border-radius: 10px;
+    }
+    .pcard-fee.paid { color: #E37400; background: #FEF7E0; }
+    .pcard-benefits {
+      list-style: none; margin: 0 0 12px; padding: 0;
+      border-top: 1px solid #F1F3F4; padding-top: 10px;
+    }
+    .pcard-benefits li {
+      font-size: 11px; color: #5F6368; line-height: 1.4;
+      padding: 3px 0 3px 16px; position: relative;
+    }
+    .pcard-benefits li::before {
+      content: '✓'; position: absolute; left: 0; color: #1A73E8; font-weight: 700;
+    }
+    .pcard-cta {
+      width: 100%; border: none; border-radius: 10px; padding: 12px;
+      background: #1A73E8; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .pcard-cta:active { transform: scale(.98); }
+    .promo-slide-cards { cursor: pointer; }
+
+    /* Orders */
+    .tabs { display: flex; border-bottom: 1px solid #E8EAED; background: #fff; flex-shrink: 0; }
+    .tab { flex: 1; text-align: center; padding: 12px; font-size: 13px; color: #5F6368; border: none; background: none; cursor: pointer; font-weight: 500; }
+    .tab.active { color: #1A73E8; border-bottom: 2px solid #1A73E8; font-weight: 700; }
+    .orders-pad { padding: 12px 16px 88px; }
+    .order-card {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 12px;
+      margin-bottom: 10px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    }
+    .order-card .top { display: flex; gap: 10px; margin-bottom: 8px; }
+    .order-card .thumb { width: 48px; height: 48px; background: #F8F9FA; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .order-card .name { font-size: 13px; font-weight: 600; }
+    .order-card .sub { font-size: 11px; color: #5F6368; margin-top: 2px; }
+    .order-card .earn { color: #188038; font-weight: 700; font-size: 13px; }
+    .progress { display: flex; gap: 4px; margin: 8px 0; }
+    .prog-dot { flex: 1; height: 4px; background: #E8EAED; border-radius: 2px; }
+    .prog-dot.done { background: #1A73E8; }
+    .prog-dot.current { background: #F9AB00; }
+    .btn-continue { width: 100%; border: none; background: #1A73E8; color: #fff; border-radius: 10px; padding: 10px; font-weight: 600; cursor: pointer; margin-top: 4px; }
+    .empty { text-align: center; padding: 40px 20px; color: #5F6368; font-size: 13px; }
+
+    /* Order detail timeline */
+    .timeline { padding: 16px; padding-bottom: 88px; }
+    .tl-step { display: flex; gap: 12px; margin-bottom: 4px; }
+    .tl-dot { width: 24px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .tl-circle { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #E8EAED; background: #fff; }
+    .tl-circle.done { background: #1A73E8; border-color: #1A73E8; }
+    .tl-circle.current { border-color: #F9AB00; background: #FEF7E0; }
+    .tl-line { flex: 1; width: 2px; background: #E8EAED; min-height: 20px; }
+    .tl-body { flex: 1; padding-bottom: 16px; }
+    .tl-title { font-size: 13px; font-weight: 600; }
+    .tl-desc { font-size: 11px; color: #5F6368; margin-top: 2px; }
+    .tl-step.collapsed { margin-bottom: 0; }
+    .tl-step.collapsed .tl-body { padding-bottom: 6px; }
+    .tl-step.collapsed .tl-title { font-size: 12px; color: #5F6368; font-weight: 500; }
+    .tl-step.collapsed .tl-circle.done { width: 10px; height: 10px; }
+    .tl-line.short { min-height: 10px; }
+    .earn-compact {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px;
+    }
+    .earn-compact .ec-head { font-size: 11px; font-weight: 600; color: #5F6368; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .3px; }
+    .earn-compact .ec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+    .earn-compact .ec-cell { font-size: 11px; color: #5F6368; }
+    .earn-compact .ec-cell b { display: block; font-size: 13px; color: #202124; margin-top: 1px; }
+    .earn-compact .ec-total { grid-column: 1 / -1; background: #E6F4EA; border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
+    .earn-compact .ec-total span { font-size: 12px; font-weight: 600; color: #188038; }
+    .earn-compact .ec-total b { font-size: 18px; color: #188038; }
+    .invoice-status {
+      display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px;
+      font-size: 12px; font-weight: 600; margin-bottom: 8px;
+    }
+    .invoice-status.verifying { background: #FEF7E0; color: #E37400; }
+    .invoice-status.rejected { background: #FCE8E6; color: #D93025; }
+    .invoice-status.verified { background: #E6F4EA; color: #188038; }
+    .invoice-status .pulse { width: 8px; height: 8px; border-radius: 50%; background: #E37400; animation: invoicePulse 1s infinite; }
+    @keyframes invoicePulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+    .reject-reason { font-size: 11px; color: #D93025; background: #FCE8E6; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; line-height: 1.4; }
+    .tl-action input, .tl-action select {
+      width: 100%; border: 1px solid #E8EAED; border-radius: 8px; padding: 10px; font-size: 13px; margin-bottom: 6px;
+    }
+    .btn-sm { border: none; background: #1A73E8; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-sm.outline { background: #fff; color: #1A73E8; border: 1px solid #1A73E8; }
+
+    /* Wallet */
+    .wallet-pad { padding: 16px; padding-bottom: 88px; }
+    .wallet-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .wallet-card { background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 14px; }
+    .wallet-card.full { grid-column: 1 / -1; }
+    .wallet-card .lbl { font-size: 11px; color: #5F6368; }
+    .wallet-card .amt { font-size: 22px; font-weight: 800; color: #1A73E8; margin-top: 4px; }
+    .wallet-card .amt.green { color: #188038; }
+    .wallet-card .amt.grey { color: #5F6368; font-size: 16px; }
+    .hist-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #F1F3F4; font-size: 13px; }
+    .hist-item .status { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+    .status.paid { background: #E6F4EA; color: #188038; }
+    .status.pending { background: #FEF7E0; color: #E37400; }
+
+    /* Profile */
+    .profile-pad { padding: 16px; padding-bottom: 88px; }
+    .profile-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .avatar { width: 56px; height: 56px; border-radius: 50%; background: #1A73E8; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; }
+    .profile-name { font-size: 18px; font-weight: 700; }
+    .profile-phone { font-size: 12px; color: #5F6368; }
+    .menu-list { background: #fff; border: 1px solid #E8EAED; border-radius: 12px; overflow: hidden; }
+    .menu-item {
+      display: flex; align-items: center; justify-content: space-between; padding: 14px 16px;
+      border-bottom: 1px solid #F1F3F4; font-size: 14px; cursor: pointer; background: #fff; border-left: none; border-right: none; border-top: none; width: 100%; text-align: left;
+    }
+    .menu-item:last-child { border-bottom: 0; }
+    .menu-item.danger { color: #D93025; }
+    .menu-item span.sub { font-size: 12px; color: #5F6368; }
+
+    /* Nav + FAB */
+    .fab {
+      position: absolute; right: 16px; bottom: 72px; width: 52px; height: 52px;
+      background: #1A73E8; border: none; border-radius: 50%; color: #fff;
+      display: none; align-items: center; justify-content: center; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(26,115,232,.35); z-index: 5;
+    }
+    .fab.show { display: flex; }
+    .bottom-nav { background: #fff; border-top: 1px solid #E8EAED; height: 56px; display: none; flex-shrink: 0; z-index: 5; }
+    .bottom-nav.show { display: flex; }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; border: none; background: none; cursor: pointer; color: #5F6368; font-size: 10px; font-weight: 500;
+    }
+    .nav-item.active { color: #1A73E8; }
+
+    /* Modals */
+    .overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,.45); z-index: 20;
+      display: none; align-items: flex-end; justify-content: center;
+    }
+    .overlay.show { display: flex; }
+    .sheet {
+      background: #fff; border-radius: 16px 16px 0 0; width: 100%; max-height: 85%;
+      padding: 20px 20px 28px; overflow-y: auto; animation: slideUp .25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .sheet h2 { font-size: 17px; margin-bottom: 6px; }
+    .sheet p { font-size: 13px; color: #5F6368; margin-bottom: 16px; line-height: 1.45; }
+    .sheet-actions { display: flex; flex-direction: column; gap: 8px; }
+    .btn-outline { width: 100%; border: 1px solid #1A73E8; background: #fff; color: #1A73E8; border-radius: 24px; padding: 13px; font-weight: 600; cursor: pointer; }
+
+    .snackbar {
+      position: absolute; bottom: 72px; right: 12px; left: 12px; background: #323232; color: #fff;
+      padding: 12px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transform: translateY(8px);
+      transition: .25s; pointer-events: none; z-index: 30; text-align: center;
+    }
+    .snackbar.show { opacity: 1; transform: translateY(0); }
+
+    .demo-reset {
+      margin-top: 14px; border: 1px solid #5F6368; background: transparent; color: #9AA0A6;
+      padding: 8px 16px; border-radius: 20px; font-size: 11px; cursor: pointer;
+    }
+    .demo-reset:hover { border-color: #8AB4F8; color: #8AB4F8; }
+
+    .filter-btn {
+      width: 34px; height: 34px; border: 1px solid #E8EAED; border-radius: 50%;
+      background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5F6368; flex-shrink: 0;
+    }
+    .filter-btn.active { background: #E8F0FE; color: #1A73E8; border-color: #1A73E8; }
+    .appbar-actions { display: flex; gap: 4px; margin-left: auto; }
+    .appbar-actions .icon-btn { width: 32px; height: 32px; }
+    .shop-chip {
+      display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 14px;
+      font-size: 11px; font-weight: 600; background: #E8F0FE; color: #1A73E8; border: 1px solid #D2E3FC; cursor: pointer; margin-bottom: 8px;
+    }
+    .shop-mode-options { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+    .shop-mode-opt {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%;
+      border: 2px solid #E8EAED; border-radius: 12px; padding: 12px 14px; background: #fff;
+      cursor: pointer; text-align: left; position: relative;
+    }
+    .shop-mode-opt.selected { border-color: #1A73E8; background: #E8F0FE; }
+    .shop-mode-opt .opt-title { font-size: 14px; font-weight: 600; color: #202124; }
+    .shop-mode-opt .opt-sub { font-size: 11px; color: #5F6368; }
+    .shop-mode-opt .opt-tick {
+      position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid #E8EAED; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: transparent;
+    }
+    .shop-mode-opt.selected .opt-tick { background: #1A73E8; border-color: #1A73E8; color: #fff; }
+    .remember-row {
+      display: flex; align-items: center; gap: 8px; font-size: 13px; color: #202124;
+      margin: 4px 0 14px; cursor: pointer; user-select: none;
+    }
+    .remember-row input { width: 18px; height: 18px; accent-color: #1A73E8; cursor: pointer; }
+    .webview-hint {
+      background: #202124; color: #E8EAED; border-radius: 10px; padding: 40px 16px; text-align: center; margin-bottom: 8px; font-size: 12px;
+    }
+    .webview-hint b { display: block; font-size: 14px; margin-bottom: 6px; color: #fff; }
+    .dup-block {
+      background: #FCE8E6; border: 1px solid #F28B82; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 12px; color: #D93025;
+    }
+    .btn-gen-addr-old { display: none; }
+    .orders-toolbar { padding: 10px 16px 0; background: #fff; flex-shrink: 0; }
+    .orders-toolbar .search-field { margin-bottom: 8px; }
+    .tab-wrap { position: relative; flex: 1; }
+    .tab-badge {
+      position: absolute; top: 6px; right: calc(50% - 36px); background: #D93025; color: #fff;
+      font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px;
+      display: none; align-items: center; justify-content: center;
+    }
+    .tab-badge.show { display: flex; }
+    .placement-card {
+      background: #FEF7E0; border: 1px solid #F9AB00; border-radius: 12px; padding: 12px; margin-bottom: 12px; cursor: pointer;
+    }
+    .placement-card .pc-timer { font-size: 14px; font-weight: 800; color: #E37400; }
+    .placement-card .pc-sub { font-size: 11px; color: #5F6368; margin-top: 4px; }
+    .placement-card .pc-row { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+    .placement-card .pc-thumb { width: 44px; height: 44px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .collapse-hdr {
+      display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;
+      font-size: 14px; font-weight: 600; border-bottom: 1px solid #E8EAED;
+    }
+    .collapse-body { padding: 10px 0 16px; font-size: 12px; color: #5F6368; line-height: 1.55; display: none; }
+    .collapse-body.open { display: block; }
+    .wallet-toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+    .wallet-toolbar .chip { font-size: 11px; padding: 5px 10px; }
+    .btn-link { border: none; background: none; color: #1A73E8; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .status.canceled { background: #FCE8E6; color: #D93025; }
+    .notif-item, .ticket-item {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer;
+    }
+    .notif-item.unread { border-left: 3px solid #1A73E8; }
+    .notif-item .ni-title { font-size: 13px; font-weight: 600; }
+    .notif-item .ni-time { font-size: 10px; color: #5F6368; margin-top: 2px; }
+    .ticket-item .ti-id { font-size: 11px; color: #5F6368; }
+    .ticket-item .ti-status { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: #E8F0FE; color: #1A73E8; }
+    .state-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
+    .state-icon { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; }
+    .state-icon.warn { background: #FCE8E6; }
+    .state-icon.muted { background: #F1F3F4; }
+    .state-screen h2 { font-size: 18px; margin-bottom: 8px; }
+    .state-screen p { font-size: 13px; color: #5F6368; line-height: 1.5; margin-bottom: 20px; }
+    .sheet-filter .filter-group { margin-bottom: 14px; }
+    .sheet-filter .filter-group label { font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px; }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .filter-chips button {
+      padding: 6px 12px; border-radius: 16px; border: 1px solid #E8EAED; background: #fff; font-size: 12px; cursor: pointer;
+    }
+    .filter-chips button.active { background: #E8F0FE; border-color: #1A73E8; color: #1A73E8; font-weight: 600; }
+    .sheet input[type=range] { width: 100%; }
+    .modal-center {
+      position: absolute; inset: 0; background: rgba(0,0,0,.45); z-index: 25;
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-center.show { display: flex; }
+    .dialog {
+      background: #fff; border-radius: 16px; width: 100%; max-width: 340px; padding: 20px; max-height: 80%; overflow-y: auto;
+    }
+    .dialog h2 { font-size: 16px; margin-bottom: 8px; }
+    .dialog p { font-size: 12px; color: #5F6368; margin-bottom: 12px; line-height: 1.45; }
+    .dialog textarea { width: 100%; border: 1px solid #E8EAED; border-radius: 10px; padding: 10px; font-size: 13px; min-height: 80px; resize: none; font-family: inherit; }
+    .char-count { font-size: 10px; color: #5F6368; text-align: right; margin-top: 4px; }
+    .dialog-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .dialog-actions button { flex: 1; }
+    .step-dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 14px; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: #E8EAED; }
+    .step-dot.active { background: #1A73E8; }
+    .step-dot.done { background: #188038; }
+    .order-detail-actions { display: flex; gap: 8px; padding: 0 16px 12px; background: #fff; border-bottom: 1px solid #E8EAED; flex-shrink: 0; }
+    .order-detail-actions button { flex: 1; font-size: 12px; padding: 8px; border-radius: 8px; border: 1px solid #E8EAED; background: #fff; cursor: pointer; font-weight: 600; }
+    .order-detail-actions button.primary { background: #1A73E8; color: #fff; border-color: #1A73E8; }
+    .order-card.canceled { opacity: .75; }
+    .order-card .cancel-tag { font-size: 10px; color: #D93025; font-weight: 700; }
+    .note-preview { font-size: 11px; color: #5F6368; background: #F8F9FA; padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; font-style: italic; }
+    .payment-timer { font-size: 14px; font-weight: 800; color: #E37400; background: #FEF7E0; padding: 10px; border-radius: 8px; text-align: center; margin-top: 8px; }
+
+    /* Dark mode on phone */
+    .phone.dark { background: #202124; border-color: #5F6368; }
+    .phone.dark .status-bar, .phone.dark .header, .phone.dark .appbar,
+    .phone.dark .bottom-nav, .phone.dark .deal-card, .phone.dark .order-card,
+    .phone.dark .wallet-card, .phone.dark .menu-list, .phone.dark .menu-item,
+    .phone.dark .sheet, .phone.dark .dialog, .phone.dark .notif-item,
+    .phone.dark .ticket-item, .phone.dark .search-field, .phone.dark .view-toggle,
+    .phone.dark .chip, .phone.dark .filter-btn, .phone.dark .text-input,
+    .phone.dark .addr-card, .phone.dark .place-prod, .phone.dark .place-checkout, .phone.dark .money-card,
+    .phone.dark .logo-rows, .phone.dark .placement-card, .phone.dark .tabs { background: #303134; color: #E8EAED; border-color: #5F6368; }
+    .phone.dark .scroll, .phone.dark .login-body, .phone.dark .screen { background: #202124; }
+    .phone.dark .title, .phone.dark .greeting h2, .phone.dark .profile-name,
+    .phone.dark .detail-title, .phone.dark .money-row b { color: #E8EAED; }
+    .phone.dark .greeting p, .phone.dark .color-text, .phone.dark .field-label,
+    .phone.dark .detail-meta, .phone.dark .tl-desc { color: #9AA0A6; }
+    .phone.dark .bank-row { background: #3C4043; }
+    .phone.dark .prefix { background: #303134; color: #E8EAED; border-color: #5F6368; }
+  </style>
+</head>
+<body>
+
+  <div class="demo-header">
+    <h1>Mintzer — Full app demo <span style="font-size:12px;color:#81C995">v2.5 affiliate</span></h1>
+    <p>Interactive phone demo: login → browse deals → accept → place order → track → wallet → profile.<br/>
+    Home carousel slide 3 = <b>Partner cards</b>. Order success promo <b>rotates</b>. Deal badges + referral in Profile.<br/>
+    Phone ending in <kbd>0000</kbd> → suspended account. Place order auto-fills Order ID — tap Submit.<br/>
+    First Accept: choose shop mode + tick <b>Keep as my default</b> if you want to skip the question next time.<br/>
+    Tracking starting with <kbd>EK</kbd> auto-detects Ekart. FAB raises support ticket.</p>
+  </div>
+
+  <div class="phone" id="phone">
+    <div class="status-bar"><span id="clock">9:41</span><span>●●●</span></div>
+
+    <!-- LOGIN PHONE -->
+    <div class="screen active" id="screen-login-phone">
+      <div class="login-body">
+        <div class="logo">Mintzer</div>
+        <p class="login-sub">Earn with your credit card on Flipkart & Amazon deals</p>
+        <div class="field-group">
+          <div class="field-label">Mobile number</div>
+          <div class="phone-row">
+            <span class="prefix">+91</span>
+            <input type="tel" class="text-input" id="phoneInput" placeholder="10-digit number" maxlength="10" inputmode="numeric" />
+          </div>
+          <div class="field-error" id="phoneError">Enter a valid 10-digit mobile number</div>
+        </div>
+        <button type="button" class="btn-primary" id="btnContinue" disabled>Continue</button>
+        <p style="font-size:11px;color:#5F6368;margin-top:20px;text-align:center">By continuing you agree to Terms & Privacy</p>
+      </div>
+    </div>
+
+    <!-- LOGIN OTP -->
+    <div class="screen" id="screen-login-otp">
+      <div class="appbar">
+        <button type="button" class="back-btn" data-back="login-phone">←</button>
+        <h1>Verify OTP</h1>
+      </div>
+      <div class="login-body" style="padding-top:24px">
+        <p class="login-sub">Code sent to +91 <span id="otpPhoneDisplay"></span></p>
+        <div class="otp-row" id="otpRow"></div>
+        <div class="field-error" id="otpError" style="text-align:center">Incorrect code. Try again.</div>
+        <button type="button" class="btn-primary" id="btnVerify" disabled>Verify</button>
+        <p class="resend">Didn't get it? <button type="button" id="btnResend">Resend in <span id="resendTimer">30</span>s</button></p>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <div class="screen" id="screen-home">
+      <header class="header">
+        <div class="header-row">
+          <div class="greeting"><h2>Hi, Arun</h2><p>Earn with your card</p></div>
+          <div class="header-actions">
+            <button type="button" class="wallet-pill" data-nav="wallet">₹<span id="walletHeader">1,240</span></button>
+            <button type="button" class="icon-btn" id="btnNotifBell" aria-label="Notifications"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5F6368" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-dot"></span></button>
+            <button type="button" class="icon-btn wa-btn" id="btnWaCommunity" aria-label="WhatsApp community"><svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></button>
+          </div>
+        </div>
+      </header>
+      <div class="scroll">
+        <div class="toolbar">
+          <div class="search-field">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5F6368" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="search" id="searchInput" placeholder="Search deals..." />
+          </div>
+          <div class="view-toggle">
+            <button type="button" class="view-btn active" id="btnList">☰</button>
+            <button type="button" class="view-btn" id="btnGrid">⊞</button>
+          </div>
+        </div>
+        <div class="chips-row" id="chipsRow"></div>
+        <div class="promo-carousel" id="promoCarousel">
+          <div class="promo-track">
+            <article class="promo-slide active">
+              <div class="promo-body">
+                <div>
+                  <div class="promo-kicker">Mintzer community</div>
+                  <div class="promo-title">Join our WhatsApp announcement channel</div>
+                  <ul class="promo-bullets">
+                    <li>New deals before Home</li>
+                    <li>Instant payout updates</li>
+                  </ul>
+                </div>
+                <button type="button" class="promo-cta" id="btnPromoWa">Join now ↗</button>
+              </div>
+              <div class="promo-art">
+                <div class="promo-wa-phone" aria-hidden="true">
+                  <div class="promo-wa-screen">
+                    <div class="promo-wa-bubble">🔥 New deal live!</div>
+                    <div class="promo-wa-bubble">Earn ₹450 on M35</div>
+                  </div>
+                </div>
+              </div>
+            </article>
+            <article class="promo-slide">
+              <div class="promo-body">
+                <div>
+                  <div class="promo-kicker">New here?</div>
+                  <div class="promo-title">Watch how Mintzer works in 2 minutes</div>
+                  <ul class="promo-bullets">
+                    <li>Accept → order → submit proof</li>
+                    <li>Earnings land in your Wallet</li>
+                  </ul>
+                </div>
+                <button type="button" class="promo-cta" id="btnPromoTutorial">Watch tutorial ▶</button>
+              </div>
+              <div class="promo-art">
+                <div class="promo-play-art" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+            </article>
+            <article class="promo-slide promo-slide-cards">
+              <div class="promo-body">
+                <div>
+                  <div class="promo-kicker">Partner cards</div>
+                  <div class="promo-title">Unlock ₹12,000+ in deals this month</div>
+                  <div class="promo-sub">HDFC & Axis · Fee waived on select cards</div>
+                </div>
+                <button type="button" class="promo-cta" id="btnPromoCards">Browse cards →</button>
+              </div>
+              <div class="promo-art">
+                <div class="promo-card-stack" aria-hidden="true">
+                  <div class="pc">HDFC</div>
+                  <div class="pc">AXIS</div>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="promo-dots" id="promoDots">
+            <button type="button" class="promo-dot active" data-idx="0" aria-label="Slide 1"></button>
+            <button type="button" class="promo-dot" data-idx="1" aria-label="Slide 2"></button>
+            <button type="button" class="promo-dot" data-idx="2" aria-label="Slide 3"></button>
+          </div>
+        </div>
+        <div id="socialProofSlot"></div>
+        <div class="tutorial" id="tutorialBanner">
+          <div class="tutorial-play" data-snack="Opening tutorial video…">▶</div>
+          <span class="tutorial-text" data-snack="Opening tutorial video…">New here? Watch how Mintzer works</span>
+          <button type="button" class="tutorial-close" id="tutorialClose">×</button>
+        </div>
+        <div class="active-strip" id="activeStrip">
+          <span class="timer" id="stripTimer">⏱ 14:32</span>
+          <span class="info" id="stripInfo">Motorola G57 — finish order</span>
+          <span class="go">Continue →</span>
+        </div>
+        <div class="list-meta">
+          <span class="count" id="dealCount">3 deals live</span>
+          <button type="button" class="sort" data-snack="Sorted by highest earn">Highest earn ↓</button>
+        </div>
+        <div id="dealList"></div>
+      </div>
+    </div>
+
+    <!-- DEAL DETAIL -->
+    <div class="screen" id="screen-deal-detail">
+      <div class="appbar">
+        <button type="button" class="back-btn" data-back="home">←</button>
+        <h1>Deal detail</h1>
+        <div class="appbar-actions">
+          <button type="button" class="icon-btn wa-btn" id="btnDetailWa" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></button>
+          <button type="button" class="text-btn" id="btnReportError">Report</button>
+        </div>
+      </div>
+      <div class="scroll">
+        <div class="detail-pad" id="detailContent"></div>
+      </div>
+      <div class="sticky-bottom">
+        <button type="button" class="btn-primary" id="btnAccept">Accept deal</button>
+      </div>
+    </div>
+
+    <!-- PLACE ORDER -->
+    <div class="screen" id="screen-place-order">
+      <div class="appbar">
+        <button type="button" class="text-btn danger" id="btnCancelOrder">Cancel</button>
+        <h1>Place order</h1>
+      </div>
+      <div class="scroll place-scroll" id="placeContent"></div>
+      <div class="place-dock">
+        <div class="dock-timer" id="dockTimer">⏱ Complete order in 15:00</div>
+        <div class="dock-row">
+          <input type="text" class="order-id-field" id="orderIdField" placeholder="Order ID" />
+          <button type="button" class="btn-submit" id="btnSubmitOrder" disabled>Submit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDER SUCCESS -->
+    <div class="screen" id="screen-order-success">
+      <div class="success-body">
+        <div class="success-icon">✓</div>
+        <h2>Order placed!</h2>
+        <p>We got your Order ID. Track delivery and upload invoice in My Orders.</p>
+        <div class="success-earn-chip" id="successEarnChip">You're earning <b>₹0</b> on this order</div>
+        <div class="success-actions">
+          <button type="button" class="btn-primary" id="btnGoOrders">Go to My Orders</button>
+          <div class="success-promo-tag" id="successPromoTag"></div>
+          <div id="successPromoSlot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY ORDERS -->
+    <div class="screen" id="screen-orders">
+      <div class="appbar"><h1 style="margin:0;text-align:left;padding-left:4px">My Orders</h1></div>
+      <div class="orders-toolbar">
+        <div class="search-field">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5F6368" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="search" id="orderSearchInput" placeholder="Search model, Order ID, tracking…" />
+        </div>
+        <div class="chips-row" id="orderStoreChips" style="padding:0 0 8px"></div>
+      </div>
+      <div class="tabs">
+        <div class="tab-wrap"><button type="button" class="tab active" data-otab="ongoing">Ongoing</button><span class="tab-badge" id="ongoingBadge">0</span></div>
+        <button type="button" class="tab" data-otab="completed">Completed</button>
+        <button type="button" class="sort" id="btnOrderSort" style="padding:12px 14px;font-size:11px;border:none;background:#fff;cursor:pointer;color:#1A73E8;font-weight:600">Newest ↓</button>
+      </div>
+      <div class="scroll orders-pad" id="ordersList"></div>
+    </div>
+
+    <!-- ORDER DETAIL -->
+    <div class="screen" id="screen-order-detail">
+      <div class="appbar">
+        <button type="button" class="back-btn" data-back="orders">←</button>
+        <h1>Order detail</h1>
+      </div>
+      <div class="order-detail-actions" id="orderDetailActions"></div>
+      <div class="scroll timeline" id="timelineContent"></div>
+    </div>
+
+    <!-- WALLET -->
+    <div class="screen" id="screen-wallet">
+      <div class="appbar"><h1 style="margin:0;text-align:left;padding-left:4px">Wallet</h1></div>
+      <div class="scroll wallet-pad" id="walletContent"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="screen" id="screen-profile">
+      <div class="appbar"><h1 style="margin:0;text-align:left;padding-left:4px">Profile</h1></div>
+      <div class="scroll profile-pad" id="profileContent"></div>
+    </div>
+
+    <!-- APPLY FOR CARDS (PiePay-style list) -->
+    <div class="screen" id="screen-apply-cards">
+      <div class="appbar">
+        <button type="button" class="back-btn" data-back="home">←</button>
+        <h1>Apply for cards</h1>
+      </div>
+      <div class="scroll apply-cards-pad" id="applyCardsContent"></div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="screen" id="screen-notifications">
+      <div class="appbar">
+        <button type="button" class="back-btn" data-back="home">←</button>
+        <h1>Notifications</h1>
+      </div>
+      <div class="scroll orders-pad" id="notifList"></div>
+    </div>
+
+    <!-- MY TICKETS -->
+    <div class="screen" id="screen-tickets">
+      <div class="appbar">
+        <button type="button" class="back-btn" data-back="profile">←</button>
+        <h1>My tickets</h1>
+      </div>
+      <div class="scroll orders-pad" id="ticketsList"></div>
+    </div>
+
+    <!-- ACCOUNT SUSPENDED -->
+    <div class="screen" id="screen-account-suspended">
+      <div class="state-screen">
+        <div class="state-icon warn">⛔</div>
+        <h2>Account suspended</h2>
+        <p>Your account is not active right now. Please contact support if you want to restore access.</p>
+        <button type="button" class="btn-primary" id="btnSuspendedSupport">Contact support</button>
+        <button type="button" class="btn-outline" id="btnSuspendedLogin" style="margin-top:10px">Back to login</button>
+      </div>
+    </div>
+
+    <!-- ACCOUNT DELETED -->
+    <div class="screen" id="screen-account-deleted">
+      <div class="state-screen">
+        <div class="state-icon muted">👋</div>
+        <h2>Account deleted</h2>
+        <p>Your Mintzer account and data have been removed. You can sign up again anytime with a new number.</p>
+        <button type="button" class="btn-primary" id="btnDeletedLogin">Back to login</button>
+      </div>
+    </div>
+
+    <!-- MODALS -->
+    <div class="overlay" id="modalKyc">
+      <div class="sheet">
+        <h2>Quick KYC</h2>
+        <p>Name + PAN required before your first order.</p>
+        <div class="field-group"><div class="field-label">Full name</div><input class="text-input" id="kycName" placeholder="As on PAN card" /></div>
+        <div class="field-group"><div class="field-label">PAN number</div><input class="text-input" id="kycPan" placeholder="ABCDE1234F" maxlength="10" style="text-transform:uppercase" /></div>
+        <div class="sheet-actions">
+          <button type="button" class="btn-primary" id="btnKycSave">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalPayout">
+      <div class="sheet">
+        <h2>Payout details</h2>
+        <p>Where should we send your earnings?</p>
+        <div class="field-group"><div class="field-label">UPI ID</div><input class="text-input" id="upiId" placeholder="name@upi" /></div>
+        <p style="font-size:11px;text-align:center;margin:8px 0">— or —</p>
+        <div class="field-group"><div class="field-label">Bank account (optional)</div><input class="text-input" id="bankAcct" placeholder="Account number" /></div>
+        <div class="sheet-actions">
+          <button type="button" class="btn-primary" id="btnPayoutSave">Save & continue</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalBlocked">
+      <div class="sheet">
+        <h2>Finish current order first</h2>
+        <p>You already have an order in progress. Complete it or cancel before accepting a new deal.</p>
+        <div class="sheet-actions">
+          <button type="button" class="btn-primary" id="btnGoPlaceOrder">Continue order</button>
+          <button type="button" class="btn-outline" id="btnBlockedClose">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalCancel">
+      <div class="sheet">
+        <h2>Cancel order?</h2>
+        <p>Your timer will stop. Pick a reason:</p>
+        <div class="menu-list" style="margin-bottom:16px">
+          <button type="button" class="menu-item cancel-reason">Changed my mind</button>
+          <button type="button" class="menu-item cancel-reason">Wrong product</button>
+          <button type="button" class="menu-item cancel-reason">Payment failed</button>
+          <button type="button" class="menu-item cancel-reason">Price changed on store</button>
+        </div>
+        <button type="button" class="btn-outline" id="btnCancelDismiss">Keep ordering</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalFilter">
+      <div class="sheet sheet-filter">
+        <h2>Filter deals</h2>
+        <p>Store · card · minimum earn</p>
+        <div class="filter-group">
+          <label>Store</label>
+          <div class="filter-chips" id="filterStore">
+            <button type="button" data-v="all" class="active">All</button>
+            <button type="button" data-v="fk">Flipkart</button>
+            <button type="button" data-v="az">Amazon</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>Card</label>
+          <div class="filter-chips" id="filterCard">
+            <button type="button" data-v="all" class="active">All</button>
+            <button type="button" data-v="any">Any card</button>
+            <button type="button" data-v="hdfc">HDFC</button>
+            <button type="button" data-v="axis">Axis</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>Min earn: ₹<span id="minEarnLabel">0</span></label>
+          <input type="range" id="minEarnRange" min="0" max="500" step="50" value="0" />
+        </div>
+        <div class="sheet-actions">
+          <button type="button" class="btn-primary" id="btnFilterApply">Apply filters</button>
+          <button type="button" class="btn-outline" id="btnFilterClear">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalShopMode">
+      <div class="sheet">
+        <h2>How do you want to shop?</h2>
+        <p>Order on the store yourself, or shop inside Mintzer.</p>
+        <div class="shop-mode-options">
+          <button type="button" class="shop-mode-opt selected" data-mode="external">
+            <span class="opt-title">🌐 External browser</span>
+            <span class="opt-sub">Open Flipkart / Amazon app (recommended)</span>
+            <span class="opt-tick">✓</span>
+          </button>
+          <button type="button" class="shop-mode-opt" data-mode="inapp">
+            <span class="opt-title">📱 In-app WebView</span>
+            <span class="opt-sub">Shop inside Mintzer without leaving the app</span>
+            <span class="opt-tick">✓</span>
+          </button>
+        </div>
+        <label class="remember-row">
+          <input type="checkbox" id="shopRemember" checked />
+          <span>Keep this as my default</span>
+        </label>
+        <button type="button" class="btn-primary" id="btnShopContinue">Continue</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalGstAlert">
+      <div class="sheet gst-alert-sheet">
+        <button type="button" class="gst-close" id="btnGstClose" aria-label="Close">×</button>
+        <div class="gst-alert-head">
+          <span class="gst-alert-icon">!</span>
+          <h2>GST deal alert</h2>
+        </div>
+        <ul class="gst-alert-list">
+          <li>Enter the correct <b>GST details</b> on the store when you checkout.</li>
+          <li>After delivery, uploading the correct <b>invoice is mandatory</b> for this order.</li>
+          <li>Wrong GST or invoice may delay or reduce your payout.</li>
+        </ul>
+        <button type="button" class="btn-primary" id="btnGstOk">OK, I understand</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalRaiseTicket">
+      <div class="sheet">
+        <h2>Raise support ticket</h2>
+        <p>Describe your issue — we'll respond in My tickets.</p>
+        <div class="field-group"><div class="field-label">Subject</div><input class="text-input" id="ticketSubject" placeholder="e.g. Order ID not accepted" /></div>
+        <div class="field-group"><div class="field-label">Details</div><textarea class="text-input" id="ticketBody" rows="3" placeholder="What happened?" style="min-height:72px;resize:none"></textarea></div>
+        <div class="sheet-actions">
+          <button type="button" class="btn-primary" id="btnTicketSubmit">Submit ticket</button>
+          <button type="button" class="btn-outline" id="btnTicketCancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalSort">
+      <div class="sheet">
+        <h2>Sort orders</h2>
+        <div class="menu-list" style="margin-bottom:12px">
+          <button type="button" class="menu-item sort-opt" data-sort="newest">Newest first</button>
+          <button type="button" class="menu-item sort-opt" data-sort="oldest">Oldest first</button>
+          <button type="button" class="menu-item sort-opt" data-sort="action">Needs action first</button>
+        </div>
+        <button type="button" class="btn-outline" id="btnSortClose">Close</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalDateRange">
+      <div class="sheet">
+        <h2>Date range</h2>
+        <p>Filter wallet transactions</p>
+        <div class="field-group"><div class="field-label">From</div><input type="date" class="text-input" id="dateFrom" /></div>
+        <div class="field-group"><div class="field-label">To</div><input type="date" class="text-input" id="dateTo" /></div>
+        <div class="sheet-actions">
+          <button type="button" class="btn-primary" id="btnDateApply">Apply</button>
+          <button type="button" class="btn-outline" id="btnDateClear">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalReferral">
+      <div class="sheet">
+        <h3>Refer & earn ₹200</h3>
+        <p style="font-size:12px;color:#5F6368;line-height:1.5;margin-bottom:4px">Share your code. When a friend completes their first order, you both get <b>₹200</b> in Wallet.</p>
+        <div class="ref-code-box">
+          <code id="referralCodeDisplay">ARUN200</code>
+          <button type="button" class="btn-sm" id="btnCopyReferral">Copy</button>
+        </div>
+        <button type="button" class="btn-primary" id="btnShareReferral" style="margin-bottom:4px">Share on WhatsApp</button>
+        <div class="ref-stats">
+          <div class="ref-stat"><div class="num" id="referralCount">0</div><div class="lbl">Friends joined</div></div>
+          <div class="ref-stat"><div class="num" id="referralEarned">₹0</div><div class="lbl">Referral bonus</div></div>
+        </div>
+        <button type="button" class="btn-outline" id="btnReferralClose" style="width:100%">Close</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalApplyCards">
+      <div class="sheet">
+        <h3>Partner cards</h3>
+        <p style="font-size:12px;color:#5F6368;margin-bottom:12px;line-height:1.45">Apply through our partner links. Use these cards on Mintzer deals to unlock bigger earn.</p>
+        <div id="applyCardsList"></div>
+        <button type="button" class="btn-outline" id="btnApplyCardsClose" style="margin-top:12px;width:100%">Close</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="modalDeleteAccount">
+      <div class="sheet">
+        <h2>Delete account?</h2>
+        <p id="deleteAccountMsg">This permanently removes your profile and history.</p>
+        <div class="sheet-actions">
+          <button type="button" class="btn-primary danger" id="btnDeleteConfirm" style="background:#D93025">Delete my account</button>
+          <button type="button" class="btn-outline" id="btnDeleteCancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-center" id="modalNote">
+      <div class="dialog">
+        <h2 id="noteModalTitle">Add note</h2>
+        <p>For your reference only — max 200 characters</p>
+        <textarea id="noteText" maxlength="200" placeholder="e.g. Ordered blue variant"></textarea>
+        <div class="char-count"><span id="noteCharCount">0</span>/200</div>
+        <div class="dialog-actions">
+          <button type="button" class="btn-outline" id="btnNoteCancel">Cancel</button>
+          <button type="button" class="btn-primary" id="btnNoteSave">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-center" id="modalReportIssue">
+      <div class="dialog" id="reportIssueDialog">
+        <div class="step-dots"><span class="step-dot active" data-rstep="0"></span><span class="step-dot" data-rstep="1"></span><span class="step-dot" data-rstep="2"></span></div>
+        <div id="reportStepContent"></div>
+        <div class="dialog-actions" id="reportStepActions"></div>
+      </div>
+    </div>
+
+    <div class="modal-center" id="modalCancelOrderDetail">
+      <div class="dialog">
+        <h2>Cancel this order?</h2>
+        <p>Only possible before shipment. Pick a reason:</p>
+        <div class="menu-list" style="margin-bottom:12px">
+          <button type="button" class="menu-item od-cancel-reason">Changed my mind</button>
+          <button type="button" class="menu-item od-cancel-reason">Ordered wrong item</button>
+          <button type="button" class="menu-item od-cancel-reason">Store cancelled</button>
+        </div>
+        <button type="button" class="btn-outline" id="btnOdCancelDismiss">Keep order</button>
+      </div>
+    </div>
+
+    <button type="button" class="fab show" id="fab">💬</button>
+    <nav class="bottom-nav" id="bottomNav">
+      <button type="button" class="nav-item active" data-nav="home">🏠<span>Home</span></button>
+      <button type="button" class="nav-item" data-nav="orders">📦<span>Orders</span></button>
+      <button type="button" class="nav-item" data-nav="wallet">👛<span>Wallet</span></button>
+      <button type="button" class="nav-item" data-nav="profile">👤<span>Profile</span></button>
+    </nav>
+
+    <div class="snackbar" id="snackbar"></div>
+  </div>
+
+  <button type="button" class="demo-reset" id="btnReset">Reset demo (start over)</button>
+
+<script>
+function openReferral() {
+  $('referralCodeDisplay').textContent = state.referralCode;
+  $('referralCount').textContent = state.referralCount;
+  $('referralEarned').textContent = '₹' + fmt(state.referralEarned);
+  $('modalReferral').classList.add('show');
+}
+
+function shareReferral() {
+  const msg = `Join Mintzer and earn on Flipkart & Amazon deals! Use my code ${state.referralCode} — we both get ₹200 on your first order.`;
+  snack('Opening WhatsApp share…');
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function dealBadgeHtml(d, inline = false) {
+  const parts = [];
+  if (d.badge === 'hot') parts.push(inline ? '<span class="deal-badge-pill hot">🔥 Hot</span>' : '<span class="deal-badge hot">🔥 Hot</span>');
+  if (d.badge === 'trending') parts.push(inline ? '<span class="deal-badge-pill trending">📈 Trending</span>' : '<span class="deal-badge trending">📈 Trending</span>');
+  if (d.slotsLeft != null && d.slotsLeft <= 12) {
+    const lbl = d.slotsLeft <= 5 ? `⚡ ${d.slotsLeft} left` : `${d.slotsLeft} slots`;
+    parts.push(inline ? `<span class="deal-badge-pill slots">${lbl}</span>` : `<span class="deal-badge slots">${lbl}</span>`);
+  }
+  if (!parts.length) return '';
+  return inline ? `<div class="deal-badge-row">${parts.join('')}</div>` : parts.join('');
+}
+
+const PARTNER_CARDS = [
+  {
+    id: 'hdfc-millennia', bank: 'HDFC Bank', name: 'Millennia Credit Card',
+    fee: 'Lifetime free*', feePaid: false, logo: '../logos/hdfc.svg',
+    gradient: 'linear-gradient(135deg, #003399, #1A73E8)',
+    benefits: ['5% cashback on Flipkart & Amazon', 'Unlock Mintzer HDFC-only deals', 'Welcome benefits via partner link'],
+    url: 'https://www.hdfcbank.com/credit-cards'
+  },
+  {
+    id: 'axis-ace', bank: 'Axis Bank', name: 'ACE Credit Card',
+    fee: '₹499 + GST / year', feePaid: true, logo: '../logos/axis.svg',
+    gradient: 'linear-gradient(135deg, #7B1FA2, #97144D)',
+    benefits: ['Strong on Amazon spends', 'Required for Axis Mintzer deals', '₹500 welcome on first spend*'],
+    url: 'https://www.axisbank.com/credit-card'
+  },
+  {
+    id: 'hdfc-regalia', bank: 'HDFC Bank', name: 'Regalia Gold',
+    fee: '₹2,500 + GST / year', feePaid: true, logo: '../logos/hdfc.svg',
+    gradient: 'linear-gradient(135deg, #174EA6, #5F6368)',
+    benefits: ['Higher limits for big-ticket deals', 'Airport lounge access*', 'Good for GST / electronics orders'],
+    url: 'https://www.hdfcbank.com/credit-cards'
+  },
+  {
+    id: 'any-starter', bank: 'Any bank', name: 'Starter — Any credit / debit',
+    fee: 'Use card you already have', feePaid: false, logo: '../logos/any-card.svg',
+    gradient: 'linear-gradient(135deg, #5F6368, #9AA0A6)',
+    benefits: ['Works on “Any card” Mintzer deals', 'No new application needed', 'Start earning today'],
+    url: null
+  }
+];
+
+const SUCCESS_PROMO_LABELS = ['Order more', 'Partner cards', 'Refer a friend', 'Join WhatsApp'];
+
+function openApplyCards() {
+  showScreen('apply-cards');
+}
+
+function renderApplyCards() {
+  $('applyCardsContent').innerHTML = `
+    <p class="apply-cards-intro">Partner cards for Mintzer deals — apply via our link, then come back and earn more. Mintzer is not a bank.</p>
+    ${PARTNER_CARDS.map(c => `
+      <article class="pcard">
+        <div class="pcard-top">
+          <div class="pcard-visual" style="background:${c.gradient}"><img src="${c.logo}" alt="" /></div>
+          <div class="pcard-meta">
+            <div class="pcard-bank">${c.bank}</div>
+            <div class="pcard-name">${c.name}</div>
+            <span class="pcard-fee${c.feePaid ? ' paid' : ''}">${c.fee}</span>
+          </div>
+        </div>
+        <ul class="pcard-benefits">${c.benefits.map(b => `<li>${b}</li>`).join('')}</ul>
+        <button type="button" class="pcard-cta" data-card-id="${c.id}" data-apply-url="${c.url || ''}">
+          ${c.url ? 'Apply now →' : 'See Any-card deals on Home →'}
+        </button>
+      </article>`).join('')}`;
+  $('applyCardsContent').querySelectorAll('.pcard-cta').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const url = btn.dataset.applyUrl;
+      if (url) {
+        snack('Opening partner application…');
+        window.open(url, '_blank');
+      } else {
+        showScreen('home');
+      }
+    });
+  });
+}
+
+function renderSuccessPromoHtml(idx, d) {
+  const others = DEALS.filter(x => x.id !== d?.id);
+  const top = others.sort((a, b) => b.earn - a.earn)[0];
+  const orderMoreSub = top
+    ? `${top.name.slice(0, 22)}… earn ₹${top.earn} more →`
+    : 'Browse fresh deals on Home →';
+  const templates = [
+    () => `<button type="button" class="order-more-card" data-success-action="home">
+      <span class="omc-spark">🔥</span>
+      <span class="omc-text"><b>Wanna order more?</b><span>${orderMoreSub}</span></span>
+      <span class="omc-arrow">→</span>
+    </button>`,
+    () => `<div class="success-upsell" data-success-action="cards">
+      <span class="su-badge">Level up</span>
+      <h4>Bigger earn deals need a partner card</h4>
+      <p>Today's top deals (TV, GST) often need HDFC or Axis. Apply once — use on every deal.</p>
+      <div class="success-card-chips">
+        <div class="success-card-chip"><span>💳</span>HDFC</div>
+        <div class="success-card-chip"><span>💳</span>Axis</div>
+      </div>
+      <button type="button" class="su-cta">Explore partner cards →</button>
+    </div>`,
+    () => `<button type="button" class="success-ref-card" data-success-action="refer">
+      <b>Refer a friend — earn ₹200 each</b>
+      <span>Share your code. When they complete their first order, you both get a wallet bonus.</span>
+    </button>`,
+    () => `<button type="button" class="success-wa-card" data-success-action="wa">
+      <b>Join WhatsApp — deals before Home</b>
+      <span>New card promos & deal drops posted to the channel first.</span>
+    </button>`
+  ];
+  return templates[idx % templates.length]();
+}
+
+function bindSuccessPromoActions() {
+  $('successPromoSlot').querySelector('[data-success-action="home"]')?.addEventListener('click', () => {
+    snack('Let\'s find your next deal!');
+    showScreen('home');
+  });
+  $('successPromoSlot').querySelector('[data-success-action="cards"]')?.addEventListener('click', openApplyCards);
+  $('successPromoSlot').querySelector('.su-cta')?.addEventListener('click', (e) => { e.stopPropagation(); openApplyCards(); });
+  $('successPromoSlot').querySelector('[data-success-action="refer"]')?.addEventListener('click', openReferral);
+  $('successPromoSlot').querySelector('[data-success-action="wa"]')?.addEventListener('click', () => {
+    snack('Opening WhatsApp community…');
+    window.open('https://chat.whatsapp.com/EXAMPLE', '_blank');
+  });
+}
+
+const DEALS = [
+  { id: 'd1', type: 'direct', name: 'Motorola G57 Power 5G', search: 'motorola g57', emoji: '📱',
+    images: ['../images/motorola-g57.jpg', '../images/motorola-g57.jpg'], color: 'Midnight Blue', variant: '8GB/128GB', gst: true,
+    badge: 'hot', slotsLeft: 8,
+    store: { id: 'fk', label: 'Flipkart', logo: '../logos/flipkart.svg' },
+    card: { id: 'any', label: 'Any credit / debit card', logo: '../logos/any-card.svg' },
+    orderValue: 17499, discount: 500, platformFee: 200, cardFee: 320, cashback: 875, commission: 300,
+    spend: 17519, earn: 300,
+    productUrl: 'https://www.flipkart.com/motorola-g57-power-5g',
+    offerText: 'Order exactly 1 unit — Midnight Blue · 8GB/128GB. Any credit or debit card.',
+    rules: ['Do not change color or storage variant', 'Apply coupon on checkout if deal requires it', 'Upload invoice after delivery'] },
+  { id: 'd2', type: 'direct', name: 'Samsung Galaxy M35 5G', search: 'samsung m35', emoji: '📱',
+    images: ['../images/samsung-m35.png', '../images/samsung-m35.png'], color: 'Any color', variant: '8GB/128GB', gst: false,
+    badge: 'trending',
+    store: { id: 'az', label: 'Amazon', logo: '../logos/amazon.svg' },
+    card: { id: 'hdfc', label: 'HDFC Credit Card', logo: '../logos/hdfc.svg', applyUrl: 'https://www.hdfcbank.com/credit-cards' },
+    orderValue: 22999, discount: 0, platformFee: 250, cardFee: 0, cashback: 1150, commission: 450,
+    spend: 22999, earn: 450,
+    productUrl: 'https://www.amazon.in/samsung-galaxy-m35-5g',
+    offerText: 'HDFC credit card only. Pay the checkout amount shown above.',
+    rules: ['Use HDFC credit card at payment', 'Cashback is on product value — not on fees', 'One order per deal'] },
+  { id: 'd3', type: 'link', name: 'Samsung HD TV 32"', search: 'samsung tv', emoji: '📺',
+    images: ['../images/samsung-tv-32.jpg', '../images/samsung-tv-32.jpg'], color: 'Black', variant: '32 inch', gst: true,
+    slotsLeft: 3,
+    store: { id: 'fk', label: 'Flipkart', logo: '../logos/flipkart.svg' },
+    card: { id: 'axis', label: 'Axis Credit Card', logo: '../logos/axis.svg', applyUrl: 'https://www.axisbank.com/credit-card' },
+    orderValue: 12499, discount: 300, platformFee: 150, cardFee: 150, cashback: 625, commission: 380,
+    spend: 12499, earn: 380,
+    productUrl: 'https://www.flipkart.com/samsung-hd-tv-32-link-deal',
+    offerText: 'Link deal — open the product link below. Do not search manually on Flipkart.',
+    rules: ['Open product link — exact model only', 'Axis credit card required', 'GST invoice mandatory after delivery'] }
+];
+
+const STEPS = ['Placed', 'Tracking', 'Out for delivery', 'Delivered', 'Invoice', 'Payment', 'Paid'];
+
+const NOTIFICATIONS = [
+  { id: 'n1', title: 'Finish your Motorola order', body: 'Timer running — submit Order ID', time: '2m ago', unread: true, action: 'place-order' },
+  { id: 'n2', title: 'Payment credited', body: '₹450 added to your wallet', time: '1d ago', unread: false, action: 'wallet' },
+  { id: 'n3', title: 'Upload invoice', body: 'Samsung M35 — parcel received', time: '2d ago', unread: true, action: 'orders' },
+  { id: 'n4', title: 'New deal: Samsung TV', body: 'Earn ₹380 on Flipkart', time: '3d ago', unread: false, action: 'home' }
+];
+
+function freshDemoOrderId() {
+  return 'OD' + Date.now().toString().slice(-9);
+}
+const ADDR_BASE = [
+  { lbl: 'Name', val: 'Mintzer WH / Arun K' },
+  { lbl: 'Phone', val: '9876543210' },
+  { lbl: 'Address', val: 'Plot 12, Sector 18, Noida, UP 201301' },
+  { lbl: 'Pincode', val: '201301' },
+  { lbl: 'Company', val: 'Mintzer Logistics Pvt Ltd' },
+  { lbl: 'GST No.', val: '09AABCM1234A1Z5' }
+];
+
+const state = {
+  loggedIn: false,
+  kycDone: false,
+  payoutDone: false,
+  tutorialSeen: localStorage.getItem('mintzer_demo_tutorial') === '1',
+  homeView: localStorage.getItem('mintzer_demo_view') || 'list',
+  filter: 'all',
+  homeFilters: { store: 'all', card: 'all', minEarn: 0 },
+  darkMode: localStorage.getItem('mintzer_demo_dark') === '1',
+  shopMode: localStorage.getItem('mintzer_demo_shop') || null,
+  shopModeAsked: localStorage.getItem('mintzer_demo_shop_remember') === '1' && !!localStorage.getItem('mintzer_demo_shop'),
+  language: 'English',
+  userCards: ['any'],
+  referralCode: 'ARUN200',
+  referralCount: 0,
+  referralEarned: 0,
+  selectedDeal: null,
+  activePlacement: null,
+  orders: [],
+  canceledOrders: [],
+  tickets: [],
+  addressVersion: 1,
+  walletAvailable: 1240,
+  walletPending: 0,
+  walletTotal: 1240,
+  walletTxFilter: 'all',
+  walletDateFrom: '',
+  walletDateTo: '',
+  howItWorksOpen: false,
+  orderTab: 'ongoing',
+  orderSearch: '',
+  orderStoreFilter: 'all',
+  orderSort: 'newest',
+  viewOrder: null,
+  noteTarget: null,
+  reportStep: 0,
+  paymentTimerSec: 48 * 3600,
+  paymentInterval: null,
+  timerInterval: null,
+  resendInterval: null
+};
+
+const $ = id => document.getElementById(id);
+const screens = {};
+document.querySelectorAll('.screen').forEach(s => { screens[s.id.replace('screen-', '')] = s; });
+
+function fmt(n) { return n.toLocaleString('en-IN'); }
+function snack(msg) {
+  const el = $('snackbar');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(snack._t);
+  snack._t = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.remove('active'));
+  screens[name]?.classList.add('active');
+  const mainTabs = ['home', 'orders', 'wallet', 'profile'];
+  $('bottomNav').classList.toggle('show', state.loggedIn && mainTabs.includes(name));
+  $('fab').classList.toggle('show', state.loggedIn && mainTabs.includes(name));
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.nav === name);
+  });
+  $('phone').classList.toggle('dark', state.darkMode);
+  if (name === 'home') renderHome();
+  if (name === 'deal-detail') renderDetail();
+  if (name === 'place-order') renderPlaceOrder();
+  if (name === 'orders') renderOrders();
+  if (name === 'order-success') renderOrderSuccess();
+  if (name === 'order-detail') renderOrderDetail();
+  if (name === 'wallet') renderWallet();
+  if (name === 'profile') renderProfile();
+  if (name === 'apply-cards') renderApplyCards();
+  if (name === 'notifications') renderNotifications();
+  if (name === 'tickets') renderTickets();
+}
+
+function closeOverlays() {
+  document.querySelectorAll('.overlay.show, .modal-center.show').forEach(el => el.classList.remove('show'));
+}
+
+function detectCourier(tracking) {
+  const t = (tracking || '').trim().toUpperCase();
+  if (t.startsWith('EK')) return 'Ekart';
+  if (t.startsWith('BD')) return 'BlueDart';
+  return 'Delhivery';
+}
+
+function getAddresses(deal) {
+  const v = state.addressVersion;
+  const suffix = v > 1 ? ` (Unit ${v})` : '';
+  return ADDR_BASE.filter(a => {
+    if ((a.lbl === 'Company' || a.lbl === 'GST No.') && deal && !deal.gst) return false;
+    return true;
+  }).map(a => a.lbl === 'Address'
+    ? { ...a, val: a.val.replace(/Unit \d+/, '').trim() + suffix }
+    : { ...a });
+}
+
+function userHasRequiredCard(d) {
+  if (!d?.card) return true;
+  if (d.card.id === 'any') return true;
+  return state.userCards.includes(d.card.id);
+}
+
+function hasActiveOrder() {
+  return !!(state.activePlacement && !state.activePlacement.submitted) ||
+    state.orders.some(o => !o.paid && !o.canceled);
+}
+
+function ongoingCount() {
+  let n = state.orders.filter(o => !o.paid && !o.canceled).length;
+  if (state.activePlacement && !state.activePlacement.submitted) n++;
+  return n;
+}
+
+function walletFromMintzer(d) {
+  return d.orderValue - d.cashback - d.discount + d.commission;
+}
+
+function totalCheckout(d) {
+  return d.orderValue - (d.discount || 0) + (d.platformFee || 0) + (d.cardFee || 0);
+}
+
+function renderPlaceInstructions(d) {
+  if (!d.offerText && !(d.rules?.length)) return '';
+  return `<details class="place-prod-rules" open>
+    <summary>▸ Instructions before checkout</summary>
+    <div class="rules-body">
+      ${d.offerText ? `<p>${d.offerText}</p>` : ''}
+      ${d.rules?.length ? `<ul>${d.rules.map(r => `<li>${r}</li>`).join('')}</ul>` : ''}
+    </div>
+  </details>`;
+}
+
+function dealImages(d) {
+  if (d.images?.length) return d.images;
+  return d.image ? [d.image] : [];
+}
+
+function dealImgHtml(d, fallbackClass = 'ph', useSlider = true) {
+  const imgs = dealImages(d);
+  if (!imgs.length) return fallbackClass === 'ph' ? `<span class="ph">${d.emoji || '📦'}</span>` : (d.emoji || '📦');
+  if (!useSlider || imgs.length === 1) return `<img src="${imgs[0]}" alt="${d.name}" loading="lazy" />`;
+  return `<div class="img-slider" data-interval="1000">${imgs.map((src, i) =>
+    `<img src="${src}" alt="" class="img-slide${i === 0 ? ' active' : ''}" loading="lazy" />`
+  ).join('')}</div>`;
+}
+
+function initImageSliders(root) {
+  (root || document).querySelectorAll('.img-slider').forEach(slider => {
+    if (slider.dataset.started) return;
+    slider.dataset.started = '1';
+    const slides = [...slider.querySelectorAll('.img-slide')];
+    if (slides.length <= 1) return;
+    let idx = 0;
+    setInterval(() => {
+      slides[idx].classList.remove('active');
+      idx = (idx + 1) % slides.length;
+      slides[idx].classList.add('active');
+    }, +(slider.dataset.interval || 1000));
+  });
+}
+
+function renderEarnCompact(d) {
+  const wallet = walletFromMintzer(d);
+  return `<div class="earn-compact">
+    <div class="ec-head">Your earnings breakdown</div>
+    <div class="ec-grid">
+      <div class="ec-cell"><span>You pay</span><b>₹${fmt(d.spend)}</b></div>
+      <div class="ec-cell"><span>Card cashback</span><b>₹${fmt(d.cashback)}</b></div>
+      <div class="ec-cell"><span>Mintzer wallet</span><b>₹${fmt(wallet)}</b></div>
+      <div class="ec-cell"><span>Commission</span><b>₹${fmt(d.commission || d.earn)}</b></div>
+      <div class="ec-total"><span>You earn</span><b>₹${fmt(d.earn)}</b></div>
+    </div>
+  </div>`;
+}
+
+function renderOrderSuccess() {
+  const o = state.orders[0];
+  const d = o?.deal;
+  if (d) {
+    $('successEarnChip').innerHTML = `You're earning <b>₹${fmt(d.earn)}</b> on this order`;
+  }
+  const promoIdx = Math.max(0, state.orders.length - 1) % SUCCESS_PROMO_LABELS.length;
+  $('successPromoTag').textContent = `Promo: ${SUCCESS_PROMO_LABELS[promoIdx]} (rotates each order — admin templates)`;
+  $('successPromoSlot').innerHTML = renderSuccessPromoHtml(promoIdx, d);
+  bindSuccessPromoActions();
+}
+
+/* ── LOGIN ── */
+const phoneInput = $('phoneInput');
+phoneInput.addEventListener('input', () => {
+  phoneInput.value = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+  $('btnContinue').disabled = phoneInput.value.length !== 10;
+  $('phoneError').classList.remove('show');
+  phoneInput.classList.remove('error');
+});
+$('btnContinue').addEventListener('click', () => {
+  if (phoneInput.value.length !== 10) {
+    $('phoneError').classList.add('show');
+    phoneInput.classList.add('error');
+    return;
+  }
+  $('otpPhoneDisplay').textContent = phoneInput.value;
+  buildOtp();
+  showScreen('login-otp');
+  startResend();
+});
+
+function buildOtp() {
+  const row = $('otpRow');
+  row.innerHTML = '';
+  for (let i = 0; i < 6; i++) {
+    const inp = document.createElement('input');
+    inp.className = 'otp-box';
+    inp.maxLength = 1;
+    inp.inputMode = 'numeric';
+    inp.addEventListener('input', () => {
+      inp.value = inp.value.replace(/\D/g, '');
+      if (inp.value && inp.nextElementSibling) inp.nextElementSibling.focus();
+      checkOtp();
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !inp.value && inp.previousElementSibling) inp.previousElementSibling.focus();
+    });
+    row.appendChild(inp);
+  }
+}
+function checkOtp() {
+  const vals = [...$('otpRow').querySelectorAll('input')].map(i => i.value);
+  $('btnVerify').disabled = vals.join('').length !== 6;
+  $('otpError').classList.remove('show');
+}
+function startResend() {
+  let s = 30;
+  $('resendTimer').textContent = s;
+  $('btnResend').disabled = true;
+  clearInterval(state.resendInterval);
+  state.resendInterval = setInterval(() => {
+    s--;
+    $('resendTimer').textContent = s;
+    if (s <= 0) { clearInterval(state.resendInterval); $('btnResend').disabled = false; $('btnResend').textContent = 'Resend OTP'; }
+  }, 1000);
+}
+$('btnResend').addEventListener('click', () => { snack('OTP sent again'); startResend(); $('btnResend').innerHTML = 'Resend in <span id="resendTimer">30</span>s'; });
+$('btnVerify').addEventListener('click', () => {
+  if (phoneInput.value.endsWith('0000')) {
+    showScreen('account-suspended');
+    return;
+  }
+  state.loggedIn = true;
+  snack('Welcome to Mintzer!');
+  showScreen('home');
+  if (!state.tutorialSeen) setTimeout(() => snack('Join our WhatsApp community — tap the green icon'), 1200);
+});
+
+/* ── HOME ── */
+function renderHome() {
+  $('walletHeader').textContent = fmt(state.walletAvailable);
+  $('tutorialBanner').classList.toggle('hidden', state.tutorialSeen);
+  const strip = $('activeStrip');
+  if (state.activePlacement && !state.activePlacement.submitted) {
+    strip.classList.add('show');
+    $('stripInfo').textContent = state.activePlacement.deal.name.split(' ').slice(0, 2).join(' ') + ' — finish order';
+    updateTimerUI();
+  } else strip.classList.remove('show');
+  strip.onclick = () => showScreen('place-order');
+
+  const chipsRow = $('chipsRow');
+  const filterActive = state.homeFilters.store !== 'all' || state.homeFilters.card !== 'all' || state.homeFilters.minEarn > 0;
+  chipsRow.innerHTML = ['all|All Deals', 'direct|Direct', 'link|Link'].map(([k, l]) =>
+    `<button type="button" class="chip${state.filter === k ? ' active' : ''}" data-filter="${k}">${l}</button>`
+  ).join('') + `<button type="button" class="filter-btn${filterActive ? ' active' : ''}" id="btnFilterInline" aria-label="Filters"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>`;
+  chipsRow.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+    state.filter = c.dataset.filter;
+    renderHome();
+  }));
+  $('btnFilterInline')?.addEventListener('click', () => {
+    $('minEarnRange').value = state.homeFilters.minEarn;
+    $('minEarnLabel').textContent = state.homeFilters.minEarn;
+    document.querySelectorAll('#filterStore button').forEach(b => b.classList.toggle('active', b.dataset.v === state.homeFilters.store));
+    document.querySelectorAll('#filterCard button').forEach(b => b.classList.toggle('active', b.dataset.v === state.homeFilters.card));
+    $('modalFilter').classList.add('show');
+  });
+
+  $('socialProofSlot').innerHTML = `<div class="social-proof-strip">
+    <span>🔥</span><span><b>₹8.2L+</b> earned this week · <em>42 orders</em> completed today</span>
+  </div>`;
+
+  const list = $('dealList');
+  list.classList.toggle('grid-view', state.homeView === 'grid');
+  $('btnList').classList.toggle('active', state.homeView === 'list');
+  $('btnGrid').classList.toggle('active', state.homeView === 'grid');
+
+  const q = ($('searchInput').value || '').trim().toLowerCase();
+  const hf = state.homeFilters;
+  let n = 0;
+  list.innerHTML = DEALS.map(d => {
+    const okType = state.filter === 'all' || d.type === state.filter;
+    const okSearch = !q || d.search.includes(q) || d.name.toLowerCase().includes(q);
+    const okStore = hf.store === 'all' || d.store.id === hf.store;
+    const okCard = hf.card === 'all' || d.card.id === hf.card;
+    const okEarn = d.earn >= hf.minEarn;
+    const ok = okType && okSearch && okStore && okCard && okEarn;
+    if (!ok) return '';
+    n++;
+    const blocked = state.activePlacement && !state.activePlacement.submitted;
+    return `<article class="deal-card${blocked ? ' dim' : ''}" data-id="${d.id}">
+      <div class="img-wrap"><div class="img-box">
+        <span class="store-pin"><img src="${d.store.logo}" alt="${d.store.label}" /></span>
+        ${d.gst ? '<span class="gst-pin">GST</span>' : ''}
+        ${dealBadgeHtml(d)}
+        ${dealImgHtml(d)}
+      </div></div>
+      <h3 class="title">${d.name}</h3>
+      <div class="meta-line"><span class="color-text">${d.color}</span></div>
+      <div class="bank-row"><div class="bank-logo"><img src="${d.card.logo}" alt="" /></div><span class="bank-label">${d.card.label}</span></div>
+      <div class="spend-box"><span class="spend-lbl">You spend</span><span class="spend-val">₹${fmt(d.spend)}</span></div>
+      <button type="button" class="btn-earn">Earn ₹${d.earn}</button>
+    </article>`;
+  }).join('');
+  $('dealCount').textContent = n + (n === 1 ? ' deal live' : ' deals live');
+
+  list.querySelectorAll('.deal-card').forEach(card => {
+    card.addEventListener('click', () => {
+      if (state.activePlacement && !state.activePlacement.submitted) {
+        $('modalBlocked').classList.add('show');
+        return;
+      }
+      state.selectedDeal = DEALS.find(d => d.id === card.dataset.id);
+      showScreen('deal-detail');
+    });
+  });
+  initImageSliders(list);
+}
+$('btnNotifBell')?.addEventListener('click', () => showScreen('notifications'));
+$('btnWaCommunity')?.addEventListener('click', () => snack('Opening WhatsApp community…'));
+$('tutorialClose').addEventListener('click', () => {
+  state.tutorialSeen = true;
+  localStorage.setItem('mintzer_demo_tutorial', '1');
+  snack('Tutorial hidden');
+  renderHome();
+});
+$('btnList').addEventListener('click', () => { state.homeView = 'list'; localStorage.setItem('mintzer_demo_view', 'list'); renderHome(); });
+$('btnGrid').addEventListener('click', () => { state.homeView = 'grid'; localStorage.setItem('mintzer_demo_view', 'grid'); renderHome(); });
+$('searchInput').addEventListener('input', renderHome);
+
+/* ── DEAL DETAIL ── */
+function renderDetail() {
+  const d = state.selectedDeal;
+  if (!d) return;
+  const wallet = walletFromMintzer(d);
+  const checkout = totalCheckout(d);
+  $('detailContent').innerHTML = `
+    <div class="detail-hero">
+      <div class="detail-img-wrap">
+        ${d.gst ? '<span class="detail-gst-pin">GST</span>' : ''}
+        ${dealImgHtml(d, '', false)}
+      </div>
+      <div class="detail-hero-text">
+        <div class="detail-hero-head">
+          <div class="detail-title">${d.name}</div>
+          <span class="detail-earn-tag">Earn ₹${fmt(d.earn)}</span>
+        </div>
+        <div class="detail-meta">${d.color} · ${d.variant} · Qty: 1</div>
+        ${dealBadgeHtml(d, true)}
+      </div>
+    </div>
+    <div class="logo-rows">
+      <div class="logo-row"><div class="logo-box"><img src="${d.store.logo}" alt="" /></div><div><div style="font-size:11px;color:#5F6368">Store</div><div style="font-weight:600">${d.store.label}</div></div></div>
+      <div class="logo-row"><div class="logo-box"><img src="${d.card.logo}" alt="" /></div><div><div style="font-size:11px;color:#5F6368">Card to use</div><div style="font-weight:600">${d.card.label}</div></div></div>
+    </div>
+    ${!userHasRequiredCard(d) && d.card.applyUrl ? `<div class="card-apply-cta">
+      <div class="ca-icon"><img src="${d.card.logo}" alt="" /></div>
+      <div>
+        <b>Don't have ${d.card.label}?</b>
+        <p>Apply through our partner link. You'll need this card to complete the deal.</p>
+        <button type="button" class="btn-card-apply" id="btnCardApply">Apply for card →</button>
+      </div>
+    </div>` : ''}
+    <div class="money-card">
+      <div class="money-row"><span>Order value</span><b>₹${fmt(d.orderValue)}</b></div>
+      ${d.discount ? `<div class="money-row"><span>Discount</span><b>− ₹${fmt(d.discount)}</b></div>` : ''}
+      <div class="money-row"><span>Platform fee</span><b>₹${fmt(d.platformFee || 0)}</b></div>
+      <div class="money-row"><span>Card fee</span><b>₹${fmt(d.cardFee || 0)}</b></div>
+      <div class="money-row total"><span>Total at checkout</span><b>₹${fmt(checkout)}</b></div>
+      <div class="money-row"><span>Bank cashback (your card)</span><b>₹${fmt(d.cashback)}</b></div>
+      <div class="money-row"><span>Wallet from Mintzer</span><b>₹${fmt(wallet)}</b></div>
+      <div class="money-note">Cashback is credited as per your bank's billing cycle. Mintzer wallet after order completion.</div>
+    </div>`;
+  $('detailContent').querySelector('#btnCardApply')?.addEventListener('click', () => {
+    snack(`Opening ${d.card.label} application… (demo)`);
+    if (d.card.applyUrl) window.open(d.card.applyUrl, '_blank');
+  });
+}
+
+$('btnAccept').addEventListener('click', () => {
+  if (state.activePlacement && !state.activePlacement.submitted) {
+    $('modalBlocked').classList.add('show');
+    return;
+  }
+  if (!state.kycDone) { $('modalKyc').classList.add('show'); return; }
+  if (!state.payoutDone) { $('modalPayout').classList.add('show'); return; }
+  proceedAfterGates();
+});
+
+function proceedAfterGates() {
+  if (!state.shopModeAsked) {
+    openShopModeModal();
+    return;
+  }
+  proceedToPlacement();
+}
+
+function proceedToPlacement() {
+  const d = state.selectedDeal;
+  if (d?.gst) {
+    $('modalGstAlert').classList.add('show');
+    return;
+  }
+  startPlacement();
+}
+
+function dismissGstAlert() {
+  $('modalGstAlert').classList.remove('show');
+  startPlacement();
+}
+
+$('btnGstOk').addEventListener('click', dismissGstAlert);
+$('btnGstClose').addEventListener('click', dismissGstAlert);
+
+let pendingShopMode = 'external';
+
+function openShopModeModal() {
+  pendingShopMode = state.shopMode || localStorage.getItem('mintzer_demo_shop') || 'external';
+  document.querySelectorAll('.shop-mode-opt').forEach(b => {
+    b.classList.toggle('selected', b.dataset.mode === pendingShopMode);
+  });
+  $('shopRemember').checked = localStorage.getItem('mintzer_demo_shop_remember') !== '0';
+  $('modalShopMode').classList.add('show');
+}
+
+document.querySelectorAll('.shop-mode-opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    pendingShopMode = btn.dataset.mode;
+    document.querySelectorAll('.shop-mode-opt').forEach(b => {
+      b.classList.toggle('selected', b.dataset.mode === pendingShopMode);
+    });
+  });
+});
+
+function confirmShopMode() {
+  const remember = $('shopRemember').checked;
+  state.shopMode = pendingShopMode;
+  if (remember) {
+    state.shopModeAsked = true;
+    localStorage.setItem('mintzer_demo_shop', pendingShopMode);
+    localStorage.setItem('mintzer_demo_shop_remember', '1');
+  } else {
+    state.shopModeAsked = false;
+    localStorage.removeItem('mintzer_demo_shop');
+    localStorage.setItem('mintzer_demo_shop_remember', '0');
+  }
+  $('modalShopMode').classList.remove('show');
+  snack(pendingShopMode === 'external' ? 'External browser mode' : 'In-app WebView mode');
+  proceedToPlacement();
+}
+
+$('btnShopContinue').addEventListener('click', confirmShopMode);
+
+$('btnDetailWa')?.addEventListener('click', () => snack('Opening deal WhatsApp group…'));
+$('btnReportError')?.addEventListener('click', () => {
+  const d = state.selectedDeal;
+  const msg = d ? `Report: ${d.name} — earn/fees mismatch on deal ${d.id}` : 'Report: deal error';
+  snack(msg);
+});
+
+document.querySelectorAll('#filterStore button, #filterCard button').forEach(b => {
+  b.addEventListener('click', () => {
+    const grp = b.parentElement;
+    grp.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+$('minEarnRange')?.addEventListener('input', () => { $('minEarnLabel').textContent = $('minEarnRange').value; });
+$('btnFilterApply')?.addEventListener('click', () => {
+  state.homeFilters.store = document.querySelector('#filterStore button.active')?.dataset.v || 'all';
+  state.homeFilters.card = document.querySelector('#filterCard button.active')?.dataset.v || 'all';
+  state.homeFilters.minEarn = +$('minEarnRange').value;
+  $('modalFilter').classList.remove('show');
+  snack('Filters applied');
+  renderHome();
+});
+$('btnFilterClear')?.addEventListener('click', () => {
+  state.homeFilters = { store: 'all', card: 'all', minEarn: 0 };
+  $('modalFilter').classList.remove('show');
+  renderHome();
+});
+
+$('btnKycSave').addEventListener('click', () => {
+  if (!$('kycName').value.trim() || $('kycPan').value.length < 10) { snack('Enter name and PAN'); return; }
+  state.kycDone = true;
+  $('modalKyc').classList.remove('show');
+  snack('KYC saved');
+  if (!state.payoutDone) $('modalPayout').classList.add('show');
+  else proceedAfterGates();
+});
+$('btnPayoutSave').addEventListener('click', () => {
+  if (!$('upiId').value.trim() && !$('bankAcct').value.trim()) { snack('Enter UPI or bank account'); return; }
+  state.payoutDone = true;
+  $('modalPayout').classList.remove('show');
+  snack('Payout details saved');
+  proceedAfterGates();
+});
+
+function startPlacement() {
+  const d = state.selectedDeal;
+  state.activePlacement = {
+    deal: d,
+    timerSec: 15 * 60,
+    orderId: freshDemoOrderId(),
+    submitted: false,
+    note: '',
+    shopMode: state.shopMode || 'external'
+  };
+  startTimer();
+  showScreen('place-order');
+}
+
+function startTimer() {
+  clearInterval(state.timerInterval);
+  state.timerInterval = setInterval(() => {
+    if (!state.activePlacement || state.activePlacement.submitted) return;
+    state.activePlacement.timerSec--;
+    updateTimerUI();
+    if (state.activePlacement.timerSec <= 0) {
+      clearInterval(state.timerInterval);
+      snack('Timer expired');
+      state.activePlacement = null;
+      showScreen('home');
+    }
+  }, 1000);
+  updateTimerUI();
+}
+
+function updateTimerUI() {
+  const p = state.activePlacement;
+  if (!p) return;
+  const m = Math.floor(p.timerSec / 60);
+  const s = String(p.timerSec % 60).padStart(2, '0');
+  const txt = `⏱ Complete order in ${m}:${s}`;
+  $('dockTimer').textContent = txt;
+  $('dockTimer').classList.toggle('low', p.timerSec < 120);
+  $('stripTimer').textContent = txt;
+}
+
+/* ── PLACE ORDER ── */
+function renderPlaceOrder() {
+  const p = state.activePlacement;
+  if (!p) return;
+  const d = p.deal;
+  const inapp = p.shopMode === 'inapp';
+  const addrs = getAddresses(d);
+  const checkout = totalCheckout(d);
+  const rulesBlock = renderPlaceInstructions(d);
+  $('placeContent').innerHTML = `
+    <button type="button" class="shop-chip" id="toggleShopMode">${inapp ? '📱 In-app WebView' : '🌐 External browser'} · tap to switch</button>
+    <div class="place-prod">
+      <div class="place-prod-top">
+        <div class="prod-thumb">${dealImgHtml(d, '', false)}</div>
+        <div class="place-prod-body">
+          <div class="place-prod-head">
+            <div class="place-prod-name">${d.name}</div>
+            <span class="place-earn-tag">Earn ₹${fmt(d.earn)}</span>
+          </div>
+          <div class="place-prod-meta">${d.color} · ${d.variant} · Qty: 1</div>
+          <div class="place-prod-store">${d.store.label} · ${d.card.label}</div>
+        </div>
+      </div>
+      ${rulesBlock}
+    </div>
+    <div class="place-checkout">
+      <div>
+        <div class="pay-lbl">You pay at checkout</div>
+        <div class="pay-amt">₹${fmt(checkout)}</div>
+        ${d.discount ? `<div class="pay-disc">Includes − ₹${fmt(d.discount)} discount</div>` : ''}
+      </div>
+    </div>
+    ${inapp ? `<div class="webview-hint"><b>${d.store.label} — in-app browser</b>Checkout inside Mintzer. Paste Order ID in the bar below.</div>` :
+    `<div class="open-zone">
+      <div class="open-lbl">Step 1 — Open product link on ${d.store.label}</div>
+      <div class="open-actions">
+        <button type="button" class="btn-open" id="btnOpenStore">Open link</button>
+        <button type="button" class="btn-copy-link" id="btnCopyProductLink">Copy link</button>
+      </div>
+    </div>
+    <div class="place-step-hdr">Step 2 — Delivery address</div>
+    <div class="addr-card" id="addrCard">
+      <div class="addr-card-hint">Paste each line into the matching field on ${d.store.label}${d.gst ? ' · use Company & GST rows for GST deals' : ''}</div>
+      ${addrs.map(a => `<div class="addr-row"><span class="lbl">${a.lbl}</span><span class="val">${a.val}</span><button type="button" class="copy-pill" data-copy="${a.val}">Copy</button></div>`).join('')}
+    </div>
+    <div class="addr-regen-warn">
+      <p><b>Only if store cancelled your order.</b> Generating a new address is for cancellations — not for changing your mind. Limited per week.</p>
+      <button type="button" class="btn-gen-addr" id="btnGenAddr">Generate new address</button>
+    </div>`}
+    <div class="place-step-hdr" style="margin-top:10px">Step 3 — Order ID</div>
+    <p style="font-size:11px;color:#5F6368;text-align:center;line-height:1.4">After checkout on ${d.store.label}, paste Order ID in the bar below</p>`;
+  $('placeContent').querySelector('#btnOpenStore')?.addEventListener('click', () => {
+    snack(`Opening product on ${d.store.label}… (demo)`);
+    if (d.productUrl) window.open(d.productUrl, '_blank');
+  });
+  $('placeContent').querySelector('#btnCopyProductLink')?.addEventListener('click', e => {
+    const btn = e.currentTarget;
+    if (d.productUrl) {
+      navigator.clipboard?.writeText(d.productUrl);
+      btn.classList.add('copied');
+      btn.textContent = '✓ Copied';
+      snack('Product link copied');
+      setTimeout(() => { btn.classList.remove('copied'); btn.textContent = 'Copy link'; }, 2000);
+    }
+  });
+  $('placeContent').querySelectorAll('.copy-pill').forEach(b => b.addEventListener('click', () => {
+    navigator.clipboard?.writeText(b.dataset.copy);
+    snack('Copied');
+  }));
+  $('placeContent').querySelector('#btnGenAddr')?.addEventListener('click', () => {
+    if (!confirm('Generate new address only if Flipkart/Amazon cancelled your order.\n\nMisuse may limit your account. Continue?')) return;
+    state.addressVersion++;
+    snack('New address generated — copy all lines again');
+    renderPlaceOrder();
+  });
+  $('placeContent').querySelector('#toggleShopMode')?.addEventListener('click', () => {
+    p.shopMode = p.shopMode === 'external' ? 'inapp' : 'external';
+    state.shopMode = p.shopMode;
+    if (localStorage.getItem('mintzer_demo_shop_remember') === '1') {
+      localStorage.setItem('mintzer_demo_shop', p.shopMode);
+    }
+    renderPlaceOrder();
+  });
+  $('orderIdField').value = p.orderId;
+  updateOrderIdSubmitState();
+}
+
+function updateOrderIdSubmitState() {
+  const p = state.activePlacement;
+  if (!p) return;
+  $('btnSubmitOrder').disabled = !p.orderId.trim();
+}
+
+function syncOrderIdField() {
+  const p = state.activePlacement;
+  if (!p) return;
+  $('orderIdField').value = p.orderId;
+  $('orderIdField').removeAttribute('readonly');
+  updateOrderIdSubmitState();
+}
+
+$('orderIdField').addEventListener('click', () => {
+  const p = state.activePlacement;
+  if (!p) return;
+  $('orderIdField').removeAttribute('readonly');
+  if (!p.orderId.trim()) {
+    p.orderId = freshDemoOrderId();
+    snack('Order ID filled');
+  }
+  syncOrderIdField();
+});
+
+$('orderIdField').addEventListener('input', () => {
+  const p = state.activePlacement;
+  if (!p) return;
+  p.orderId = $('orderIdField').value;
+  syncOrderIdField();
+});
+
+$('btnSubmitOrder').addEventListener('click', () => {
+  const p = state.activePlacement;
+  if (!p || !p.orderId.trim()) return;
+  p.submitted = true;
+  clearInterval(state.timerInterval);
+  const order = {
+    id: 'ord_' + Date.now(),
+    deal: p.deal,
+    orderId: p.orderId,
+    step: 1,
+    tracking: '',
+    courier: 'Delhivery',
+    otp: '',
+    phoneLast4: '',
+    invoiceUploaded: false,
+    invoiceStatus: 'none',
+    invoiceRejectReason: '',
+    paid: false,
+    canceled: false,
+    note: p.note || '',
+    created: new Date(),
+    paymentTimerSec: 48 * 3600
+  };
+  state.orders.unshift(order);
+  state.walletPending += p.deal.earn;
+  state.activePlacement = null;
+  showScreen('order-success');
+});
+
+$('btnGoOrders').addEventListener('click', () => showScreen('orders'));
+$('btnApplyCardsClose')?.addEventListener('click', () => $('modalApplyCards').classList.remove('show'));
+document.querySelector('.promo-slide-cards')?.addEventListener('click', () => openApplyCards());
+$('btnPromoCards')?.addEventListener('click', (e) => { e.stopPropagation(); openApplyCards(); });
+$('btnReferralClose')?.addEventListener('click', () => $('modalReferral').classList.remove('show'));
+$('btnCopyReferral')?.addEventListener('click', () => {
+  navigator.clipboard?.writeText(state.referralCode);
+  snack('Code copied: ' + state.referralCode);
+});
+$('btnShareReferral')?.addEventListener('click', shareReferral);
+$('btnCancelOrder').addEventListener('click', () => $('modalCancel').classList.add('show'));
+document.querySelectorAll('.cancel-reason').forEach(b => b.addEventListener('click', () => {
+  clearInterval(state.timerInterval);
+  state.activePlacement = null;
+  $('modalCancel').classList.remove('show');
+  snack('Order cancelled');
+  showScreen('home');
+}));
+$('btnCancelDismiss').addEventListener('click', () => $('modalCancel').classList.remove('show'));
+$('btnGoPlaceOrder').addEventListener('click', () => { $('modalBlocked').classList.remove('show'); showScreen('place-order'); });
+$('btnBlockedClose').addEventListener('click', () => $('modalBlocked').classList.remove('show'));
+
+/* ── ORDERS ── */
+function renderOrders() {
+  const badge = $('ongoingBadge');
+  const cnt = ongoingCount();
+  badge.textContent = cnt;
+  badge.classList.toggle('show', cnt > 0 && state.orderTab === 'ongoing');
+
+  $('orderStoreChips').innerHTML = [
+    ['all', 'All stores'], ['fk', 'Flipkart'], ['az', 'Amazon']
+  ].map(([k, l]) => `<button type="button" class="chip${state.orderStoreFilter === k ? ' active' : ''}" data-store="${k}">${l}</button>`).join('');
+  $('orderStoreChips').querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+    state.orderStoreFilter = c.dataset.store;
+    renderOrders();
+  }));
+
+  const sortLabels = { newest: 'Newest ↓', oldest: 'Oldest ↑', action: 'Needs action' };
+  $('btnOrderSort').textContent = sortLabels[state.orderSort] || 'Newest ↓';
+
+  document.querySelectorAll('[data-otab]').forEach(t => t.classList.toggle('active', t.dataset.otab === state.orderTab));
+
+  const q = state.orderSearch.toLowerCase();
+  let ongoing = state.orders.filter(o => !o.paid && !o.canceled);
+  let completed = [...state.orders.filter(o => o.paid), ...state.canceledOrders];
+
+  const matchOrder = o => {
+    const d = o.deal;
+    if (state.orderStoreFilter !== 'all' && d.store.id !== state.orderStoreFilter) return false;
+    if (!q) return true;
+    return d.name.toLowerCase().includes(q) || d.search.includes(q) ||
+      (o.orderId || '').toLowerCase().includes(q) || (o.tracking || '').toLowerCase().includes(q);
+  };
+  ongoing = ongoing.filter(matchOrder);
+  completed = completed.filter(matchOrder);
+
+  const sortFn = (a, b) => {
+    if (state.orderSort === 'oldest') return a.created - b.created;
+    if (state.orderSort === 'action') return (b.step < 6 ? 1 : 0) - (a.step < 6 ? 1 : 0) || b.created - a.created;
+    return b.created - a.created;
+  };
+  ongoing.sort(sortFn);
+  completed.sort(sortFn);
+
+  let html = '';
+  if (state.orderTab === 'ongoing' && state.activePlacement && !state.activePlacement.submitted) {
+    const p = state.activePlacement;
+    const m = Math.floor(p.timerSec / 60);
+    const s = String(p.timerSec % 60).padStart(2, '0');
+    html += `<div class="placement-card" id="placementCard">
+      <div class="pc-timer">⏱ Complete order in ${m}:${s}</div>
+      <div class="pc-sub">Finish checkout and submit Order ID</div>
+      <div class="pc-row"><div class="pc-thumb">${dealImgHtml(p.deal, '', false)}</div><div style="flex:1">
+        <div style="font-weight:600;font-size:13px">${p.deal.name}</div>
+        <div style="font-size:11px;color:#5F6368">${p.deal.store.label} · Earn ₹${p.deal.earn}</div>
+      </div></div>
+      <button type="button" class="btn-continue" style="margin-top:10px">Continue order</button>
+    </div>`;
+  }
+
+  const list = state.orderTab === 'ongoing' ? ongoing : completed;
+  if (!list.length && !html.includes('placement-card')) {
+    $('ordersList').innerHTML = `<div class="empty">${state.orderTab === 'ongoing' ? 'No ongoing orders.<br/>Accept a deal to start.' : 'No completed orders yet.'}</div>`;
+    bindPlacementCard();
+    return;
+  }
+
+  html += list.map(o => {
+    const d = o.deal;
+    const canceled = o.canceled;
+    const dots = STEPS.slice(0, 6).map((_, i) => {
+      let cls = 'prog-dot';
+      if (canceled) cls += i === 0 ? ' done' : '';
+      else if (i < o.step) cls += ' done';
+      else if (i === o.step) cls += ' current';
+      return `<div class="${cls}"></div>`;
+    }).join('');
+    return `<div class="order-card${canceled ? ' canceled' : ''}" data-oid="${o.id}">
+      <div class="top"><div class="thumb">${dealImgHtml(d, '', false)}</div><div style="flex:1">
+        <div class="name">${d.name}</div>
+        <div class="sub">${d.store.label} · ${o.orderId || '—'}</div>
+        <div class="sub">${canceled ? '<span class="cancel-tag">Canceled</span>' : 'Next: ' + getNextAction(o)}</div>
+      </div><div class="earn">${canceled ? '' : '+'}₹${d.earn}</div></div>
+      <div class="progress">${dots}</div>
+      ${!canceled && o.step < 6 ? `<button type="button" class="btn-continue">${o.step <= 1 ? 'View order' : 'Continue'}</button>` : ''}
+    </div>`;
+  }).join('');
+
+  $('ordersList').innerHTML = html;
+  bindPlacementCard();
+  $('ordersList').querySelectorAll('.order-card').forEach(c => {
+    c.addEventListener('click', () => {
+      state.viewOrder = [...state.orders, ...state.canceledOrders].find(o => o.id === c.dataset.oid);
+      showScreen('order-detail');
+    });
+  });
+}
+
+function bindPlacementCard() {
+  $('placementCard')?.addEventListener('click', e => {
+    if (e.target.classList.contains('btn-continue') || e.currentTarget === e.target.closest('.placement-card'))
+      showScreen('place-order');
+  });
+}
+
+$('orderSearchInput')?.addEventListener('input', e => { state.orderSearch = e.target.value; renderOrders(); });
+$('btnOrderSort')?.addEventListener('click', () => $('modalSort').classList.add('show'));
+document.querySelectorAll('.sort-opt').forEach(b => b.addEventListener('click', () => {
+  state.orderSort = b.dataset.sort;
+  $('modalSort').classList.remove('show');
+  renderOrders();
+}));
+$('btnSortClose')?.addEventListener('click', () => $('modalSort').classList.remove('show'));
+
+function getNextAction(o) {
+  if (o.step === 1) return 'Add tracking ID';
+  if (o.step === 2) return 'Enter delivery OTP';
+  if (o.step === 3) return 'Delivered — Mintzer confirming';
+  if (o.step === 4) {
+    if (o.invoiceStatus === 'verifying') return 'Verifying invoice';
+    if (o.invoiceStatus === 'rejected') return 'Re-upload invoice';
+    return 'Upload invoice';
+  }
+  if (o.step === 5) return 'Payment pending (48h)';
+  return 'Paid';
+}
+
+document.querySelectorAll('[data-otab]').forEach(t => t.addEventListener('click', () => {
+  state.orderTab = t.dataset.otab;
+  renderOrders();
+}));
+
+/* ── ORDER DETAIL ── */
+function renderOrderDetail() {
+  const o = state.viewOrder;
+  if (!o || o.canceled) {
+    if (o?.canceled) {
+      $('orderDetailActions').innerHTML = '';
+      $('timelineContent').innerHTML = `<div class="empty">This order was canceled.</div>`;
+    }
+    return;
+  }
+  const d = o.deal;
+  $('orderDetailActions').innerHTML = `
+    <button type="button" id="btnOrderNote">${o.note ? 'Edit note' : 'Add note'}</button>
+    <button type="button" id="btnReportIssue">Report issue</button>
+    ${o.step < 3 ? '<button type="button" class="primary" id="btnCancelOd" style="color:#D93025;border-color:#D93025">Cancel order</button>' : ''}`;
+  $('btnOrderNote')?.addEventListener('click', () => openNoteModal(o));
+  $('btnReportIssue')?.addEventListener('click', () => openReportIssue(o));
+  $('btnCancelOd')?.addEventListener('click', () => $('modalCancelOrderDetail').classList.add('show'));
+
+  const noteHtml = o.note ? `<div class="note-preview">📝 ${o.note}</div>` : '';
+  const stepDescs = [
+    'Order confirmed on ' + d.store.label,
+    'Paste tracking — courier auto-detected',
+    'Verify delivery OTP from courier',
+    'Parcel delivered — Mintzer confirming receipt',
+    'Upload invoice photo or PDF',
+    '48-hour payment review',
+    'Credited to your wallet'
+  ];
+  $('timelineContent').innerHTML = noteHtml + `
+    <div style="margin-bottom:10px;display:flex;gap:8px;align-items:center"><div style="width:40px;height:40px;flex-shrink:0;border-radius:8px;overflow:hidden;background:#F8F9FA;border:1px solid #E8EAED">${dealImgHtml(d, '', false)}</div><div style="font-weight:700;font-size:14px">${d.name}</div></div>
+    <div style="font-size:11px;color:#5F6368;margin-top:2px">${d.store.label} · ${o.orderId}</div></div>
+    ${renderEarnCompact(d)}
+    ${STEPS.map((title, i) => {
+      const done = i < o.step;
+      const current = i === o.step;
+      const collapsed = done && !current;
+      let cls = 'tl-circle';
+      if (done) cls += ' done';
+      else if (current) cls += ' current';
+      let action = '';
+      if (current && !o.canceled) {
+        if (i === 1) action = `<div class="tl-action">
+          <div style="font-size:11px;color:#5F6368;margin-bottom:4px">Courier: <b id="courierLabel">${o.courier}</b> (auto-detected)</div>
+          <input id="trackInp" placeholder="Paste tracking ID (EK… = Ekart)" value="${o.tracking}" />
+          <button type="button" class="btn-sm" id="btnTrack">Save tracking</button></div>`;
+        else if (i === 2) action = `<div class="tl-action">
+          <input id="phone4Inp" placeholder="Delivery person — last 4 digits" maxlength="4" value="${o.phoneLast4}" />
+          <input id="otpInp" placeholder="Delivery OTP (6+ digits)" maxlength="8" />
+          <button type="button" class="btn-sm" id="btnOtp">Submit OTP</button></div>`;
+        else if (i === 3) action = `<div class="tl-action"><p style="font-size:11px;color:#5F6368;margin-bottom:8px">Delivery complete. Mintzer warehouse is confirming your parcel.</p>
+          <button type="button" class="btn-sm outline" id="btnSimReceive">Simulate: Mintzer received parcel</button></div>`;
+        else if (i === 4) {
+          if (o.invoiceStatus === 'verifying') {
+            action = `<div class="tl-action">
+              <div class="invoice-status verifying"><span class="pulse"></span> Verifying invoice…</div>
+              <p style="font-size:11px;color:#5F6368;margin-bottom:8px">Mintzer is checking your upload. Payment starts after approval.</p>
+              <button type="button" class="btn-sm outline" id="btnSimReject">Simulate: Rejected (demo)</button>
+              <button type="button" class="btn-sm" id="btnSimVerify" style="margin-left:6px">Simulate: Approved</button></div>`;
+          } else if (o.invoiceStatus === 'rejected') {
+            action = `<div class="tl-action">
+              <div class="invoice-status rejected">✕ Invoice not accepted</div>
+              <div class="reject-reason">${o.invoiceRejectReason || 'Please upload a clear invoice photo.'}</div>
+              <button type="button" class="btn-sm" id="btnReupload">Re-upload invoice</button></div>`;
+          } else {
+            action = `<div class="tl-action"><button type="button" class="btn-sm" id="btnInvoice">Upload invoice (demo)</button></div>`;
+          }
+        } else if (i === 5) action = `<div class="tl-action"><div class="payment-timer" id="payTimer">⏱ Payment in ${formatPayTimer(o.paymentTimerSec)}</div>
+          <button type="button" class="btn-sm" id="btnPaid">Simulate: Payment credited</button></div>`;
+      } else if (done && i === 4 && o.invoiceStatus === 'verified') {
+        action = `<div class="tl-action" style="margin-top:4px"><div class="invoice-status verified">✓ Invoice verified</div></div>`;
+      }
+      if (collapsed) {
+        return `<div class="tl-step collapsed"><div class="tl-dot"><div class="${cls}"></div><div class="tl-line short"></div></div>
+          <div class="tl-body"><div class="tl-title">✓ ${title}</div></div></div>`;
+      }
+      return `<div class="tl-step"><div class="tl-dot"><div class="${cls}"></div>${i < STEPS.length - 1 ? '<div class="tl-line"></div>' : ''}</div>
+        <div class="tl-body"><div class="tl-title">${title}</div><div class="tl-desc">${stepDescs[i]}</div>${action}</div></div>`;
+    }).join('')}`;
+
+  $('trackInp')?.addEventListener('input', () => {
+    o.tracking = $('trackInp').value;
+    o.courier = detectCourier(o.tracking);
+    const lbl = $('courierLabel');
+    if (lbl) lbl.textContent = o.courier;
+  });
+  $('btnTrack')?.addEventListener('click', () => {
+    o.tracking = $('trackInp').value || 'EK9988776655';
+    o.courier = detectCourier(o.tracking);
+    o.step = 2;
+    snack(`Tracking saved · ${o.courier}`);
+    renderOrderDetail();
+    renderOrders();
+  });
+  $('btnOtp')?.addEventListener('click', () => {
+    if (($('otpInp')?.value || '').length < 4) { snack('Enter delivery OTP'); return; }
+    o.phoneLast4 = $('phone4Inp')?.value || '';
+    o.step = 3;
+    snack('OTP verified');
+    renderOrderDetail();
+  });
+  $('btnSimReceive')?.addEventListener('click', () => {
+    o.step = 4;
+    snack('Parcel received — upload invoice');
+    renderOrderDetail();
+  });
+  $('btnInvoice')?.addEventListener('click', () => {
+    o.invoiceUploaded = true;
+    o.invoiceStatus = 'verifying';
+    o.invoiceRejectReason = '';
+    snack('Invoice uploaded — verifying…');
+    renderOrderDetail();
+    renderOrders();
+  });
+  $('btnReupload')?.addEventListener('click', () => {
+    o.invoiceStatus = 'verifying';
+    o.invoiceRejectReason = '';
+    snack('Invoice re-uploaded — verifying…');
+    renderOrderDetail();
+    renderOrders();
+  });
+  $('btnSimVerify')?.addEventListener('click', () => {
+    o.invoiceStatus = 'verified';
+    o.step = 5;
+    o.paymentTimerSec = 48 * 3600;
+    startPaymentTimer(o);
+    snack('Invoice verified — 48h payment timer started');
+    renderOrderDetail();
+    renderOrders();
+  });
+  $('btnSimReject')?.addEventListener('click', () => {
+    o.invoiceStatus = 'rejected';
+    o.invoiceRejectReason = 'Invoice blurry — upload a clear photo showing order ID and amount.';
+    snack('Invoice rejected — please re-upload');
+    renderOrderDetail();
+    renderOrders();
+  });
+  $('btnPaid')?.addEventListener('click', () => creditPayment(o));
+  if (o.step === 5) startPaymentTimer(o);
+}
+
+function formatPayTimer(sec) {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function startPaymentTimer(o) {
+  clearInterval(state.paymentInterval);
+  state.paymentInterval = setInterval(() => {
+    if (!o || o.step !== 5) { clearInterval(state.paymentInterval); return; }
+    o.paymentTimerSec = Math.max(0, o.paymentTimerSec - 1);
+    const el = $('payTimer');
+    if (el) el.textContent = '⏱ Payment in ' + formatPayTimer(o.paymentTimerSec);
+    if (o.paymentTimerSec <= 0) clearInterval(state.paymentInterval);
+  }, 1000);
+}
+
+function creditPayment(o) {
+  const d = o.deal;
+  o.paid = true;
+  o.step = 6;
+  clearInterval(state.paymentInterval);
+  state.walletPending = Math.max(0, state.walletPending - d.earn);
+  state.walletAvailable += d.earn;
+  state.walletTotal += d.earn;
+  snack('₹' + d.earn + ' added to wallet!');
+  renderOrderDetail();
+  renderWallet();
+  renderOrders();
+}
+
+function openNoteModal(o) {
+  state.noteTarget = o;
+  $('noteModalTitle').textContent = o.note ? 'Edit note' : 'Add note';
+  $('noteText').value = o.note || '';
+  $('noteCharCount').textContent = (o.note || '').length;
+  $('modalNote').classList.add('show');
+}
+
+$('noteText')?.addEventListener('input', () => { $('noteCharCount').textContent = $('noteText').value.length; });
+$('btnNoteSave')?.addEventListener('click', () => {
+  if (state.noteTarget) {
+    state.noteTarget.note = $('noteText').value.trim().slice(0, 200);
+    snack('Note saved');
+  }
+  $('modalNote').classList.remove('show');
+  renderOrderDetail();
+});
+$('btnNoteCancel')?.addEventListener('click', () => $('modalNote').classList.remove('show'));
+
+function openReportIssue(o) {
+  state.viewOrder = o;
+  state.reportStep = 0;
+  renderReportStep();
+  $('modalReportIssue').classList.add('show');
+}
+
+function renderReportStep() {
+  const o = state.viewOrder;
+  const steps = [
+    { title: 'What went wrong?', body: '<div class="menu-list"><button type="button" class="menu-item report-cat">Wrong product received</button><button type="button" class="menu-item report-cat">Tracking not updating</button><button type="button" class="menu-item report-cat">Payment delay</button><button type="button" class="menu-item report-cat">Other</button></div>', next: 'category' },
+    { title: 'Add details', body: `<textarea id="reportDetail" class="text-input" rows="3" placeholder="Describe the issue…" style="width:100%;min-height:72px"></textarea>`, next: 'detail' },
+    { title: 'Submit ticket?', body: `<p>We'll create a support ticket for order <b>${o?.orderId || '—'}</b>. Track in Profile → My tickets.</p>`, next: 'submit' }
+  ];
+  const s = steps[state.reportStep];
+  $('reportStepContent').innerHTML = `<h2>${s.title}</h2>${s.body}`;
+  document.querySelectorAll('.step-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === state.reportStep);
+    d.classList.toggle('done', i < state.reportStep);
+  });
+  const actions = $('reportStepActions');
+  if (state.reportStep === 0) {
+    actions.innerHTML = '<button type="button" class="btn-outline" id="btnReportClose">Cancel</button>';
+    document.querySelectorAll('.report-cat').forEach(b => b.addEventListener('click', () => { state.reportCategory = b.textContent; state.reportStep = 1; renderReportStep(); }));
+    $('btnReportClose')?.addEventListener('click', () => $('modalReportIssue').classList.remove('show'));
+  } else if (state.reportStep === 1) {
+    actions.innerHTML = '<button type="button" class="btn-outline" id="btnReportBack">Back</button><button type="button" class="btn-primary" id="btnReportNext">Next</button>';
+    $('btnReportBack')?.addEventListener('click', () => { state.reportStep = 0; renderReportStep(); });
+    $('btnReportNext')?.addEventListener('click', () => { state.reportDetail = $('reportDetail')?.value || ''; state.reportStep = 2; renderReportStep(); });
+  } else {
+    actions.innerHTML = '<button type="button" class="btn-outline" id="btnReportBack2">Back</button><button type="button" class="btn-primary" id="btnReportSubmit">Submit ticket</button>';
+    $('btnReportBack2')?.addEventListener('click', () => { state.reportStep = 1; renderReportStep(); });
+    $('btnReportSubmit')?.addEventListener('click', () => {
+      const t = { id: 'TKT-' + Date.now().toString().slice(-6), subject: state.reportCategory || 'Order issue', orderId: o?.orderId, status: 'Open', created: new Date() };
+      state.tickets.unshift(t);
+      $('modalReportIssue').classList.remove('show');
+      snack('Ticket ' + t.id + ' created');
+    });
+  }
+}
+
+document.querySelectorAll('.od-cancel-reason').forEach(b => b.addEventListener('click', () => {
+  const o = state.viewOrder;
+  if (!o) return;
+  o.canceled = true;
+  state.canceledOrders.unshift(o);
+  state.orders = state.orders.filter(x => x.id !== o.id);
+  state.walletPending = Math.max(0, state.walletPending - o.deal.earn);
+  $('modalCancelOrderDetail').classList.remove('show');
+  snack('Order canceled');
+  showScreen('orders');
+}));
+$('btnOdCancelDismiss')?.addEventListener('click', () => $('modalCancelOrderDetail').classList.remove('show'));
+
+/* ── WALLET ── */
+function renderWallet() {
+  $('walletHeader').textContent = fmt(state.walletAvailable);
+  const txs = getWalletTxs();
+  $('walletContent').innerHTML = `
+    <div class="wallet-cards">
+      <div class="wallet-card"><div class="lbl">Available</div><div class="amt">₹${fmt(state.walletAvailable)}</div></div>
+      <div class="wallet-card"><div class="lbl">Pending</div><div class="amt grey">₹${fmt(state.walletPending)}</div></div>
+      <div class="wallet-card full"><div class="lbl">Total earned</div><div class="amt green">₹${fmt(state.walletTotal)}</div></div>
+    </div>
+    <div class="collapse-hdr" id="howItWorksHdr">How it works <span>${state.howItWorksOpen ? '▲' : '▼'}</span></div>
+    <div class="collapse-body${state.howItWorksOpen ? ' open' : ''}" id="howItWorksBody">
+      Complete orders → upload invoice → Mintzer pays within 48 hours → balance moves to Available.
+      Pending = orders awaiting payment. No withdraw in app (v1) — view & export only.
+    </div>
+    <div class="wallet-toolbar">
+      <span style="font-size:13px;font-weight:600">Transactions</span>
+      <button type="button" class="btn-link" id="btnDateRange">Date range</button>
+      <button type="button" class="btn-link" id="btnDownloadExcel">Download Excel</button>
+    </div>
+    <div class="chips-row" id="walletTxChips" style="padding:0 0 10px"></div>
+    <div id="walletTxList">${txs.length ? txs.map(renderTxRow).join('') : '<div class="empty">No transactions match</div>'}</div>
+    <p style="font-size:11px;color:#5F6368;margin-top:16px;text-align:center">No withdraw in app — view & export only (v1)</p>`;
+
+  $('howItWorksHdr')?.addEventListener('click', () => {
+    state.howItWorksOpen = !state.howItWorksOpen;
+    renderWallet();
+  });
+  $('walletTxChips').innerHTML = ['all|All', 'paid|Paid', 'pending|Pending', 'canceled|Canceled'].map(([k,l]) =>
+    `<button type="button" class="chip${state.walletTxFilter === k ? ' active' : ''}" data-txf="${k}">${l}</button>`).join('');
+  $('walletTxChips').querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+    state.walletTxFilter = c.dataset.txf;
+    renderWallet();
+  }));
+  $('btnDownloadExcel')?.addEventListener('click', () => snack('Excel export started — check downloads'));
+  $('btnDateRange')?.addEventListener('click', () => {
+    $('dateFrom').value = state.walletDateFrom;
+    $('dateTo').value = state.walletDateTo;
+    $('modalDateRange').classList.add('show');
+  });
+}
+
+function getWalletTxs() {
+  let items = [];
+  state.orders.forEach(o => items.push({ ...o, txStatus: o.canceled ? 'canceled' : o.paid ? 'paid' : 'pending' }));
+  state.canceledOrders.forEach(o => { if (!items.find(x => x.id === o.id)) items.push({ ...o, txStatus: 'canceled' }); });
+  if (state.walletTxFilter !== 'all') items = items.filter(i => i.txStatus === state.walletTxFilter);
+  if (state.walletDateFrom) items = items.filter(i => i.created >= new Date(state.walletDateFrom));
+  if (state.walletDateTo) items = items.filter(i => i.created <= new Date(state.walletDateTo + 'T23:59:59'));
+  return items.sort((a, b) => b.created - a.created);
+}
+
+function renderTxRow(o) {
+  const st = o.txStatus;
+  return `<div class="hist-item"><div><div style="font-weight:500">${o.deal.name}</div><div style="font-size:11px;color:#5F6368">${o.orderId}</div></div>
+    <div><span class="status ${st === 'paid' ? 'paid' : st === 'canceled' ? 'canceled' : 'pending'}">${st.charAt(0).toUpperCase() + st.slice(1)}</span>
+    <div style="text-align:right;font-weight:700;margin-top:2px">₹${o.deal.earn}</div></div></div>`;
+}
+
+$('btnDateApply')?.addEventListener('click', () => {
+  state.walletDateFrom = $('dateFrom').value;
+  state.walletDateTo = $('dateTo').value;
+  $('modalDateRange').classList.remove('show');
+  snack('Date filter applied');
+  renderWallet();
+});
+$('btnDateClear')?.addEventListener('click', () => {
+  state.walletDateFrom = state.walletDateTo = '';
+  $('modalDateRange').classList.remove('show');
+  renderWallet();
+});
+
+/* ── PROFILE ── */
+function renderProfile() {
+  $('profileContent').innerHTML = `
+    <div class="profile-head"><div class="avatar">A</div><div><div class="profile-name">Arun</div><div class="profile-phone">+91 ${phoneInput.value || '9876543210'}</div></div></div>
+    <button type="button" class="profile-ref-banner" id="menuReferral">
+      <b>Refer & earn ₹200 per friend</b>
+      <span>Code ${state.referralCode} · Tap to share on WhatsApp</span>
+    </button>
+    <div class="menu-list">
+      <button type="button" class="menu-item" id="menuReferralRow">Refer & earn <span class="sub">₹200 each</span></button>
+      <button type="button" class="menu-item" id="menuKyc">KYC <span class="sub">${state.kycDone ? '✓ Verified' : 'Pending'}</span></button>
+      <button type="button" class="menu-item" id="menuPayout">Payout details <span class="sub">${state.payoutDone ? '✓ Saved' : 'Add'}</span></button>
+      <button type="button" class="menu-item" id="menuLanguage">Language <span class="sub">${state.language}</span></button>
+      <button type="button" class="menu-item" id="menuAppearance">Appearance <span class="sub">${state.darkMode ? 'Dark' : 'Light'}</span></button>
+      <button type="button" class="menu-item" id="menuTickets">My tickets <span class="sub">${state.tickets.length || 'None'}</span></button>
+      <button type="button" class="menu-item" data-snack="Help & tutorials">Help & Tutorials</button>
+      <button type="button" class="menu-item" id="menuNotifSettings" data-snack="Notification preferences saved">Notifications</button>
+      <button type="button" class="menu-item" data-snack="Terms & Privacy">Terms & Privacy</button>
+      <button type="button" class="menu-item danger" id="btnDeleteAccount">Delete account</button>
+      <button type="button" class="menu-item danger" id="btnLogout">Logout</button>
+    </div>`;
+  $('menuKyc')?.addEventListener('click', () => { if (!state.kycDone) $('modalKyc').classList.add('show'); else snack('KYC already verified'); });
+  $('menuReferral')?.addEventListener('click', openReferral);
+  $('menuReferralRow')?.addEventListener('click', openReferral);
+  $('menuPayout')?.addEventListener('click', () => $('modalPayout').classList.add('show'));
+  $('menuLanguage')?.addEventListener('click', () => {
+    state.language = state.language === 'English' ? 'Hindi' : 'English';
+    snack('Language: ' + state.language);
+    renderProfile();
+  });
+  $('menuAppearance')?.addEventListener('click', () => {
+    state.darkMode = !state.darkMode;
+    localStorage.setItem('mintzer_demo_dark', state.darkMode ? '1' : '0');
+    $('phone').classList.toggle('dark', state.darkMode);
+    snack(state.darkMode ? 'Dark mode on' : 'Light mode on');
+    renderProfile();
+  });
+  $('menuTickets')?.addEventListener('click', () => showScreen('tickets'));
+  $('btnDeleteAccount')?.addEventListener('click', () => {
+    if (hasActiveOrder()) {
+      $('deleteAccountMsg').textContent = 'Cannot delete while an order is in progress. Finish or cancel it first.';
+      $('btnDeleteConfirm').disabled = true;
+    } else {
+      $('deleteAccountMsg').textContent = 'This permanently removes your profile and history.';
+      $('btnDeleteConfirm').disabled = false;
+    }
+    $('modalDeleteAccount').classList.add('show');
+  });
+  $('btnLogout')?.addEventListener('click', () => {
+    state.loggedIn = false;
+    snack('Logged out');
+    showScreen('login-phone');
+  });
+  $('profileContent').querySelectorAll('[data-snack]').forEach(el => el.addEventListener('click', () => snack(el.dataset.snack)));
+}
+
+$('btnDeleteConfirm')?.addEventListener('click', () => {
+  if (hasActiveOrder()) return;
+  $('modalDeleteAccount').classList.remove('show');
+  state.loggedIn = false;
+  showScreen('account-deleted');
+});
+$('btnDeleteCancel')?.addEventListener('click', () => $('modalDeleteAccount').classList.remove('show'));
+$('btnSuspendedSupport')?.addEventListener('click', () => { $('modalRaiseTicket').classList.add('show'); $('ticketSubject').value = 'Account suspension appeal'; });
+$('btnSuspendedLogin')?.addEventListener('click', () => showScreen('login-phone'));
+$('btnDeletedLogin')?.addEventListener('click', () => showScreen('login-phone'));
+
+/* ── NOTIFICATIONS ── */
+function renderNotifications() {
+  $('notifList').innerHTML = NOTIFICATIONS.map(n => `
+    <div class="notif-item${n.unread ? ' unread' : ''}" data-nid="${n.id}">
+      <div class="ni-title">${n.title}</div>
+      <div style="font-size:12px;color:#5F6368;margin-top:4px">${n.body}</div>
+      <div class="ni-time">${n.time}</div>
+    </div>`).join('') || '<div class="empty">No notifications</div>';
+  $('notifList').querySelectorAll('.notif-item').forEach(el => el.addEventListener('click', () => {
+    const n = NOTIFICATIONS.find(x => x.id === el.dataset.nid);
+    n.unread = false;
+    if (n.action === 'home') showScreen('home');
+    else if (n.action === 'wallet') showScreen('wallet');
+    else if (n.action === 'orders') showScreen('orders');
+    else if (n.action === 'place-order' && state.activePlacement) showScreen('place-order');
+    else snack(n.title);
+  }));
+}
+
+/* ── TICKETS ── */
+function renderTickets() {
+  if (!state.tickets.length) {
+    $('ticketsList').innerHTML = '<div class="empty">No tickets yet.<br/>Use the support FAB on Home.</div>';
+    return;
+  }
+  $('ticketsList').innerHTML = state.tickets.map(t => `
+    <div class="ticket-item">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="ti-id">${t.id}</div><span class="ti-status">${t.status}</span>
+      </div>
+      <div style="font-weight:600;font-size:13px;margin-top:6px">${t.subject}</div>
+      <div style="font-size:11px;color:#5F6368;margin-top:4px">${t.orderId ? 'Order: ' + t.orderId + ' · ' : ''}${t.created.toLocaleDateString()}</div>
+    </div>`).join('');
+}
+
+/* ── NAV ── */
+document.querySelectorAll('[data-nav]').forEach(n => n.addEventListener('click', () => showScreen(n.dataset.nav)));
+document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => showScreen(b.dataset.back)));
+document.querySelectorAll('[data-snack]').forEach(el => el.addEventListener('click', () => snack(el.dataset.snack)));
+$('fab').addEventListener('click', () => {
+  $('ticketSubject').value = '';
+  $('ticketBody').value = '';
+  $('modalRaiseTicket').classList.add('show');
+});
+$('btnTicketSubmit')?.addEventListener('click', () => {
+  const sub = $('ticketSubject').value.trim();
+  if (!sub) { snack('Enter a subject'); return; }
+  const t = { id: 'TKT-' + Date.now().toString().slice(-6), subject: sub, body: $('ticketBody').value, status: 'Open', created: new Date() };
+  state.tickets.unshift(t);
+  $('modalRaiseTicket').classList.remove('show');
+  snack('Ticket ' + t.id + ' created — see Profile → My tickets');
+});
+$('btnTicketCancel')?.addEventListener('click', () => $('modalRaiseTicket').classList.remove('show'));
+
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => {
+  if (e.target === o) o.classList.remove('show');
+}));
+document.querySelectorAll('.modal-center').forEach(o => o.addEventListener('click', e => {
+  if (e.target === o) o.classList.remove('show');
+}));
+
+/* ── RESET ── */
+$('btnReset').addEventListener('click', () => {
+  if (!confirm('Reset demo? All progress will be cleared.')) return;
+  localStorage.removeItem('mintzer_demo_tutorial');
+  localStorage.removeItem('mintzer_demo_view');
+  localStorage.removeItem('mintzer_demo_dark');
+  localStorage.removeItem('mintzer_demo_shop');
+  localStorage.removeItem('mintzer_demo_shop_remember');
+  clearInterval(state.timerInterval);
+  clearInterval(state.resendInterval);
+  clearInterval(state.paymentInterval);
+  Object.assign(state, {
+    loggedIn: false, kycDone: false, payoutDone: false, tutorialSeen: false,
+    homeView: 'list', filter: 'all', homeFilters: { store: 'all', card: 'all', minEarn: 0 },
+    darkMode: false, shopMode: null, shopModeAsked: false, language: 'English', userCards: ['any'],
+    referralCode: 'ARUN200', referralCount: 0, referralEarned: 0,
+    selectedDeal: null, activePlacement: null, orders: [], canceledOrders: [], tickets: [],
+    addressVersion: 1,
+    walletAvailable: 1240, walletPending: 0, walletTotal: 1240,
+    walletTxFilter: 'all', walletDateFrom: '', walletDateTo: '', howItWorksOpen: false,
+    orderTab: 'ongoing', orderSearch: '', orderStoreFilter: 'all', orderSort: 'newest'
+  });
+  phoneInput.value = '';
+  $('btnContinue').disabled = true;
+  $('phone').classList.remove('dark');
+  showScreen('login-phone');
+  snack('Demo reset');
+});
+
+function initPromoCarousel() {
+  const slides = [...document.querySelectorAll('.promo-slide')];
+  const dots = [...document.querySelectorAll('.promo-dot')];
+  if (!slides.length || document.getElementById('promoCarousel')?.dataset.started) return;
+  document.getElementById('promoCarousel').dataset.started = '1';
+  let idx = 0;
+  function go(n) {
+    idx = (n + slides.length) % slides.length;
+    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+  dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.idx)));
+  setInterval(() => go(idx + 1), 5000);
+}
+$('btnPromoWa')?.addEventListener('click', () => {
+  snack('Opening WhatsApp community…');
+  window.open('https://chat.whatsapp.com/EXAMPLE', '_blank');
+});
+$('btnPromoTutorial')?.addEventListener('click', () => snack('Opening tutorial video…'));
+/* Partner cards: banner + CTA → full Apply for cards screen (see .promo-slide-cards click) */
+
+/* init */
+$('phone').classList.toggle('dark', state.darkMode);
+if (state.shopModeAsked) state.shopMode = localStorage.getItem('mintzer_demo_shop');
+else state.shopMode = null;
+showScreen('login-phone');
+initPromoCarousel();
+</script>
+</body>
+</html>

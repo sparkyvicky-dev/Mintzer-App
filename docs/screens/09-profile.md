@@ -1,10 +1,11 @@
 # Screen: Profile
 
-**Spec:** [../design/PROFILE-REQUIREMENTS.md](../design/PROFILE-REQUIREMENTS.md) — **LOCKED v1**
+**Spec:** [../design/PROFILE-REQUIREMENTS.md](../design/PROFILE-REQUIREMENTS.md) — **LOCKED v1**  
+**Affiliate:** [../design/AFFILIATE-MARKETING-REQUIREMENTS.md](../design/AFFILIATE-MARKETING-REQUIREMENTS.md) — Refer & earn
 
 ## Purpose
 
-Account hub: KYC, payout details, language, tickets, support, appearance (theme), legal, logout.
+Account hub: **refer & earn**, KYC, payout details, language, tickets, support, appearance (theme), legal, logout.
 
 ## Entry points
 
@@ -12,10 +13,16 @@ Account hub: KYC, payout details, language, tickets, support, appearance (theme)
 
 ## UI elements
 
-See PROFILE-REQUIREMENTS.md for full list.
+See PROFILE-REQUIREMENTS.md. **Affiliate v1 adds:**
+
+| Element | Description |
+|---------|-------------|
+| Refer banner | Gold card below avatar — “Refer & earn ₹200 per friend” |
+| Refer menu row | Opens referral sheet — code, copy, WhatsApp share, stats |
 
 ## Sub-screens
 
+- **Refer & earn sheet**
 - KYC form (Name + PAN)
 - Language (EN / HI)
 - My tickets list

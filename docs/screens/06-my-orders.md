@@ -19,8 +19,7 @@ Hub for **active placements** (timer running, Order ID not yet submitted) and **
 | Element | Description |
 |---------|-------------|
 | Title | My Orders |
-| Search | Search by Order ID |
-| Tabs row 1 | Regular orders · Instant orders (if product needs both) |
+| Search | **Order ID · Tracking ID · product name / model** |
 | Tabs row 2 | **Ongoing** · **Completed** |
 
 ## Placement card (collapsed) — before Order ID submit
