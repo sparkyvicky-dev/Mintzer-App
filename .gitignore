@@ -1,0 +1,58 @@
+# Secrets — never commit
+Sen Info/
+secrets/
+*.jks
+*.keystore
+mintzer-keys/
+**/key.properties
+mintzer.in/fpt details.txt
+mintzer.in/ftp-details.txt
+.env
+.env.*
+.env.live
+.env.live*
+!.env.example
+_hostinger_explore/**/.env*
+_hostinger_explore/**/*.env*
+service-account*.json
+credentials*.json
+secrets.*
+private_key*
+**/*-firebase.json
+**/google-services.json
+**/GoogleService-Info.plist
+**/storage/app/firebase/*.json
+
+# Build artifacts & release binaries (rebuild from source)
+*.aab
+*.apk
+*.ipa
+*.zip
+*.rar
+*.7z
+app/build/
+app/.dart_tool/
+app/.packages
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/.pub-cache/
+app/.pub/
+**/local.properties
+**/.gradle/
+**/captures/
+
+# Huge Hostinger website dump — live server is source of truth
+mintzer.in/Current Mintzer hosinter file manager/
+Phpadmin/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+.cursor/
+
+# Node
+node_modules/
+npm-debug.log*

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Order detail — delivery address</title>
+<style>
+  :root { --p:#7B61FF; --ink:#202124; --muted:#5F6368; --faint:#9AA0A6; --line:#E8EAED; --green:#188038; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; background: #ECEEF2; font-family: "Segoe UI", system-ui, sans-serif; color: var(--ink); }
+  h1 { font-size: 16px; font-weight: 700; margin: 22px 0 4px; }
+  .hint { margin: 0 0 14px; font-size: 13px; color: var(--muted); }
+  .phone { width: 390px; background: #F7F7FA; border-radius: 32px; overflow: hidden; box-shadow: 0 16px 40px rgba(32,33,36,.16); border: 1px solid #DADCE0; margin-bottom: 36px; }
+  .appbar { height: 56px; background: #fff; display: flex; align-items: center; padding: 0 6px 0 8px; border-bottom: 1px solid var(--line); }
+  .appbar .back { width: 36px; color: var(--ink); font-size: 20px; text-align: center; }
+  .appbar .title { flex: 1; font-size: 16px; font-weight: 600; }
+  .appbar .report { border: 0; background: none; color: var(--p); font-weight: 600; font-size: 13px; padding: 8px; cursor: pointer; }
+  .appbar .more { border: 0; background: none; font-size: 20px; padding: 8px 10px; cursor: pointer; color: var(--ink); }
+  .scroll { padding: 12px 16px 28px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.04); }
+  .prod { display: flex; gap: 12px; }
+  .thumb { width: 72px; height: 72px; border-radius: 12px; background: linear-gradient(160deg,#F3EEFF,#E7E0FF); flex-shrink: 0; }
+  .name { font-size: 15px; font-weight: 800; line-height: 1.25; }
+  .head { display: flex; gap: 8px; align-items: flex-start; }
+  .chip { margin-left: auto; background: #F3EEFF; color: var(--p); font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 8px; white-space: nowrap; }
+  .store { margin-top: 6px; font-size: 12px; font-weight: 700; color: #3C4043; }
+  .store span { font-weight: 600; color: var(--muted); }
+  .when { margin-top: 5px; font-size: 11px; color: var(--faint); }
+  .ids { margin-top: 12px; background: #F8F9FA; border-radius: 12px; padding: 10px 12px; display: flex; }
+  .id { flex: 1; }
+  .id + .id { border-left: 1px solid var(--line); padding-left: 12px; margin-left: 12px; }
+  .id .k { font-size: 10px; font-weight: 600; color: var(--faint); }
+  .id .v { margin-top: 2px; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 4px; }
+  .id .v i { color: var(--p); font-style: normal; font-size: 12px; }
+  details.addr { margin-top: 8px; }
+  details.addr summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 8px 2px 2px; }
+  details.addr summary::-webkit-details-marker { display: none; }
+  .pin { width: 28px; height: 28px; border-radius: 8px; background: #F3EEFF; color: var(--p); display: grid; place-items: center; font-size: 14px; flex-shrink: 0; }
+  .sumtxt { flex: 1; min-width: 0; }
+  .sumtxt b { display: block; font-size: 13px; font-weight: 700; }
+  .sumtxt em { display: block; font-style: normal; font-size: 12px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chev { color: var(--p); font-size: 16px; transition: transform .15s; }
+  details[open] .chev { transform: rotate(180deg); }
+  .block { margin: 8px 0 2px; background: #F8F9FA; border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.45; font-weight: 600; }
+  .block .own { display: block; margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--muted); }
+  .earn { margin-top: 12px; background: #fff; border-radius: 12px; padding: 10px 12px; }
+  .earn .tag { font-size: 10px; font-weight: 600; letter-spacing: .4px; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; margin-top: 8px; }
+  .cell .k { font-size: 10px; color: var(--muted); }
+  .cell .v { font-size: 13px; font-weight: 700; }
+  .cell .v.g { color: var(--green); }
+  .you { margin-top: 8px; background: #E6F4EA; border-radius: 8px; padding: 7px 10px; display: flex; justify-content: space-between; align-items: center; }
+  .you span { font-size: 12px; font-weight: 700; color: var(--green); }
+  .you b { font-size: 16px; color: var(--green); }
+  .step { display: flex; gap: 10px; }
+  .rail { width: 22px; display: flex; flex-direction: column; align-items: center; }
+  .dot { width: 16px; height: 16px; border-radius: 99px; background: var(--p); color: #fff; font-size: 9px; font-weight: 800; display: grid; place-items: center; }
+  .dot.sm { width: 10px; height: 10px; margin-top: 3px; }
+  .dot.now { width: 18px; height: 18px; box-shadow: 0 0 0 4px rgba(123,97,255,.18); }
+  .line { width: 2px; flex: 1; min-height: 14px; background: rgba(123,97,255,.45); margin-top: 2px; }
+  .line.soft { background: linear-gradient(#7B61FF, #DDD4FF, #E8EAED); width: 3px; min-height: 36px; border-radius: 99px; }
+  .line.grey { background: var(--line); }
+  .st { padding-top: 1px; padding-bottom: 8px; font-size: 12px; font-weight: 600; }
+  .st.done { color: var(--ink); }
+  .st.wait { color: var(--faint); font-weight: 500; }
+  .nowbox { background: #fff; border: 1px solid #DDD4FF; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+  .nowbox b { font-size: 13px; color: var(--p); }
+  .nowbox p { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+  .flow { margin-top: 16px; }
+</style>
+</head>
+<body>
+  <h1>Inside the order</h1>
+  <p class="hint">Tap Delivery address. It sits under the order IDs, on the same card.</p>
+  <div class="phone">
+    <div class="appbar">
+      <div class="back">←</div>
+      <div class="title">Order detail</div>
+      <button class="report" type="button">Report issue</button>
+      <button class="more" type="button">⋮</button>
+    </div>
+    <div class="scroll">
+      <div class="card">
+        <div class="prod">
+          <div class="thumb"></div>
+          <div style="flex:1;min-width:0">
+            <div class="head">
+              <div class="name">Edge 60 Pro 12GB/256GB</div>
+              <div class="chip">Tracking</div>
+            </div>
+            <div class="store">Flipkart · <span>Axis</span></div>
+            <div class="when">Ordered 26 Sep 2026</div>
+          </div>
+        </div>
+        <div class="ids">
+          <div class="id">
+            <div class="k">Mintzer order id</div>
+            <div class="v">ORD000347 <i>⧉</i></div>
+          </div>
+          <div class="id">
+            <div class="k">Flipkart order id</div>
+            <div class="v">OD123456789 <i>⧉</i></div>
+          </div>
+        </div>
+        <details class="addr" open>
+          <summary>
+            <span class="pin">⌖</span>
+            <span class="sumtxt">
+              <b>Delivery address</b>
+              <em>Arun · Kumbakonam 612001</em>
+            </span>
+            <span class="chev">▾</span>
+          </summary>
+          <div class="block">
+            Arun<br>
+            48A, Besant Road<br>
+            Vasu Theatre<br>
+            Kumbakonam, Tamil Nadu 612001
+            <span class="own">Mobile: use your own number</span>
+          </div>
+        </details>
+      </div>
+
+      <div class="earn">
+        <div class="tag">EARNINGS</div>
+        <div class="grid">
+          <div class="cell"><div class="k">You pay</div><div class="v">₹32,474</div></div>
+          <div class="cell"><div class="k">Card cashback</div><div class="v">₹1,699</div></div>
+          <div class="cell"><div class="k">From Mintzer</div><div class="v">₹30,774</div></div>
+          <div class="cell"><div class="k">Commission</div><div class="v g">₹1,699</div></div>
+        </div>
+        <div class="you"><span>You earn</span><b>₹1,699</b></div>
+      </div>
+
+      <div class="flow">
+        <div class="step">
+          <div class="rail"><div class="dot sm">✓</div><div class="line"></div></div>
+          <div class="st done">Order placed</div>
+        </div>
+        <div class="step">
+          <div class="rail"><div class="dot now">2</div><div class="line soft"></div></div>
+          <div class="nowbox"><b>Tracking</b><p>Add the tracking ID once Flipkart ships it.</p></div>
+        </div>
+        <div class="step">
+          <div class="rail"><div class="dot sm" style="background:#E8EAED"></div></div>
+          <div class="st wait">Out for delivery</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

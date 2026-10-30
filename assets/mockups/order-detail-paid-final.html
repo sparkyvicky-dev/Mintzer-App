@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order detail · Paid — final</title>
+  <style>
+    :root {
+      --purple: #7B61FF;
+      --ink: #202124;
+      --muted: #5F6368;
+      --line: #E8EAED;
+      --green: #188038;
+      --green-bg: #E6F4EA;
+      --green-bd: #CEEAD6;
+      --page: #F0F1F5;
+      --soft: #F8F9FA;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(700px 360px at 50% -10%, #d8d0ff 0%, transparent 55%),
+        var(--page);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 16px 48px;
+    }
+    .caption {
+      width: min(390px, 100%);
+      margin-bottom: 12px;
+    }
+    .caption h1 {
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .caption p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .device {
+      width: min(390px, 100%);
+      background: #111;
+      border-radius: 36px;
+      padding: 10px;
+      box-shadow: 0 24px 60px rgba(32, 33, 36, 0.22);
+    }
+    .phone {
+      background: #fff;
+      border-radius: 28px;
+      overflow: hidden;
+      min-height: 720px;
+    }
+    .status {
+      height: 28px;
+      padding: 8px 18px 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .appbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .back {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      color: var(--ink);
+    }
+    .apptitle { font-size: 17px; font-weight: 800; flex: 1; }
+    .report {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--purple);
+    }
+    .scroll { padding: 14px 14px 28px; }
+    .hdr {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      background: var(--soft);
+    }
+    .thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      background:
+        linear-gradient(160deg, #eef0ff 0%, #f7f8fc 55%, #e8eaf0 100%);
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: var(--purple);
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .pname {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+    .pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 8px;
+      background: var(--green-bg);
+      color: var(--green);
+    }
+    .ids {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .earn-box {
+      margin-top: 12px;
+      border: 1px solid var(--green-bd);
+      background: var(--green-bg);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .earn-box .t { font-size: 12px; font-weight: 800; color: var(--green); }
+    .earn-box .v { font-size: 20px; font-weight: 900; color: var(--green); }
+    .steps {
+      margin-top: 16px;
+      display: grid;
+      gap: 0;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      align-items: start;
+      min-height: 34px;
+    }
+    .rail {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+    }
+    .line {
+      width: 2px;
+      flex: 1;
+      min-height: 14px;
+      background: #C8E6C9;
+      margin: 3px 0;
+    }
+    .step:last-child .line { display: none; }
+    .step .n {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--green);
+      padding-top: 1px;
+    }
+    .paid-card {
+      margin-top: 4px;
+      margin-bottom: 8px;
+      border: 1px solid var(--green-bd);
+      background: var(--green-bg);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .money {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid var(--green-bd);
+      border-radius: 10px;
+      padding: 11px 12px;
+      margin-bottom: 8px;
+    }
+    .money.plain { border-color: var(--line); }
+    .money .l { font-size: 12px; font-weight: 800; }
+    .money .s { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .money .v {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--green);
+      white-space: nowrap;
+      align-self: center;
+    }
+    .money.plain .v { color: var(--ink); }
+    .your-earn {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--green);
+      margin: 2px 0 10px;
+    }
+    .kv {
+      display: grid;
+      gap: 6px;
+    }
+    .kv row, .kv .row {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .kv .k { width: 64px; color: var(--muted); flex-shrink: 0; }
+    .kv .val { color: var(--green); font-weight: 700; }
+    .cta {
+      margin-top: 12px;
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--purple);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .home-bar {
+      margin-top: 8px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 10px 6px 14px;
+      background: #fff;
+    }
+    .tab {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #9AA0A6;
+    }
+    .tab.on { color: var(--purple); }
+    .tab .ico { font-size: 16px; margin-bottom: 2px; }
+  </style>
+</head>
+<body>
+  <div class="caption">
+    <h1>Order detail · Paid</h1>
+    <p>What the GT 30 Pro user sees after the fix — From Mintzer, bank cashback, earnings, UTR, Paid on date only.</p>
+  </div>
+
+  <div class="device">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>▮▮▮  LTE</span></div>
+      <div class="appbar">
+        <div class="back">←</div>
+        <div class="apptitle">Order detail</div>
+        <div class="report">Report issue</div>
+      </div>
+      <div class="scroll">
+        <div class="hdr">
+          <div class="thumb">GT 30<br>Pro</div>
+          <div>
+            <p class="pname">Infinix GT 30 Pro (8GB/256GB)</p>
+            <span class="pill">Paid</span>
+            <div class="ids">
+              Mintzer · ORDGVD9663<br>
+              Flipkart · OD338787534076189100
+            </div>
+          </div>
+        </div>
+
+        <div class="earn-box">
+          <div class="t">Your earnings</div>
+          <div class="v">₹900</div>
+        </div>
+
+        <div class="steps">
+          <div class="step"><div class="rail"><div class="dot">✓</div><div class="line"></div></div><div class="n">Placed</div></div>
+          <div class="step"><div class="rail"><div class="dot">✓</div><div class="line"></div></div><div class="n">Tracking</div></div>
+          <div class="step"><div class="rail"><div class="dot">✓</div><div class="line"></div></div><div class="n">Out for delivery</div></div>
+          <div class="step"><div class="rail"><div class="dot">✓</div><div class="line"></div></div><div class="n">Confirmation</div></div>
+          <div class="step"><div class="rail"><div class="dot">✓</div><div class="line"></div></div><div class="n">Invoice</div></div>
+          <div class="step"><div class="rail"><div class="dot">✓</div><div class="line"></div></div><div class="n">Payment</div></div>
+          <div class="step"><div class="rail"><div class="dot">✓</div><div class="line"></div></div><div class="n">Paid</div></div>
+        </div>
+
+        <div class="paid-card">
+          <div class="money">
+            <div>
+              <div class="l">From Mintzer</div>
+              <div class="s">Credited to your bank</div>
+            </div>
+            <div class="v">₹31,635</div>
+          </div>
+          <div class="money plain">
+            <div>
+              <div class="l">Bank cashback</div>
+              <div class="s">Credited to your card/account according to the bank statements.</div>
+            </div>
+            <div class="v">₹1,608</div>
+          </div>
+          <div class="your-earn">Your earnings ₹900</div>
+          <div class="kv">
+            <div class="row"><span class="k">Account</span><span class="val">HDFC Bank · ••••4821</span></div>
+            <div class="row"><span class="k">UTR</span><span class="val">O9J6081026000001</span></div>
+            <div class="row"><span class="k">Paid on</span><span class="val">8 Oct 2026</span></div>
+          </div>
+        </div>
+
+        <button class="cta" type="button">View transaction</button>
+      </div>
+      <div class="home-bar">
+        <div class="tab"><div class="ico">⌂</div>Home</div>
+        <div class="tab on"><div class="ico">☰</div>Orders</div>
+        <div class="tab"><div class="ico">₹</div>Wallet</div>
+        <div class="tab"><div class="ico">☺</div>Profile</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

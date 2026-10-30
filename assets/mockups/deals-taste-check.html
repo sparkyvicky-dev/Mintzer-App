@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>2 · Before it goes live</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f5f5f9; color: #2b2f3a; font-family: "Segoe UI", system-ui, sans-serif; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 28px 22px 64px; }
+  .kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #8b90a3; font-weight: 700; }
+  h1 { margin: 8px 0 6px; font-size: 28px; letter-spacing: -.03em; }
+  .lead { margin: 0 0 18px; color: #667085; font-size: 14px; max-width: 560px; }
+  .sheet { background: #fff; border: 1px solid #ececf3; border-radius: 14px; overflow: hidden; }
+  .row { display: grid; grid-template-columns: 1.4fr .7fr .7fr 90px; gap: 8px; align-items: center; padding: 14px 16px; border-top: 1px solid #f1f2f6; }
+  .head { border-top: 0; background: #f7f8fc; font-size: 12px; color: #7b8498; font-weight: 700; }
+  .name { font-weight: 750; }
+  .meta { display: block; font-size: 12px; color: #7b8498; font-weight: 500; margin-top: 2px; }
+  .sw { width: 42px; height: 24px; border-radius: 99px; border: 0; background: #d0d5dd; position: relative; cursor: pointer; }
+  .sw i { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left .15s; }
+  .sw.on { background: #7b61ff; }
+  .sw.on i { left: 21px; }
+  .check { grid-column: 1 / -1; background: #fafafa; border-radius: 12px; padding: 12px 14px; display: none; }
+  .check.show { display: block; }
+  .pair { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; padding: 3px 0; }
+  .pair b { font-weight: 750; }
+  .ok { margin-top: 8px; font-size: 13px; color: #137333; font-weight: 700; }
+  .warn { margin-top: 8px; background: #fff8eb; border: 1px solid #f3dfb2; color: #8a5a12; border-radius: 10px; padding: 8px 10px; font-size: 13px; font-weight: 650; }
+  .stay { display: block; margin-top: 4px; font-weight: 600; color: #6d655c; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Look 2 of 3 · When you turn it on</div>
+  <h1>A quiet check, then it goes live</h1>
+  <p class="lead">Click the switch. The row opens under itself. The page stays. Total receive is never changed. Look only.</p>
+  <div class="sheet" id="list">
+    <div class="row head"><div>Deal</div><div>You pay</div><div>We pay</div><div>Live</div></div>
+  </div>
+</div>
+<script>
+const deals = [
+  { name: "Samsung 55 inch TV", meta: "Flipkart · Axis", pay: 52999, receive: 51399, earn: 900, cash: 2500 },
+  { name: "LG 1.5 Ton AC", meta: "Flipkart · HDFC", pay: 52999, receive: 40000, earn: 900, cash: 2500 },
+  { name: "boAt Airdopes 141", meta: "Amazon · ICICI", pay: 12499, receive: 11800, earn: 450, cash: 0 }
+];
+function inr(n) { return "₹" + Math.round(n).toLocaleString("en-IN"); }
+const list = document.getElementById("list");
+deals.forEach((d) => {
+  const row = document.createElement("div");
+  row.className = "row";
+  const gap = Math.abs(d.pay - d.receive);
+  const note = gap >= 5000
+    ? `<div class="warn">You pay ${inr(d.pay)}. We pay ${inr(d.receive)}. Gap ${inr(gap)}.<span class="stay">Total receive stays as you typed.</span></div>`
+    : `<div class="ok">This reads clearly. User earns ${inr(d.earn)}.</div>`;
+  const bank = d.cash > 0 ? `<div class="pair"><span>Bank cashback</span><b>${inr(d.cash)}</b></div>` : "";
+  row.innerHTML = `
+    <div><span class="name">${d.name}</span><span class="meta">${d.meta}</span></div>
+    <div>${inr(d.pay)}</div>
+    <div>${inr(d.receive)}</div>
+    <div><button class="sw" type="button" aria-label="Live"><i></i></button></div>
+    <div class="check">
+      <div class="pair"><span>You pay</span><b>${inr(d.pay)}</b></div>
+      ${bank}
+      <div class="pair"><span>Mintzer payout</span><b>${inr(d.receive)}</b></div>
+      <div class="pair"><span>You earn</span><b>${inr(d.earn)}</b></div>
+      ${note}
+    </div>`;
+  const btn = row.querySelector(".sw");
+  const check = row.querySelector(".check");
+  btn.addEventListener("click", () => {
+    const on = btn.classList.toggle("on");
+    check.classList.toggle("show", on);
+  });
+  list.appendChild(row);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Orders · one transaction id</title>
+<link rel="stylesheet" href="smart-work.css">
+</head><body>
+<div class="app"><aside class="rail"><div class="mark">M</div><i class="on">☰</i></aside>
+<main class="main">
+<h1>Orders</h1>
+<p class="note">Same Orders list. The only change is inside Payout: this person’s other waiting orders can share one transaction id.</p>
+<div class="tag">Suggestion · open Payout on User5749</div>
+<div class="card"><table>
+<thead><tr><th>User</th><th>Deal</th><th>To pay</th><th>Status</th><th>Verify</th><th>Payout</th></tr></thead>
+<tbody>
+<tr><td><div class="name">User5749</div><div class="sub">ORD77885M9</div></td><td>Vivo T5X 6GB/128GB</td><td class="to">₹24,211</td><td class="ok">Delivered</td><td class="ok">Verified</td><td><button class="btn p" id="open">Payout</button></td></tr>
+<tr><td><div class="name">User5749</div><div class="sub">ORD1833E83</div></td><td>Vivo T5X 6GB/128GB</td><td class="to">₹24,211</td><td class="ok">Delivered</td><td class="ok">Verified</td><td><button class="btn g">Payout</button></td></tr>
+<tr><td><div class="name">User5749</div><div class="sub">ORD389JV9OZ</div></td><td>Acer Aspire 7 A715-79G</td><td class="to">₹69,229</td><td class="ok">Delivered</td><td class="ok">Verified</td><td><button class="btn g">Payout</button></td></tr>
+<tr><td><div class="name">Pavithra M</div><div class="sub">ORD34369F7</div></td><td>Acer Aspire 7 A715-79G</td><td class="to">₹69,229</td><td class="ok">Delivered</td><td class="ok">Verified</td><td><button class="btn g">Payout</button></td></tr>
+</tbody></table></div>
+<div class="panel" id="box">
+  <div>
+    <strong>Payout · User5749</strong>
+    <p class="note">This order ₹24,211. Tick the others if this transfer covers them.</p>
+    <label class="sib"><span><input type="checkbox" checked> Vivo T5X · ORD1833E83</span><b class="to">₹24,211</b></label>
+    <label class="sib"><span><input type="checkbox" checked> Acer Aspire 7 · ORD389JV9OZ</span><b class="to">₹69,229</b></label>
+    <p class="note" id="sum">One transfer ₹1,17,651 · 3 orders</p>
+  </div>
+  <div>
+    <label>Bank, payee, account, IFSC, UPI</label><input value="From their account" disabled>
+    <label style="margin-top:8px">Transaction ID</label><input id="txn" placeholder="Same id for every ticked order">
+    <label style="margin-top:8px">Note</label><input value="Paid via UPI">
+    <button class="btn p" style="margin-top:10px" id="save">Submit</button>
+  </div>
+</div>
+</main></div>
+<div class="toast" id="t"></div>
+<script>
+const t = document.getElementById("t");
+document.getElementById("save").onclick = () => {
+  if (!document.getElementById("txn").value.trim()) { t.textContent = "Transaction id is required."; }
+  else t.textContent = "Look only. Nothing saved on live Orders.";
+  t.classList.add("show");
+};
+</script>
+</body></html>

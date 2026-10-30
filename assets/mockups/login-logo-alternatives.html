@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — login logo alternatives</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #202124; color: #E8EAED;
+      padding: 18px 16px 40px;
+    }
+    header { max-width: 980px; margin: 0 auto 18px; }
+    header h1 { font-size: 20px; color: #C4B5FD; margin-bottom: 8px; }
+    header p { font-size: 13px; line-height: 1.55; color: #9AA0A6; }
+    .board {
+      display: flex; gap: 22px; overflow-x: auto;
+      padding: 8px 4px 24px; scroll-snap-type: x mandatory;
+    }
+    .opt { flex: 0 0 360px; scroll-snap-align: start; }
+    .opt h2 { font-size: 14px; color: #C4B5FD; margin-bottom: 4px; }
+    .opt .why { font-size: 11px; color: #9AA0A6; line-height: 1.4; margin-bottom: 10px; min-height: 44px; }
+    .phone {
+      width: 360px; height: 760px; background: #F2F0F5;
+      border-radius: 32px; border: 6px solid #3C4043;
+      overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 12px 40px rgba(0,0,0,.45);
+    }
+    .status-bar {
+      height: 22px; background: #fff; padding: 0 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11px; font-weight: 600; color: #202124; flex-shrink: 0;
+    }
+    .login-body {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      padding: 28px 22px 20px; background: #F2F0F5;
+    }
+    .mark-circle {
+      width: 120px; height: 120px; border-radius: 50%;
+      background: #fff; margin-bottom: 10px; padding: 20px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 22px rgba(26,115,232,.16);
+    }
+    .mark-circle img {
+      width: 100%; height: 100%; object-fit: contain; display: block;
+    }
+    .word { width: 188px; height: auto; display: block; margin: 2px 0 8px; }
+    .name { font-size: 26px; font-weight: 800; color: #7A5CFF; margin-bottom: 8px; }
+    .sheet {
+      width: 168px; height: auto; display: block; margin: 4px 0 2px;
+    }
+    .login-sub { font-size: 13px; color: #5F6368; margin-bottom: 26px; text-align: center; line-height: 1.4; }
+    .field-group { width: 100%; margin-bottom: 14px; }
+    .field-label { font-size: 12px; color: #5F6368; margin-bottom: 6px; }
+    .phone-row { display: flex; gap: 8px; }
+    .prefix {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 12px;
+      padding: 14px 12px; font-weight: 600; color: #202124;
+    }
+    .text-input {
+      width: 100%; border: 1px solid #E8EAED; border-radius: 12px;
+      padding: 14px 16px; font-size: 16px; background: #fff; color: #9AA0A6;
+    }
+    .btn {
+      width: 100%; border: none; border-radius: 24px; padding: 14px;
+      background: #9C71E4; color: #fff; font-size: 15px; font-weight: 600;
+      margin-top: 8px; opacity: .45;
+    }
+    .terms { font-size: 11px; color: #5F6368; margin-top: 18px; text-align: center; }
+    .lang {
+      margin-top: 8px; display: flex; width: 210px;
+      border: 1px solid #E8EAED; border-radius: 999px; overflow: hidden; background: #fff;
+    }
+    .lang span {
+      flex: 1; text-align: center; font-size: 12px; padding: 6px 0; color: #5F6368;
+    }
+    .lang span.on { background: #9C71E4; color: #fff; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Login logo — 5 alternatives</h1>
+    <p>
+      Why not the circle M at first: those files are <b>square icon sheets</b> (M + slogan), not a ready circle.
+      The wide wordmark already includes the M, so Login didn’t need both.<br/>
+      Scroll sideways. Slogans / watermarks are left on where the file has them. Pick a number.
+    </p>
+  </header>
+
+  <div class="board">
+
+    <article class="opt">
+      <h2>1 · Circle M, blue</h2>
+      <p class="why">The “M circle” type. Blue mark in a round crop. App name under it. Closest to WhatsApp / PhonePe login.</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="login-body">
+          <div class="mark-circle"><img src="../logos/mintzer-mark-blue.png" alt=""></div>
+          <div class="name">Mintzer</div>
+          <p class="login-sub">Get Started<br/><span style="font-weight:500">Earn with your credit card on Flipkart &amp; Amazon deals</span></p>
+          <div class="field-group">
+            <div class="field-label">Mobile number</div>
+            <div class="phone-row"><span class="prefix">+91</span><div class="text-input">10-digit number</div></div>
+          </div>
+          <button type="button" class="btn" disabled>Get OTP →</button>
+          <p class="terms">By continuing you agree to Terms &amp; Privacy</p>
+          <div class="lang"><span class="on">EN</span><span>हि</span><span>ಕಾ</span><span>മല</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="opt">
+      <h2>2 · Circle M, blue + orange</h2>
+      <p class="why">Same circle crop, orange side of the M. Louder. Closer to a marketplace look.</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="login-body">
+          <div class="mark-circle"><img src="../logos/mintzer-mark-orange.png" alt=""></div>
+          <div class="name">Mintzer</div>
+          <p class="login-sub">Get Started<br/><span style="font-weight:500">Earn with your credit card on Flipkart &amp; Amazon deals</span></p>
+          <div class="field-group">
+            <div class="field-label">Mobile number</div>
+            <div class="phone-row"><span class="prefix">+91</span><div class="text-input">10-digit number</div></div>
+          </div>
+          <button type="button" class="btn" disabled>Get OTP →</button>
+          <p class="terms">By continuing you agree to Terms &amp; Privacy</p>
+          <div class="lang"><span class="on">EN</span><span>हि</span><span>ಕಾ</span><span>മല</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="opt">
+      <h2>3 · Full icon + slogan</h2>
+      <p class="why">Whole square file, watermark kept: “LET’S MAKE MONEY”. No extra Mintzer text.</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="login-body">
+          <img class="sheet" src="../Mintzer%20logos/1024x1024-02.png" alt="Mintzer">
+          <p class="login-sub">Get Started<br/><span style="font-weight:500">Earn with your credit card on Flipkart &amp; Amazon deals</span></p>
+          <div class="field-group">
+            <div class="field-label">Mobile number</div>
+            <div class="phone-row"><span class="prefix">+91</span><div class="text-input">10-digit number</div></div>
+          </div>
+          <button type="button" class="btn" disabled>Get OTP →</button>
+          <p class="terms">By continuing you agree to Terms &amp; Privacy</p>
+          <div class="lang"><span class="on">EN</span><span>हि</span><span>ಕಾ</span><span>മല</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="opt">
+      <h2>4 · Circle + wordmark</h2>
+      <p class="why">Circle M and the wide Mintzer word. Strong brand, a bit double-M.</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="login-body">
+          <div class="mark-circle"><img src="../logos/mintzer-mark-blue.png" alt=""></div>
+          <img class="word" src="../logos/mintzer-wordmark.png" alt="Mintzer">
+          <p class="login-sub">Get Started<br/><span style="font-weight:500">Earn with your credit card on Flipkart &amp; Amazon deals</span></p>
+          <div class="field-group">
+            <div class="field-label">Mobile number</div>
+            <div class="phone-row"><span class="prefix">+91</span><div class="text-input">10-digit number</div></div>
+          </div>
+          <button type="button" class="btn" disabled>Get OTP →</button>
+          <p class="terms">By continuing you agree to Terms &amp; Privacy</p>
+          <div class="lang"><span class="on">EN</span><span>हि</span><span>ಕಾ</span><span>മല</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="opt">
+      <h2>5 · Wordmark only</h2>
+      <p class="why">What’s on Login now. Clean, no slogan, no extra circle.</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="login-body">
+          <img class="word" src="../logos/mintzer-wordmark.png" alt="Mintzer" style="width:210px;margin-top:12px">
+          <p class="login-sub">Get Started<br/><span style="font-weight:500">Earn with your credit card on Flipkart &amp; Amazon deals</span></p>
+          <div class="field-group">
+            <div class="field-label">Mobile number</div>
+            <div class="phone-row"><span class="prefix">+91</span><div class="text-input">10-digit number</div></div>
+          </div>
+          <button type="button" class="btn" disabled>Get OTP →</button>
+          <p class="terms">By continuing you agree to Terms &amp; Privacy</p>
+          <div class="lang"><span class="on">EN</span><span>हि</span><span>ಕಾ</span><span>മല</span></div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</body>
+</html>

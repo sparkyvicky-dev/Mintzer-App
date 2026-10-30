@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>app.mintzer.in · Orders · tracking link</title>
+  <style>
+    :root { --ink:#1c2434; --muted:#667085; --line:#e6e9f2; --purple:#5b4bdb; --bg:#f4f6fb; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--ink); background: var(--bg);
+      min-width: 1100px; min-height: 100vh;
+    }
+    .app { display: flex; min-height: 100vh; }
+    .rail {
+      width: 64px; background: #fff; border-right: 1px solid var(--line);
+      display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0;
+    }
+    .mark {
+      width: 34px; height: 34px; border-radius: 10px; background: var(--purple); color: #fff;
+      display: grid; place-items: center; font-weight: 800;
+    }
+    .rail i {
+      width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: #98a2b3; font-style: normal; font-size: 14px;
+    }
+    .rail i.on { background: #f3f0ff; color: var(--purple); }
+    .main { flex: 1; padding: 16px 18px 28px; }
+    h1 { font-size: 22px; margin-bottom: 4px; }
+    .note { color: var(--muted); font-size: 13px; margin: 0 0 12px; max-width: 720px; line-height: 1.45; }
+    .tag {
+      display: inline-block; background: #efeaff; color: #3d2e9e; border-radius: 8px;
+      padding: 6px 8px; font-size: 12px; margin-bottom: 10px;
+    }
+    .toolbar {
+      display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px;
+    }
+    .toolbar .chip {
+      border: 1px solid #ddd6fe; background: #f5f3ff; border-radius: 8px;
+      padding: 6px 10px; font-size: 12px; font-weight: 600; color: #5b4bdb;
+    }
+    .toolbar .chip.ghost { background: #fff; border-color: var(--line); color: var(--muted); }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
+      color: #7b8494; padding: 10px 8px; background: #f7f8ff; border-bottom: 1px solid #e7e8f2;
+    }
+    td { padding: 10px 8px; border-top: 1px solid #f0f2f7; font-size: 13px; vertical-align: middle; }
+    .name { color: var(--purple); font-weight: 750; }
+    .sub { color: var(--muted); font-size: 11px; font-family: Consolas, ui-monospace, monospace; }
+    .to { color: #0f7a45; font-weight: 750; }
+    .ok { color: #0f7a45; font-weight: 750; }
+
+    /* Exact Ship cell look from live list.blade.php */
+    .ord-ship {
+      display: inline-flex; flex-direction: column; align-items: center;
+      gap: 2px; max-width: 170px; line-height: 1.2;
+    }
+    .ord-ship .l1, .ord-ship .l2 {
+      max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .ord-ship .track {
+      font-family: Consolas, ui-monospace, monospace;
+      font-weight: 700; font-size: 13.5px; color: #1a1f2e;
+    }
+    /* Proposed: tracking becomes a link — same mono weight */
+    a.track {
+      font-family: Consolas, ui-monospace, monospace;
+      font-weight: 700; font-size: 13.5px; color: #1a73e8;
+      text-decoration: none;
+    }
+    a.track:hover { text-decoration: underline; color: #0b57d0; }
+    .ord-ship .l2 { color: #5b647a; font-size: 11.5px; }
+    .ord-ship .courier { font-weight: 700; }
+    .ord-ship .sep { color: #c0c5d2; margin: 0 3px; }
+    .c-ekart { color: #c2410c; }
+    .c-delh { color: #0369a1; }
+    .edit-tick { color: #28a745; cursor: pointer; font-size: 11px; margin-left: 2px; }
+    .order-id-cell { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+
+    .tip-wrap { position: relative; display: inline-block; }
+    .tip {
+      display: none; position: absolute; left: 50%; transform: translateX(-50%);
+      top: calc(100% + 8px); z-index: 20; width: 250px;
+      background: #1c2434; color: #fff; padding: 10px 12px; border-radius: 8px;
+      font-size: 11px; line-height: 1.45; text-align: left; white-space: normal;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+    .tip strong { color: #86efac; }
+    .tip-wrap:hover .tip { display: block; }
+
+    .before .track { color: #1a1f2e; cursor: default; }
+
+    .legend {
+      margin-top: 14px; font-size: 13px; color: var(--muted); line-height: 1.5;
+    }
+    .legend b { color: var(--ink); }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+    @media (max-width: 1200px) { .split { grid-template-columns: 1fr; } }
+    .panel-h {
+      font-size: 12px; font-weight: 700; color: #5b4bdb; margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="rail">
+      <div class="mark">M</div>
+      <i>⌂</i>
+      <i class="on">☰</i>
+      <i>◎</i>
+    </aside>
+    <main class="main">
+      <h1>Orders</h1>
+      <p class="note">app.mintzer.in Orders list — Ship column only. Click opens Ekart. Hover tip = later (optional).</p>
+      <div class="tag">Demo · nothing saved on live</div>
+
+      <div class="toolbar">
+        <span class="chip">Tracking View</span>
+        <span class="chip ghost">Columns</span>
+        <span class="chip ghost">Today</span>
+      </div>
+
+      <div class="split">
+        <!-- BEFORE -->
+        <div>
+          <div class="panel-h">Now (live)</div>
+          <div class="card before">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Deal</th>
+                  <th>To pay</th>
+                  <th>Ship</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="name">Pavithra M</div>
+                    <div class="sub">ORD34369F7</div>
+                  </td>
+                  <td>boAt Airdopes 141</td>
+                  <td class="to">₹3,399</td>
+                  <td>
+                    <div class="ord-ship" title="FMPP4396823651 · Ekart · 482910 · ··3210">
+                      <div class="l1">
+                        <span class="order-id-cell">
+                          <span class="track">FMPP4396823651</span>
+                          <span class="edit-tick">✎</span>
+                        </span>
+                      </div>
+                      <div class="l2">
+                        <span class="courier c-ekart">Ekart</span>
+                        <span class="sep">·</span>482910
+                        <span class="sep">·</span>··3210
+                      </div>
+                    </div>
+                  </td>
+                  <td class="ok">Shipped</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div>
+          <div class="panel-h">Proposed — Tracking ID clickable</div>
+          <div class="card">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Deal</th>
+                  <th>To pay</th>
+                  <th>Ship</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="name">Pavithra M</div>
+                    <div class="sub">ORD34369F7</div>
+                  </td>
+                  <td>boAt Airdopes 141</td>
+                  <td class="to">₹3,399</td>
+                  <td>
+                    <div class="ord-ship" title="FMPP4396823651 · Ekart · 482910 · ··3210">
+                      <div class="l1">
+                        <span class="order-id-cell">
+                          <span class="tip-wrap">
+                            <a class="track"
+                               href="https://ekartlogistics.com/ekartlogistics-web/shipmenttrack/FMPP4396823651"
+                               target="_blank" rel="noopener">FMPP4396823651</a>
+                            <span class="tip">
+                              <strong>Delivered</strong> · KUMBAKONAM<br>
+                              Hover tip = sample. Live status = later.<br>
+                              Click = real Ekart page.
+                            </span>
+                          </span>
+                          <span class="edit-tick">✎</span>
+                        </span>
+                      </div>
+                      <div class="l2">
+                        <span class="courier c-ekart">Ekart</span>
+                        <span class="sep">·</span>482910
+                        <span class="sep">·</span>··3210
+                      </div>
+                    </div>
+                  </td>
+                  <td class="ok">Shipped</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="name">User5749</div>
+                    <div class="sub">ORD77885M9</div>
+                  </td>
+                  <td>Vivo T5X 6GB/128GB</td>
+                  <td class="to">₹24,211</td>
+                  <td>
+                    <div class="ord-ship">
+                      <div class="l1">
+                        <span class="order-id-cell">
+                          <a class="track"
+                             href="https://ekartlogistics.com/ekartlogistics-web/shipmenttrack/FMPP4396823651"
+                             target="_blank" rel="noopener">FMPC1122334455</a>
+                          <span class="edit-tick">✎</span>
+                        </span>
+                      </div>
+                      <div class="l2">
+                        <span class="courier c-ekart">Ekart</span>
+                        <span class="sep">·</span>119922
+                      </div>
+                    </div>
+                  </td>
+                  <td class="ok">Delivered</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <p class="legend">
+        <b>Same Ship cell</b> as live (ID · ✎ · Ekart · OTP · last4).<br>
+        Only change: ID is a blue link → Ekart track URL.<br>
+        Hover the first proposed ID for sample status tip (optional later).
+      </p>
+    </main>
+  </div>
+</body>
+</html>

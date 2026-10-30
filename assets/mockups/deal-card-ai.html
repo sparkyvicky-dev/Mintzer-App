@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Deal card recommendation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #E8EAED; color: #202124;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 24px 16px 48px;
+    }
+    .intro { max-width: 400px; text-align: center; margin-bottom: 18px; }
+    .intro h1 { font-size: 20px; color: #1A73E8; font-weight: 800; }
+    .intro p { font-size: 13px; color: #5F6368; line-height: 1.55; margin-top: 8px; }
+    .intro .note {
+      margin-top: 10px; font-size: 12px; background: #FEF7E0; border: 1px solid #F9AB00;
+      color: #5F6368; padding: 8px 10px; border-radius: 8px; text-align: left;
+    }
+
+    .phone {
+      width: 360px; max-width: 100%; height: 800px;
+      background: #F8F9FA; border-radius: 28px; border: 5px solid #202124;
+      overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 12px 40px rgba(32,33,36,.18);
+    }
+    .status {
+      height: 22px; background: #fff; padding: 0 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+    }
+    .header {
+      background: #fff; padding: 10px 16px 12px; flex-shrink: 0;
+    }
+    .header-row { display: flex; align-items: center; justify-content: space-between; }
+    .greeting h2 { font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+    .greeting p { font-size: 12px; color: #5F6368; margin-top: 1px; }
+    .wallet {
+      border: none; background: #E8F0FE; color: #174EA6;
+      font-size: 13px; font-weight: 800; padding: 8px 12px; border-radius: 20px;
+    }
+    .toolbar { display: flex; gap: 8px; padding: 0 16px 8px; background: #fff; }
+    .search {
+      flex: 1; background: #F8F9FA; border: 1px solid #E8EAED; border-radius: 22px;
+      padding: 9px 14px; font-size: 13px; color: #9AA0A6;
+    }
+    .toggle {
+      display: flex; border: 1px solid #E8EAED; border-radius: 10px; overflow: hidden; background: #fff;
+    }
+    .toggle button {
+      width: 36px; height: 36px; border: none; background: #fff; color: #5F6368; cursor: pointer;
+    }
+    .toggle button.active { background: #E8F0FE; color: #1A73E8; }
+    .chips { display: flex; gap: 8px; padding: 8px 16px 12px; background: #fff; border-bottom: 1px solid #F1F3F4; }
+    .chip {
+      font-size: 12px; padding: 6px 12px; border-radius: 16px; border: 1px solid #E8EAED;
+      background: #fff; color: #5F6368;
+    }
+    .chip.on { background: #E8F0FE; border-color: #1A73E8; color: #1A73E8; font-weight: 600; }
+
+    .scroll { flex: 1; overflow-y: auto; padding: 12px 12px 20px; }
+    .meta-line { font-size: 11px; color: #5F6368; padding: 0 4px 10px; }
+
+    .deals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: stretch; }
+    .deals .card { height: 100%; }
+    .deals.list { grid-template-columns: 1fr; }
+
+    /* ── My card ── */
+    .card {
+      background: #fff;
+      border: 1px solid #E8EAED;
+      border-radius: 16px;
+      padding: 8px 8px 10px;
+      display: flex; flex-direction: column;
+      box-shadow: 0 1px 3px rgba(32,33,36,.06);
+      min-width: 0;
+    }
+    .photo {
+      position: relative;
+      aspect-ratio: 1;
+      height: auto;
+      border-radius: 12px;
+      background: #F1F3F4;
+      overflow: hidden;
+    }
+    .photo img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      padding: 4px;
+      display: block;
+    }
+    .pin {
+      position: absolute; top: 6px; left: 6px;
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 2px solid #fff; overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,.12);
+    }
+    .mark {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      font-weight: 800; letter-spacing: -.03em; color: #fff;
+    }
+    .az { background: #232F3E; font-size: 8px; }
+    .fk { background: #F7E017; color: #2874F0; font-size: 9px; }
+
+    .body { padding: 8px 4px 0; display: flex; flex-direction: column; flex: 1; }
+    .name {
+      font-size: 13px; font-weight: 700; line-height: 1.3;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      min-height: 2.6em;
+    }
+    .need {
+      font-size: 11px; color: #5F6368; margin: 2px 0 10px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .money { margin-top: auto; }
+    .spend {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding: 0 2px 8px;
+    }
+    .spend em {
+      font-style: normal; font-size: 10px; font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase; color: #5F6368;
+    }
+    .spend b { font-size: 16px; font-weight: 800; letter-spacing: -.02em; }
+    .earn {
+      width: 100%; border: none; border-radius: 22px;
+      background: #1A73E8; color: #fff;
+      font-size: 14px; font-weight: 800;
+      padding: 11px 8px; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(26,115,232,.28);
+    }
+    .earn:active { background: #1557B0; }
+
+    /* list = same card, photo left */
+    .deals.list .card {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 0 12px;
+      padding: 10px;
+      align-items: stretch;
+    }
+    .deals.list .photo { aspect-ratio: 1; height: auto; grid-row: 1 / 3; }
+    .deals.list .body { padding: 0; }
+    .deals.list .name { min-height: 0; -webkit-line-clamp: 1; font-size: 14px; }
+    .deals.list .need { margin-bottom: 6px; }
+    .deals.list .money { grid-column: 2; }
+
+    .nav {
+      height: 56px; background: #fff; border-top: 1px solid #E8EAED;
+      display: flex; flex-shrink: 0;
+    }
+    .nav span {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; font-size: 10px; color: #5F6368; font-weight: 500;
+    }
+    .nav span.on { color: #1A73E8; font-weight: 700; }
+
+    .why {
+      max-width: 400px; margin-top: 20px;
+      background: #fff; border: 1px solid #DADCE0; border-radius: 14px; padding: 14px 16px;
+    }
+    .why h2 { font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+    .why li { font-size: 12px; color: #5F6368; line-height: 1.5; margin-left: 16px; margin-bottom: 6px; }
+    .why b { color: #202124; }
+  </style>
+</head>
+<body>
+  <div class="intro">
+    <h1>One card. Photo · spend · earn.</h1>
+    <p>
+      My take: the product photo does the selling, <b>spend</b> is a quiet number,
+      <b>Earn</b> is the only loud thing. No extra boxes. Your real phone and TV files.
+    </p>
+    <p class="note">New sketch — not the 10 alternatives, not locked Home. Live demo is unchanged.</p>
+  </div>
+
+  <div class="phone">
+    <div class="status"><span>9:41</span><span>●●●</span></div>
+    <header class="header">
+      <div class="header-row">
+        <div class="greeting">
+          <h2>Hi, Arun</h2>
+          <p>Earn with your card</p>
+        </div>
+        <button type="button" class="wallet">₹1,240</button>
+      </div>
+    </header>
+    <div class="toolbar">
+      <div class="search">Search deals…</div>
+      <div class="toggle" role="group" aria-label="View">
+        <button type="button" class="active" id="btnGrid" title="Grid">▦</button>
+        <button type="button" id="btnList" title="List">☰</button>
+      </div>
+    </div>
+    <div class="chips">
+      <span class="chip on">All Deals</span>
+      <span class="chip">Direct</span>
+      <span class="chip">Link</span>
+    </div>
+
+    <div class="scroll">
+      <div class="meta-line">3 deals live</div>
+      <div class="deals" id="deals">
+
+        <article class="card">
+          <div class="photo">
+            <span class="pin"><span class="mark fk">FK</span></span>
+            <img src="../images/motorola-g57.jpg" alt="Motorola G57 Power 5G" />
+          </div>
+          <div class="body">
+            <div class="name">Motorola G57 Power 5G</div>
+            <div class="need">Any credit / debit card</div>
+            <div class="money">
+              <div class="spend"><em>You spend</em><b>₹17,519</b></div>
+              <button type="button" class="earn">Earn ₹300</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="photo">
+            <span class="pin"><span class="mark az">AZ</span></span>
+            <img src="../images/samsung-m35.png" alt="Samsung Galaxy M35 5G" />
+          </div>
+          <div class="body">
+            <div class="name">Samsung Galaxy M35 5G</div>
+            <div class="need">HDFC Credit Card</div>
+            <div class="money">
+              <div class="spend"><em>You spend</em><b>₹22,999</b></div>
+              <button type="button" class="earn">Earn ₹450</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="photo">
+            <span class="pin"><span class="mark fk">FK</span></span>
+            <img src="../images/samsung-tv-32.jpg" alt="Samsung HD TV 32 inch" />
+          </div>
+          <div class="body">
+            <div class="name">Samsung HD TV 32"</div>
+            <div class="need">Axis Credit Card</div>
+            <div class="money">
+              <div class="spend"><em>You spend</em><b>₹12,499</b></div>
+              <button type="button" class="earn">Earn ₹380</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <nav class="nav">
+      <span class="on">Home</span>
+      <span>Orders</span>
+      <span>Wallet</span>
+      <span>Profile</span>
+    </nav>
+  </div>
+
+  <div class="why">
+    <h2>Why this</h2>
+    <ul>
+      <li><b>Photo first.</b> 132dp well, contain — phone square and TV landscape both fit without crop.</li>
+      <li><b>Spend is a number</b>, not a second blue box. Earn stays the only CTA.</li>
+      <li><b>Card name as a whisper</b> under the title. Needed to do the deal; not a gray strip fighting the photo.</li>
+    </ul>
+  </div>
+
+  <script>
+    const deals = document.getElementById('deals');
+    const grid = document.getElementById('btnGrid');
+    const list = document.getElementById('btnList');
+    grid.addEventListener('click', () => {
+      deals.classList.remove('list');
+      grid.classList.add('active');
+      list.classList.remove('active');
+    });
+    list.addEventListener('click', () => {
+      deals.classList.add('list');
+      list.classList.add('active');
+      grid.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

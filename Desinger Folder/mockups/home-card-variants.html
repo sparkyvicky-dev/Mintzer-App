@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Home card variants (6 options)</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #E8EAED;
+      color: #202124;
+      padding: 24px 16px 48px;
+      line-height: 1.4;
+    }
+
+    .page-head {
+      max-width: 1200px;
+      margin: 0 auto 28px;
+      text-align: center;
+    }
+    .page-head h1 { font-size: 22px; color: #1A73E8; margin-bottom: 8px; }
+    .page-head p { font-size: 13px; color: #5F6368; max-width: 640px; margin: 0 auto; line-height: 1.55; }
+    .legend {
+      max-width: 1200px; margin: 20px auto 0;
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+      font-size: 11px; color: #5F6368;
+    }
+    .legend span { background: #fff; border: 1px solid #E8EAED; border-radius: 8px; padding: 6px 10px; }
+    .legend b { color: #188038; }
+    .legend i { color: #1A73E8; font-style: normal; font-weight: 600; }
+
+    .grid {
+      max-width: 1200px;
+      margin: 28px auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .panel {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #E8EAED;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .panel.recommended { border-color: #1A73E8; box-shadow: 0 4px 16px rgba(26,115,232,.15); }
+    .panel-head {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid #E8EAED;
+      background: #F8F9FA;
+    }
+    .panel-head h2 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .panel-head p { font-size: 11px; color: #5F6368; margin-top: 4px; line-height: 1.45; }
+    .tag {
+      font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+      padding: 3px 8px; border-radius: 4px;
+    }
+    .tag.rec { background: #188038; color: #fff; }
+    .tag.count { background: #E8F0FE; color: #1A73E8; }
+
+    .panel-body {
+      padding: 16px;
+      background: #F8F9FA;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ─── Shared card tokens ─── */
+    .card {
+      background: #fff;
+      border: 1px solid #E8EAED;
+      border-radius: 12px;
+      padding: 12px;
+      width: 100%;
+    }
+
+    .img-box {
+      position: relative;
+      flex-shrink: 0;
+      background: #F8F9FA;
+      border: 1px solid #F1F3F4;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .img-box .ph { font-size: 32px; line-height: 1; }
+    .store-pin {
+      position: absolute;
+      top: -5px; left: -5px;
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,.12);
+      overflow: hidden;
+      background: #fff;
+    }
+    .store-pin img { width: 100%; height: 100%; display: block; object-fit: contain; }
+
+    .earn-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #E6F4EA; color: #188038;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 14px;
+      white-space: nowrap;
+    }
+    .speed-pill {
+      display: inline-block;
+      background: #FEF7E0; color: #E37400;
+      font-size: 9px; font-weight: 600;
+      padding: 2px 7px; border-radius: 10px;
+    }
+
+    .logo-row {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: #5F6368;
+      min-width: 0;
+    }
+    .logo-sm {
+      width: 22px; height: 22px; border-radius: 5px;
+      border: 1px solid #E8EAED; overflow: hidden; flex-shrink: 0;
+      background: #fff;
+    }
+    .logo-sm img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .dot { color: #DADCE0; }
+
+    .card-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      border: 1px solid #1A73E8; background: #E8F0FE;
+      border-radius: 8px; padding: 5px 8px;
+      font-size: 10px; font-weight: 600; color: #1A73E8;
+      max-width: 100%;
+    }
+    .card-chip .logo-sm { width: 18px; height: 18px; border: none; }
+
+    .title {
+      font-size: 13px; font-weight: 700;
+      color: #202124; line-height: 1.35;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .sub { font-size: 11px; color: #5F6368; }
+
+    .btn-spend {
+      width: 100%; border: none; border-radius: 10px;
+      background: #1A73E8; color: #fff;
+      font-size: 14px; font-weight: 700;
+      padding: 12px 16px; cursor: pointer;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(26,115,232,.22);
+    }
+    .btn-spend:active { opacity: .92; }
+
+    .btn-ghost {
+      width: 100%; border: 1px solid #E8EAED; border-radius: 10px;
+      background: #fff; color: #1A73E8;
+      font-size: 12px; font-weight: 600;
+      padding: 10px; cursor: pointer; text-align: center;
+    }
+
+    /* ═══ A — Reference (recommended) ═══ */
+    .va .card-inner {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      grid-template-rows: auto auto auto auto;
+      column-gap: 12px; row-gap: 8px;
+      align-items: start;
+    }
+    .va .img-box { width: 80px; height: 80px; grid-row: 1 / 3; }
+    .va .badges { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: flex-end; }
+    .va .title { grid-column: 2; }
+    .va .sub { grid-column: 2; }
+    .va .card-chip { grid-column: 1 / -1; width: 100%; justify-content: flex-start; }
+    .va .btn-spend { grid-column: 1 / -1; margin-top: 2px; }
+
+    /* ═══ B — Earn hero ═══ */
+    .vb .card-top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .vb .earn-hero { text-align: right; flex-shrink: 0; }
+    .vb .earn-hero .lbl { font-size: 9px; font-weight: 600; color: #188038; text-transform: uppercase; }
+    .vb .earn-hero .num { font-size: 24px; font-weight: 800; color: #188038; line-height: 1; }
+    .vb .card-mid {
+      display: grid; grid-template-columns: 72px 1fr; gap: 10px; align-items: center;
+      margin-bottom: 10px;
+    }
+    .vb .img-box { width: 72px; height: 72px; }
+    .vb .logo-row { flex-wrap: wrap; }
+
+    /* ═══ C — Money strip only ═══ */
+    .vc .card-mid {
+      display: grid; grid-template-columns: 72px 1fr; gap: 10px;
+      margin-bottom: 10px; align-items: start;
+    }
+    .vc .img-box { width: 72px; height: 72px; }
+    .vc .money-strip {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; border: 1px solid #E8EAED; border-radius: 10px; overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .vc .money-strip div {
+      padding: 10px 8px; text-align: center;
+    }
+    .vc .money-strip .spend-side { background: #F8F9FA; border-right: 1px solid #E8EAED; }
+    .vc .money-strip .earn-side { background: #E6F4EA; }
+    .vc .money-strip .lbl { font-size: 9px; font-weight: 700; color: #5F6368; text-transform: uppercase; margin-bottom: 3px; }
+    .vc .money-strip .earn-side .lbl { color: #188038; }
+    .vc .money-strip .val { font-size: 15px; font-weight: 800; }
+    .vc .money-strip .earn-side .val { color: #188038; }
+
+    /* ═══ D — Compact row ═══ */
+    .vd .card-inner {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .vd .img-box { width: 64px; height: 64px; }
+    .vd .mid { min-width: 0; }
+    .vd .money-line { font-size: 12px; font-weight: 600; margin-top: 4px; }
+    .vd .money-line .sp { color: #202124; }
+    .vd .money-line .arr { color: #5F6368; margin: 0 4px; }
+    .vd .money-line .er { color: #188038; }
+    .vd .chev {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #E8F0FE; color: #1A73E8;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+
+    /* ═══ E — Grid tile ═══ */
+    .ve-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .ve .card { padding: 10px; }
+    .ve .img-box { width: 100%; height: 88px; margin-bottom: 8px; position: relative; }
+    .ve .store-pin { top: 6px; left: 6px; }
+    .ve .earn-overlay {
+      position: absolute; bottom: 6px; right: 6px;
+    }
+    .ve .title { font-size: 11px; margin-bottom: 4px; -webkit-line-clamp: 2; }
+    .ve .spend-line { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .ve .btn-spend { font-size: 11px; padding: 9px 8px; border-radius: 8px; }
+
+    /* ═══ F — Reference + logo row (polished A) ═══ */
+    .vf .card-inner {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .vf .row1 {
+      display: grid; grid-template-columns: 80px 1fr;
+      gap: 12px; align-items: start;
+    }
+    .vf .img-box { width: 80px; height: 80px; }
+    .vf .right { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .vf .row-badges { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .vf .logo-card-row {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .vf .store-block {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11px; color: #5F6368;
+    }
+
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-head">
+    <h1>Mintzer — 6 Home card variants</h1>
+    <p>Each option shows <strong>earn once</strong> and <strong>spend once</strong>. Same data, different layout. Pick one — we lock it in Figma + app.</p>
+    <div class="legend">
+      <span><b>Earn</b> shown 1× per card</span>
+      <span><i>Spend</i> shown 1× per card</span>
+      <span>FK + bank logos from API PNGs</span>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- A — Reference -->
+    <section class="panel recommended">
+      <div class="panel-head">
+        <h2>Option A <span class="tag rec">Recommended</span> <span class="tag count">Earn 1× · Spend 1×</span></h2>
+        <p>Like your reference apps. Earn pill top-right. One blue <strong>Spend ₹X</strong> button. Store badge on image + card chip row.</p>
+      </div>
+      <div class="panel-body va">
+
+        <article class="card">
+          <div class="card-inner">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/flipkart.svg" alt="FK" /></span>
+              <span class="ph">📱</span>
+            </div>
+            <div class="badges">
+              <span class="earn-pill">Earn ₹300</span>
+              <span class="speed-pill">Instant</span>
+            </div>
+            <h3 class="title">Motorola G57 Power 5G</h3>
+            <p class="sub">Any color</p>
+            <div class="card-chip">
+              <span class="logo-sm"><img src="../logos/any-card.svg" alt="" /></span>
+              Any credit / debit card · Flipkart
+            </div>
+            <button type="button" class="btn-spend">Spend ₹17,519</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-inner">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/amazon.svg" alt="AM" /></span>
+              <span class="ph">📱</span>
+            </div>
+            <div class="badges">
+              <span class="earn-pill">Earn ₹450</span>
+            </div>
+            <h3 class="title">Samsung Galaxy M35 5G</h3>
+            <p class="sub">Midnight Blue</p>
+            <div class="card-chip">
+              <span class="logo-sm"><img src="../logos/hdfc.svg" alt="" /></span>
+              HDFC Credit Card · Amazon
+            </div>
+            <button type="button" class="btn-spend">Spend ₹22,999</button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- B — Earn hero -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Option B <span class="tag count">Earn 1× · Spend 1×</span></h2>
+        <p>Large earn number top-right (hook). Spend only on button. Good for new users who scan for earnings first.</p>
+      </div>
+      <div class="panel-body vb">
+
+        <article class="card">
+          <div class="card-top">
+            <h3 class="title">Motorola G57 Power 5G</h3>
+            <div class="earn-hero">
+              <div class="lbl">You earn</div>
+              <div class="num">₹300</div>
+            </div>
+          </div>
+          <div class="card-mid">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/flipkart.svg" alt="FK" /></span>
+              <span class="ph">📱</span>
+            </div>
+            <div>
+              <p class="sub" style="margin-bottom:6px">Any color · Instant</p>
+              <div class="logo-row">
+                <span class="logo-sm"><img src="../logos/flipkart.svg" alt="" /></span> Flipkart
+                <span class="dot">·</span>
+                <span class="logo-sm"><img src="../logos/any-card.svg" alt="" /></span> Any card
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-spend">Spend ₹17,519 →</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <h3 class="title">Samsung Galaxy M35 5G</h3>
+            <div class="earn-hero">
+              <div class="lbl">You earn</div>
+              <div class="num">₹450</div>
+            </div>
+          </div>
+          <div class="card-mid">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/amazon.svg" alt="AM" /></span>
+              <span class="ph">📱</span>
+            </div>
+            <div>
+              <p class="sub" style="margin-bottom:6px">Midnight Blue</p>
+              <div class="logo-row">
+                <span class="logo-sm"><img src="../logos/amazon.svg" alt="" /></span> Amazon
+                <span class="dot">·</span>
+                <span class="logo-sm"><img src="../logos/hdfc.svg" alt="" /></span> HDFC
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-spend">Spend ₹22,999 →</button>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- C — Money strip -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Option C <span class="tag count">Earn 1× · Spend 1×</span></h2>
+        <p>Both numbers in one aligned strip only. No button duplicate — tap card / ghost CTA below.</p>
+      </div>
+      <div class="panel-body vc">
+
+        <article class="card">
+          <div class="card-mid">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/flipkart.svg" alt="FK" /></span>
+              <span class="ph">📱</span>
+            </div>
+            <div>
+              <h3 class="title">Motorola G57 Power 5G</h3>
+              <p class="sub" style="margin-top:4px">Flipkart · Any card</p>
+            </div>
+          </div>
+          <div class="money-strip">
+            <div class="spend-side">
+              <div class="lbl">Spend</div>
+              <div class="val">₹17,519</div>
+            </div>
+            <div class="earn-side">
+              <div class="lbl">Earn</div>
+              <div class="val">₹300</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost">View deal →</button>
+        </article>
+
+        <article class="card">
+          <div class="card-mid">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/amazon.svg" alt="AM" /></span>
+              <span class="ph">📱</span>
+            </div>
+            <div>
+              <h3 class="title">Samsung Galaxy M35 5G</h3>
+              <p class="sub" style="margin-top:4px">Amazon · HDFC Credit</p>
+            </div>
+          </div>
+          <div class="money-strip">
+            <div class="spend-side">
+              <div class="lbl">Spend</div>
+              <div class="val">₹22,999</div>
+            </div>
+            <div class="earn-side">
+              <div class="lbl">Earn</div>
+              <div class="val">₹450</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost">View deal →</button>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- D — Compact -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Option D <span class="tag count">Earn 1× · Spend 1×</span></h2>
+        <p>One line: spend → earn. Dense list for many deals. Arrow tap target.</p>
+      </div>
+      <div class="panel-body vd">
+
+        <article class="card">
+          <div class="card-inner">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/flipkart.svg" alt="FK" /></span>
+              <span class="ph">📱</span>
+            </div>
+            <div class="mid">
+              <h3 class="title">Motorola G57 Power 5G</h3>
+              <div class="logo-row" style="margin-top:3px">
+                <span class="logo-sm"><img src="../logos/flipkart.svg" alt="" /></span> Flipkart · Any card
+              </div>
+              <div class="money-line">
+                <span class="sp">₹17,519</span><span class="arr">→</span><span class="er">₹300 earn</span>
+              </div>
+            </div>
+            <div class="chev" aria-hidden="true">›</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-inner">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/amazon.svg" alt="AM" /></span>
+              <span class="ph">📱</span>
+            </div>
+            <div class="mid">
+              <h3 class="title">Samsung Galaxy M35 5G</h3>
+              <div class="logo-row" style="margin-top:3px">
+                <span class="logo-sm"><img src="../logos/hdfc.svg" alt="" /></span> HDFC · Amazon
+              </div>
+              <div class="money-line">
+                <span class="sp">₹22,999</span><span class="arr">→</span><span class="er">₹450 earn</span>
+              </div>
+            </div>
+            <div class="chev">›</div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- E — Grid tile -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Option E <span class="tag count">Earn 1× · Spend 1×</span></h2>
+        <p>Grid layout. Earn badge on image. Spend on button only. Best with grid-view toggle on Home.</p>
+      </div>
+      <div class="panel-body ve">
+        <div class="ve-grid">
+
+          <article class="card">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/flipkart.svg" alt="FK" /></span>
+              <span class="ph">📱</span>
+              <span class="earn-overlay"><span class="earn-pill">₹300</span></span>
+            </div>
+            <h3 class="title">Motorola G57 Power 5G</h3>
+            <div class="logo-row" style="margin-bottom:6px;font-size:10px">
+              <span class="logo-sm"><img src="../logos/any-card.svg" alt="" /></span> Any card
+            </div>
+            <button type="button" class="btn-spend">Spend ₹17,519</button>
+          </article>
+
+          <article class="card">
+            <div class="img-box">
+              <span class="store-pin"><img src="../logos/amazon.svg" alt="AM" /></span>
+              <span class="ph">📱</span>
+              <span class="earn-overlay"><span class="earn-pill">₹450</span></span>
+            </div>
+            <h3 class="title">Samsung Galaxy M35 5G</h3>
+            <div class="logo-row" style="margin-bottom:6px;font-size:10px">
+              <span class="logo-sm"><img src="../logos/hdfc.svg" alt="" /></span> HDFC
+            </div>
+            <button type="button" class="btn-spend">Spend ₹22,999</button>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- F — Polished reference -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Option F <span class="tag count">Earn 1× · Spend 1×</span></h2>
+        <p>Option A + separate store &amp; bank logo row (clearest logos). Still one earn pill + one spend button.</p>
+      </div>
+      <div class="panel-body vf">
+
+        <article class="card">
+          <div class="card-inner">
+            <div class="row1">
+              <div class="img-box">
+                <span class="store-pin"><img src="../logos/flipkart.svg" alt="FK" /></span>
+                <span class="ph">📱</span>
+              </div>
+              <div class="right">
+                <div class="row-badges">
+                  <h3 class="title">Motorola G57 Power 5G</h3>
+                  <span class="earn-pill">Earn ₹300</span>
+                </div>
+                <p class="sub">Any color · Instant payout</p>
+                <div class="logo-card-row">
+                  <div class="store-block">
+                    <span class="logo-sm"><img src="../logos/flipkart.svg" alt="" /></span> Flipkart
+                  </div>
+                  <div class="store-block">
+                    <span class="logo-sm"><img src="../logos/any-card.svg" alt="" /></span> Any card
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn-spend">Spend ₹17,519</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-inner">
+            <div class="row1">
+              <div class="img-box">
+                <span class="store-pin"><img src="../logos/amazon.svg" alt="AM" /></span>
+                <span class="ph">📱</span>
+              </div>
+              <div class="right">
+                <div class="row-badges">
+                  <h3 class="title">Samsung Galaxy M35 5G</h3>
+                  <span class="earn-pill">Earn ₹450</span>
+                </div>
+                <p class="sub">Midnight Blue</p>
+                <div class="logo-card-row">
+                  <div class="store-block">
+                    <span class="logo-sm"><img src="../logos/amazon.svg" alt="" /></span> Amazon
+                  </div>
+                  <div class="store-block">
+                    <span class="logo-sm"><img src="../logos/hdfc.svg" alt="" /></span> HDFC Credit
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn-spend">Spend ₹22,999</button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>

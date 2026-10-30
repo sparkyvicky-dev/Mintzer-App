@@ -1,0 +1,106 @@
+{
+    "ok": true,
+    "user_cols": [
+        "id",
+        "role_id",
+        "display_name",
+        "device_id",
+        "email",
+        "mobile",
+        "password",
+        "otp",
+        "otp_expiry",
+        "otp_verified",
+        "login_medium",
+        "social_id",
+        "referral_code",
+        "profile_picture",
+        "is_allow_whatsapp_notification",
+        "pan",
+        "pan_name",
+        "wallet",
+        "bank_full_name",
+        "bank_name",
+        "bank_account_number",
+        "bank_ifsc",
+        "upi_address",
+        "address",
+        "address2",
+        "landmark",
+        "city",
+        "pincode",
+        "is_verified",
+        "is_admin_verified",
+        "ip_address",
+        "is_active",
+        "whatsapp_access",
+        "fcm_token",
+        "remember_token",
+        "created_at",
+        "updated_at",
+        "deleted_at"
+    ],
+    "ticket_cols": [
+        "id",
+        "user_id",
+        "subject_id",
+        "subject",
+        "message",
+        "ticket_status",
+        "is_notified",
+        "updated_by",
+        "created_at",
+        "updated_at"
+    ],
+    "reply_cols": [
+        "id",
+        "ticket_id",
+        "staff_user_id",
+        "staff_name",
+        "user_id",
+        "is_from_user",
+        "message",
+        "created_at",
+        "updated_at"
+    ],
+    "subject_cols": [
+        "id",
+        "name",
+        "is_active",
+        "created_at",
+        "updated_at"
+    ],
+    "user": false,
+    "tickets": [],
+    "replies": [],
+    "subjects": [
+        {
+            "id": 1,
+            "name": "Order Support",
+            "is_active": 1,
+            "created_at": "2026-01-22 01:00:12",
+            "updated_at": "2026-01-22 01:00:12"
+        },
+        {
+            "id": 2,
+            "name": "Delivery Support",
+            "is_active": 1,
+            "created_at": "2026-01-22 01:00:21",
+            "updated_at": "2026-01-22 01:00:21"
+        },
+        {
+            "id": 3,
+            "name": "Payment Support",
+            "is_active": 1,
+            "created_at": "2026-01-22 01:00:35",
+            "updated_at": "2026-01-22 01:00:35"
+        },
+        {
+            "id": 4,
+            "name": "Others",
+            "is_active": 1,
+            "created_at": "2026-01-22 01:00:48",
+            "updated_at": "2026-01-22 01:00:48"
+        }
+    ]
+}

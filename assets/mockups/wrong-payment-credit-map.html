@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Where payment credit is wrong</title>
+  <style>
+    :root {
+      --purple: #7B61FF;
+      --ink: #1A1C1E;
+      --muted: #5F6368;
+      --line: #E6E8EC;
+      --green: #137333;
+      --red: #B3261E;
+      --page: #ECEEF4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at 0% -10%, #ffd6d2 0%, transparent 50%),
+        radial-gradient(800px 400px at 100% 0%, #d9d0ff 0%, transparent 45%),
+        var(--page);
+      padding: 24px 14px 48px;
+    }
+    header { max-width: 1100px; margin: 0 auto 16px; }
+    h1 { margin: 0 0 6px; font-size: 22px; font-weight: 850; }
+    .sub { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; max-width: 70ch; }
+    .truth {
+      margin-top: 12px;
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .truth span {
+      font-size: 12px; font-weight: 750;
+      background: #fff; border: 1px solid var(--line);
+      border-radius: 999px; padding: 6px 11px;
+    }
+    .truth .ok { border-color: #B7E0C4; background: #E6F4EA; color: var(--green); }
+    .truth .bad { border-color: #F9DEDC; background: #FCE8E6; color: var(--red); }
+    .grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 960px) { .grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    .col-label {
+      font-size: 11px; font-weight: 800; letter-spacing: .05em;
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .col-label.bad { color: var(--red); }
+    .col-label.warn { color: #B06000; }
+    .col-label.ok { color: var(--green); }
+    .phone {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(26,28,30,.08);
+      max-width: 360px;
+    }
+    .bar {
+      padding: 11px 12px;
+      font-size: 14px; font-weight: 800;
+      border-bottom: 1px solid var(--line);
+      display: flex; gap: 8px; align-items: center;
+    }
+    .pad { padding: 12px; }
+    .chip {
+      display: inline-block;
+      font-size: 10px; font-weight: 800;
+      padding: 3px 8px; border-radius: 99px;
+      margin-bottom: 8px;
+    }
+    .chip.bad { background: #FCE8E6; color: var(--red); }
+    .chip.warn { background: #FEF7E0; color: #B06000; }
+    .chip.ok { background: #E6F4EA; color: var(--green); }
+    .title { font-size: 13px; font-weight: 800; margin: 0 0 4px; }
+    .meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+    .box {
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+    }
+    .box.bad { background: #FFF5F4; border-color: #F9DEDC; }
+    .box.warn { background: #FFFBF0; border-color: #F9E3A5; }
+    .box.ok { background: #F4FBF6; border-color: #C6E7D2; }
+    .box.info { background: #EEF3FF; border-color: #D6E0FF; }
+    .big { font-size: 20px; font-weight: 900; letter-spacing: -0.02em; }
+    .big.bad { color: var(--red); }
+    .big.ok { color: var(--green); }
+    .line { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.35; }
+    .why {
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .why.bad { color: var(--red); }
+    .why.warn { color: #B06000; }
+    .why.ok { color: var(--green); }
+    .steps { margin: 8px 0 10px; font-size: 11px; color: var(--muted); }
+    .steps b { color: var(--green); }
+    .wallet-row {
+      display: flex; justify-content: space-between; gap: 8px;
+      border: 1px solid var(--line); border-radius: 12px; padding: 10px;
+      align-items: center;
+    }
+    .wallet-row .n { font-size: 12px; font-weight: 750; }
+    .wallet-row .s { font-size: 11px; color: var(--muted); }
+    .wallet-row .a { font-size: 14px; font-weight: 900; text-align: right; }
+    .foot {
+      max-width: 1100px; margin: 18px auto 0;
+      font-size: 12px; color: var(--muted); line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Where payment credit is wrong</h1>
+    <p class="sub">
+      Same order: ORDGVD9663 · real bank transfer <strong>₹31,635</strong>.
+      Wrong number people see: <strong>₹33,243</strong> (= You pay ₹32,343 + profit ₹900).
+    </p>
+    <div class="truth">
+      <span class="ok">Correct From Mintzer · ₹31,635</span>
+      <span class="bad">Wrong credited · ₹33,243</span>
+      <span>Bank CB · ₹1,608 · Earn · ₹900</span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- 1 Order Payment -->
+    <div>
+      <div class="col-label bad">1 · Wrong — Order detail · Payment</div>
+      <div class="phone">
+        <div class="bar">← Order detail</div>
+        <div class="pad">
+          <span class="chip bad">WRONG</span>
+          <p class="title">Infinix GT 30 Pro</p>
+          <div class="meta">Step: Payment (before Paid)</div>
+          <div class="steps">… Invoice → <b>Payment</b> → Paid</div>
+          <div class="box info">
+            <div style="font-size:12px;font-weight:700;color:#5B4BDB;margin-bottom:6px">🎉 On the way to your account</div>
+            <div style="font-size:13px;font-weight:750;margin-bottom:4px">Payout on the way</div>
+            <div class="big bad">You're getting ₹33,243</div>
+            <div class="line">₹32,343 reimbursement + ₹900 earnings</div>
+          </div>
+          <p class="why bad">Code: spend + earn. User thinks Mintzer will send ₹33,243.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 Order Paid -->
+    <div>
+      <div class="col-label bad">2 · Wrong — Order detail · Paid</div>
+      <div class="phone">
+        <div class="bar">← Order detail</div>
+        <div class="pad">
+          <span class="chip bad">WRONG</span>
+          <p class="title">Infinix GT 30 Pro</p>
+          <div class="meta">Step: Paid (last) · this is what confused the user</div>
+          <div class="steps">… Payment → <b>Paid</b></div>
+          <div class="box bad">
+            <div class="big bad">₹33,243 credited</div>
+            <div class="line">Account · Bank · ••••xxxx</div>
+            <div class="line">UTR · O9J6081026000001</div>
+            <div class="line">Paid on · date, time</div>
+          </div>
+          <p class="why bad">Same formula. Bank actually got ₹31,635.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 Wallet fallback -->
+    <div>
+      <div class="col-label warn">3 · Can be wrong — Wallet</div>
+      <div class="phone">
+        <div class="bar">Wallet</div>
+        <div class="pad">
+          <span class="chip warn">RISK</span>
+          <p class="title">Transaction row</p>
+          <div class="meta">If Total receive missing on API → falls back to spend + earn</div>
+          <div class="wallet-row">
+            <div>
+              <div class="n">Infinix GT 30 Pro</div>
+              <div class="s">OD3387… · Paid</div>
+            </div>
+            <div class="a">
+              <div class="big bad" style="font-size:16px">₹33,243</div>
+              <div class="line">· +₹900</div>
+            </div>
+          </div>
+          <div class="box ok" style="margin-top:10px">
+            <div class="line" style="color:var(--green);font-weight:700">
+              When API sends mintzer_payout / card_holder_receive → shows ₹31,635 (OK).
+            </div>
+          </div>
+          <p class="why warn">Fallback in bankReturnAmount = spend + earn.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 Deal detail if no receive -->
+    <div>
+      <div class="col-label warn">4 · Can be wrong — Deal detail From Mintzer</div>
+      <div class="phone">
+        <div class="bar">← Deal detail</div>
+        <div class="pad">
+          <span class="chip warn">RISK</span>
+          <p class="title">Payment summary</p>
+          <div class="meta">Before accept — if Total receive not on list</div>
+          <div class="box warn">
+            <div class="line">You pay · ₹32,343</div>
+            <div class="line">Bank cashback · ₹1,608</div>
+            <div class="big bad" style="font-size:16px;margin-top:8px">Mintzer payout · (formula)</div>
+            <div class="line">Not always = admin Total receive</div>
+          </div>
+          <p class="why warn">List API now sends Total receive — should be OK after that fix. Old builds still jump.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 My Orders OK -->
+    <div>
+      <div class="col-label ok">5 · OK — My Orders list</div>
+      <div class="phone">
+        <div class="bar">My Orders · Completed</div>
+        <div class="pad">
+          <span class="chip ok">OK</span>
+          <p class="title">Infinix GT 30 Pro</p>
+          <div class="meta">List card does not show the wrong credit</div>
+          <div class="box ok">
+            <div class="line">Earn chip · ₹900</div>
+            <div class="line">✓ Completed</div>
+            <div class="line" style="margin-top:8px;font-weight:700;color:var(--green)">
+              No ₹33,243 here
+            </div>
+          </div>
+          <p class="why ok">Confusion starts after tap → Order detail Paid.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Correct target -->
+    <div>
+      <div class="col-label ok">6 · Target — Paid card (clarity mock)</div>
+      <div class="phone">
+        <div class="bar">← Order detail</div>
+        <div class="pad">
+          <span class="chip ok">SHOULD BE</span>
+          <p class="title">Paid (last step)</p>
+          <div class="box ok">
+            <div style="display:flex;justify-content:space-between;gap:8px;padding:8px;background:#fff;border:1px solid #C6E7D2;border-radius:10px;margin-bottom:8px">
+              <div>
+                <div style="font-size:12px;font-weight:800">From Mintzer</div>
+                <div class="line">Bank transfer</div>
+              </div>
+              <div class="big ok" style="font-size:16px">₹31,635</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:8px;padding:8px;background:#fff;border:1px solid var(--line);border-radius:10px;margin-bottom:8px">
+              <div>
+                <div style="font-size:12px;font-weight:800">Bank cashback</div>
+                <div class="line">On card statement</div>
+              </div>
+              <div style="font-size:14px;font-weight:900">₹1,608</div>
+            </div>
+            <div class="big ok" style="font-size:14px">Your earnings ₹900</div>
+            <div class="line">UTR · O9J6081026000001</div>
+          </div>
+          <p class="why ok">Matches bank. Same as order-detail-paid-clarity.html.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">
+    Must-fix for users: screens <b>1</b> and <b>2</b>.
+    Harden: <b>3</b> (Wallet fallback).
+    List <b>5</b> is fine. No app code changed in this preview.
+  </p>
+</body>
+</html>

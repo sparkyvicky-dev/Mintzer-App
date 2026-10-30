@@ -1,0 +1,11 @@
+Optional extra, same Hostinger File Manager:
+
+File: public_html/newapp/resources/views/login/login.blade.php
+Place inside <head>, under the existing <title>Login</title> line:
+
+    <meta name="robots" content="noindex, nofollow">
+
+You can also change the title line to:
+    <title>Mintzer admin</title>
+
+Do not change the login form. Do not delete this file.

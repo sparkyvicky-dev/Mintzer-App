@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — 10 Home card alternatives</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #E8EAED; color: #202124;
+    }
+    .page { max-width: 1240px; margin: 0 auto; padding: 20px 16px 64px; }
+    h1 { font-size: 22px; color: #1A73E8; font-weight: 800; }
+    .lead { font-size: 14px; color: #5F6368; line-height: 1.55; margin: 8px 0 12px; max-width: 820px; }
+    .note {
+      font-size: 12px; background: #FEF7E0; border: 1px solid #F9AB00; color: #5F6368;
+      padding: 10px 12px; border-radius: 8px; margin-bottom: 16px; max-width: 820px; line-height: 1.45;
+    }
+    .fields {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px;
+    }
+    .fields span {
+      font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #DADCE0;
+      padding: 4px 8px; border-radius: 99px; color: #3C4043;
+    }
+    .jump { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; }
+    .jump a {
+      font-size: 11px; font-weight: 700; text-decoration: none; color: #174EA6;
+      background: #E8F0FE; border: 1px solid #D2E3FC; padding: 5px 9px; border-radius: 8px;
+    }
+
+    .board { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+    .board .span2 { grid-column: 1 / -1; }
+    @media (min-width: 900px) {
+      .board .span2 { grid-column: span 2; }
+    }
+
+    .panel { background: #fff; border: 1px solid #DADCE0; border-radius: 14px; overflow: hidden; }
+    .panel.now { border-color: #1A73E8; box-shadow: 0 0 0 1px #1A73E8; }
+    .ph { padding: 12px 14px; background: #F8F9FA; border-bottom: 1px solid #E8EAED; }
+    .ph h2 { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .ph p { font-size: 12px; color: #5F6368; margin-top: 4px; line-height: 1.45; }
+    .tag { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .35px; padding: 2px 7px; border-radius: 4px; }
+    .tag.now { background: #1A73E8; color: #fff; }
+    .tag.alt { background: #E8F0FE; color: #174EA6; }
+    .tag.spec { background: #E6F4EA; color: #137333; }
+    .pb { padding: 16px; background: #F1F3F4; display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+
+    /* shared marks */
+    .az { background: #232F3E; color: #fff; font-size: 9px; font-weight: 800; }
+    .fk { background: #F7E017; color: #2874F0; font-size: 10px; font-weight: 800; }
+    .hdfc { background: #0B4F8A; color: #fff; font-size: 7px; font-weight: 800; }
+    .axis { background: #7A1848; color: #fff; font-size: 7px; font-weight: 800; }
+    .gst {
+      position: absolute; top: 6px; right: 6px; z-index: 2;
+      font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+      text-transform: uppercase; background: #FEF7E0; color: #E37400; border: 1px solid #F9AB00;
+    }
+    .mark { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; letter-spacing: -.02em; }
+    .pin {
+      position: absolute; top: 6px; left: 6px; z-index: 2;
+      width: 24px; height: 24px; border-radius: 6px; border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.12); overflow: hidden;
+    }
+    .badge {
+      position: absolute; bottom: 6px; left: 6px; z-index: 2;
+      background: #E8F0FE; color: #1A73E8; border: 1px solid #D2E3FC;
+      font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 8px;
+    }
+    .badge.slots { background: #FEF7E0; color: #E37400; border-color: #F9AB00; left: auto; right: 6px; }
+    .ibox { position: relative; background: #F8F9FA; }
+    .ibox .prod {
+      width: 100%; height: 100%; object-fit: contain; padding: 6px;
+      display: block; pointer-events: none;
+    }
+    .shots {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px; margin: 0 0 22px; max-width: 820px;
+    }
+    .shots figure {
+      background: #fff; border: 1px solid #DADCE0; border-radius: 12px; padding: 12px;
+      text-align: center;
+    }
+    .shots img { width: 100%; max-height: 200px; object-fit: contain; background: #F8F9FA; }
+    .shots figcaption { font-size: 11px; color: #5F6368; margin-top: 8px; line-height: 1.4; }
+    .shots code { font-size: 10px; color: #174EA6; }
+    .title { font-size: 13px; font-weight: 700; line-height: 1.3; color: #202124; }
+    .meta { font-size: 11px; color: #5F6368; }
+    .bank {
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid #E8EAED; background: #F8F9FA; border-radius: 8px;
+      padding: 6px 8px; font-size: 11px; font-weight: 600; min-width: 0;
+    }
+    .bank .lg { width: 22px; height: 22px; border-radius: 5px; overflow: hidden; flex-shrink: 0; }
+    .spend {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #E8F0FE; border: 1px solid #D2E3FC; border-radius: 8px; padding: 8px 10px;
+    }
+    .spend .l { font-size: 9px; font-weight: 700; color: #1A73E8; letter-spacing: .3px; text-transform: uppercase; }
+    .spend .v { font-size: 14px; font-weight: 800; }
+    .earn {
+      width: 100%; border: none; border-radius: 10px; background: #1A73E8; color: #fff;
+      font-size: 13px; font-weight: 700; padding: 10px; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(26,115,232,.22);
+    }
+    .grid-w { width: 168px; }
+
+    /* 0 now */
+    .c-now { background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .c-now .ibox { position: relative; height: 88px; border-radius: 10px; overflow: hidden; border: 1px solid #F1F3F4; }
+    .c-now .title { font-size: 11px; min-height: 2.6em; }
+
+    /* 1 list */
+    .c-list { width: 100%; max-width: 360px; background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 12px; display: grid; grid-template-columns: 80px 1fr; gap: 8px 12px; }
+    .c-list .ibox { position: relative; width: 80px; height: 80px; border-radius: 10px; overflow: hidden; grid-row: 1 / span 3; border: 1px solid #F1F3F4; }
+    .c-list .bank, .c-list .spend, .c-list .earn { grid-column: 1 / -1; }
+
+    /* 2 card-first */
+    .c-card { width: 168px; background: #fff; border: 1px solid #E8EAED; border-radius: 12px; overflow: hidden; }
+    .c-card .bank-top {
+      display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+      background: #0B4F8A; color: #fff; font-size: 10px; font-weight: 700;
+    }
+    .c-card .bank-top .lg { width: 22px; height: 22px; border-radius: 5px; overflow: hidden; border: 1px solid rgba(255,255,255,.35); }
+    .c-card .pad { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .c-card .ibox { position: relative; height: 80px; border-radius: 10px; overflow: hidden; border: 1px solid #F1F3F4; }
+
+    /* 3 money scan */
+    .c-money { width: 168px; background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .c-money .ibox { position: relative; height: 72px; border-radius: 10px; overflow: hidden; border: 1px solid #F1F3F4; }
+    .c-money .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .c-money .spend { flex-direction: column; align-items: flex-start; gap: 2px; padding: 7px 8px; }
+    .c-money .earn { padding: 8px 6px; font-size: 12px; height: 100%; }
+
+    /* 4 catalog */
+    .c-cat { width: 188px; background: #fff; border: 1px solid #E8EAED; border-radius: 12px; overflow: hidden; }
+    .c-cat .ibox { position: relative; height: 168px; }
+    .c-cat .pad { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+
+    /* 5 dense pair */
+    .phone-home {
+      width: 360px; max-width: 100%; background: #F8F9FA; border: 1px solid #DADCE0;
+      border-radius: 18px; padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .c-dense { background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .c-dense .ibox { position: relative; height: 64px; border-radius: 8px; overflow: hidden; border: 1px solid #F1F3F4; }
+    .c-dense .title { font-size: 11px; min-height: 2.6em; }
+    .c-dense .bank { padding: 4px 6px; font-size: 10px; }
+    .c-dense .spend { padding: 5px 7px; }
+    .c-dense .spend .v { font-size: 12px; }
+    .c-dense .earn { padding: 8px 6px; font-size: 12px; border-radius: 8px; }
+
+    /* 6 urgency */
+    .c-urg { width: 168px; background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .c-urg .ibox { position: relative; height: 88px; border-radius: 10px; overflow: hidden; border: 1px solid #F1F3F4; }
+
+    /* 7 polish */
+    .c-pol { width: 176px; background: #fff; border: 1px solid #E8EAED; border-radius: 16px; padding: 10px; display: flex; flex-direction: column; gap: 7px; box-shadow: 0 8px 20px rgba(32,33,36,.08); }
+    .c-pol .ibox { position: relative; height: 110px; border-radius: 12px; overflow: hidden; }
+    .c-pol .title { font-size: 12px; min-height: 2.5em; }
+    .c-pol .earn { border-radius: 24px; padding: 11px; }
+
+    /* 8 dark */
+    .c-dark { width: 168px; background: #1E1E1E; border: 1px solid #3C4043; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; color: #E8EAED; }
+    .c-dark .ibox { position: relative; height: 88px; border-radius: 10px; overflow: hidden; border: 1px solid #3C4043; background: #2A2A2A; }
+    .c-dark .title { color: #E8EAED; font-size: 11px; min-height: 2.6em; }
+    .c-dark .meta { color: #9AA0A6; }
+    .c-dark .bank { background: #2A2A2A; border-color: #3C4043; color: #E8EAED; }
+    .c-dark .spend { background: #394457; border-color: #5F6B7A; }
+    .c-dark .spend .l { color: #8AB4F8; }
+    .c-dark .spend .v { color: #E8EAED; }
+    .c-dark .earn { background: #8AB4F8; color: #202124; box-shadow: none; }
+    .c-dark .badge { background: #394457; color: #8AB4F8; border-color: #5F6B7A; }
+
+    /* 9 hindi */
+    .c-hi { width: 168px; background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .c-hi .ibox { position: relative; height: 88px; border-radius: 10px; overflow: hidden; border: 1px solid #F1F3F4; }
+    .c-hi .title { font-size: 12px; min-height: 2.6em; }
+    .c-hi .earn { line-height: 1.2; padding: 9px 8px; }
+
+    /* 10 story */
+    .c-story { width: 100%; max-width: 360px; background: #fff; border: 1px solid #E8EAED; border-radius: 12px; padding: 12px; }
+    .c-story .top { display: flex; gap: 12px; margin-bottom: 10px; }
+    .c-story .ibox { position: relative; width: 72px; height: 72px; border-radius: 10px; overflow: hidden; border: 1px solid #F1F3F4; flex-shrink: 0; }
+    .c-story .step { font-size: 11px; color: #5F6368; margin: 8px 0 4px; }
+    .c-story .step b { color: #1A73E8; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Same deal — 10 other ways to show it</h1>
+    <p class="lead">
+      Cards below use <b>your project files</b> — the same phone + TV shots Home will ship with.
+      Image box is fixed; photo is <b>object-fit: contain</b>. Phone files are near-square marketing shots (one on black).
+      The TV is landscape with on-screen text. That mix is why the same card must not crop or stretch.
+    </p>
+    <p class="note">
+      Files: <code>assets/images/samsung-m35.png</code> · <code>motorola-g57.jpg</code> · <code>samsung-tv-32.jpg</code>
+      (same as <code>Images/</code>). Exploration only — locked Home demo is unchanged.
+    </p>
+    <div class="shots">
+      <figure>
+        <img src="../images/samsung-m35.png" alt="Phone deal image from assets/images" />
+        <figcaption>Phone · <code>samsung-m35.png</code><br>Square marketing shot on black</figcaption>
+      </figure>
+      <figure>
+        <img src="../images/motorola-g57.jpg" alt="Motorola deal image from assets/images" />
+        <figcaption>Phone · <code>motorola-g57.jpg</code><br>Square marketing shot on white</figcaption>
+      </figure>
+      <figure>
+        <img src="../images/samsung-tv-32.jpg" alt="TV deal image from assets/images" />
+        <figcaption>TV · <code>samsung-tv-32.jpg</code><br>Landscape + spec text on the screen</figcaption>
+      </figure>
+    </div>
+    <div class="fields">
+      <span>Phone: samsung-m35.png</span>
+      <span>TV: samsung-tv-32.jpg</span>
+      <span>Fixed box · contain</span>
+      <span>No stretch · no crop</span>
+    </div>
+    <nav class="jump">
+      <a href="#now">Now</a>
+      <a href="#m1">1 List</a>
+      <a href="#m2">2 Card-first</a>
+      <a href="#m3">3 Money scan</a>
+      <a href="#m4">4 Catalog</a>
+      <a href="#m5">5 Dense 2-up</a>
+      <a href="#m6">6 Slots</a>
+      <a href="#m7">7 Polished</a>
+      <a href="#m8">8 Dark</a>
+      <a href="#m9">9 Hindi</a>
+      <a href="#m10">10 Pay then earn</a>
+    </nav>
+
+    <div class="board">
+
+      <div class="panel now" id="now">
+        <div class="ph">
+          <h2>Now — locked grid <span class="tag now">In the app</span></h2>
+          <p>Your phone file vs your TV file in the locked 88dp box. Same layout — TV stays landscape, contain, not cropped.</p>
+        </div>
+        <div class="pb">
+          <article class="c-now grid-w">
+            <div class="ibox">
+              <span class="pin"><span class="mark az">AZ</span></span>
+              <span class="badge">📈 Trending</span>
+              <img class="prod" src="../images/samsung-m35.png" alt="Phone deal" />
+            </div>
+            <div class="title">Samsung Galaxy M35 5G</div>
+            <div class="meta">Any color</div>
+            <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+            <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+            <button type="button" class="earn">Earn ₹450</button>
+          </article>
+          <article class="c-now grid-w">
+            <div class="ibox">
+              <span class="pin"><span class="mark fk">FK</span></span>
+              <span class="gst">GST</span>
+              <img class="prod" src="../images/samsung-tv-32.jpg" alt="TV deal" />
+            </div>
+            <div class="title">Samsung HD TV 32"</div>
+            <div class="meta">Black</div>
+            <div class="bank"><div class="lg"><span class="mark axis" style="width:22px;height:22px">AXIS</span></div>Axis Credit Card</div>
+            <div class="spend"><span class="l">You spend</span><span class="v">₹12,499</span></div>
+            <button type="button" class="earn">Earn ₹380</button>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel span2" id="m1">
+        <div class="ph">
+          <h2>1. List <span class="tag spec">Already in spec</span></h2>
+          <p>80dp square thumb. Phone marketing shot vs landscape TV in the same hole.</p>
+        </div>
+        <div class="pb">
+          <article class="c-list">
+            <div class="ibox">
+              <span class="pin"><span class="mark az">AZ</span></span>
+              <img class="prod" src="../images/samsung-m35.png" alt="Phone deal" />
+            </div>
+            <div class="title">Samsung Galaxy M35 5G</div>
+            <div class="meta">Any color</div>
+            <div></div>
+            <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+            <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+            <button type="button" class="earn">Earn ₹450</button>
+          </article>
+          <article class="c-list">
+            <div class="ibox">
+              <span class="pin"><span class="mark fk">FK</span></span>
+              <img class="prod" src="../images/samsung-tv-32.jpg" alt="TV deal" />
+            </div>
+            <div class="title">Samsung HD TV 32"</div>
+            <div class="meta">Black</div>
+            <div></div>
+            <div class="bank"><div class="lg"><span class="mark axis" style="width:22px;height:22px">AXIS</span></div>Axis Credit Card</div>
+            <div class="spend"><span class="l">You spend</span><span class="v">₹12,499</span></div>
+            <button type="button" class="earn">Earn ₹380</button>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel" id="m2">
+        <div class="ph">
+          <h2>2. Card-first <span class="tag alt">Alt</span></h2>
+          <p>The deal only works on <b>HDFC</b>. Lead with the bank so people skip deals their card cannot do.</p>
+        </div>
+        <div class="pb">
+          <article class="c-card">
+            <div class="bank-top">
+              <div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>
+              HDFC Credit Card
+            </div>
+            <div class="pad">
+              <div class="ibox">
+                <span class="pin"><span class="mark az">AZ</span></span>
+                <span class="badge">📈 Trending</span>
+                <img class="prod" src="../images/samsung-m35.png" alt="Samsung Galaxy M35 5G" />
+              </div>
+              <div class="title">Samsung Galaxy M35 5G</div>
+              <div class="meta">Any color</div>
+              <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+              <button type="button" class="earn">Earn ₹450</button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel" id="m3">
+        <div class="ph">
+          <h2>3. Money scan <span class="tag alt">Alt</span></h2>
+          <p>Decision is spend vs earn. Put both money cells on one row so a grid of deals is easy to compare.</p>
+        </div>
+        <div class="pb">
+          <article class="c-money">
+            <div class="ibox">
+              <span class="pin"><span class="mark az">AZ</span></span>
+              <img class="prod" src="../images/samsung-m35.png" alt="Samsung Galaxy M35 5G" />
+            </div>
+            <div class="title">Samsung Galaxy M35 5G</div>
+            <div class="meta">Any color</div>
+            <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+            <div class="pair">
+              <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+              <button type="button" class="earn">Earn ₹450</button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel" id="m4">
+        <div class="ph">
+          <h2>4. Catalog photo <span class="tag alt">Alt</span></h2>
+          <p>Tall image box. Phone (square, black) vs TV (wide). This is the layout that shows contain vs crop most clearly.</p>
+        </div>
+        <div class="pb">
+          <article class="c-cat">
+            <div class="ibox">
+              <span class="pin"><span class="mark az">AZ</span></span>
+              <span class="badge">📈 Trending</span>
+              <img class="prod" src="../images/samsung-m35.png" alt="Phone deal" />
+            </div>
+            <div class="pad">
+              <div class="title">Samsung Galaxy M35 5G</div>
+              <div class="meta">Any color</div>
+              <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+              <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+              <button type="button" class="earn">Earn ₹450</button>
+            </div>
+          </article>
+          <article class="c-cat">
+            <div class="ibox">
+              <span class="pin"><span class="mark fk">FK</span></span>
+              <span class="gst">GST</span>
+              <img class="prod" src="../images/samsung-tv-32.jpg" alt="TV deal" />
+            </div>
+            <div class="pad">
+              <div class="title">Samsung HD TV 32"</div>
+              <div class="meta">Black</div>
+              <div class="bank"><div class="lg"><span class="mark axis" style="width:22px;height:22px">AXIS</span></div>Axis Credit Card</div>
+              <div class="spend"><span class="l">You spend</span><span class="v">₹12,499</span></div>
+              <button type="button" class="earn">Earn ₹380</button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel span2" id="m5">
+        <div class="ph">
+          <h2>5. Dense 2-up <span class="tag alt">Alt</span></h2>
+          <p>How Home actually looks: phone next to TV in the same 2-column grid. Motorola file on the left if you scroll the pair — here M35 + TV.</p>
+        </div>
+        <div class="pb">
+          <div class="phone-home">
+            <article class="c-dense">
+              <div class="ibox">
+                <span class="pin"><span class="mark az">AZ</span></span>
+                <img class="prod" src="../images/samsung-m35.png" alt="Phone deal" />
+              </div>
+              <div class="title">Samsung Galaxy M35 5G</div>
+              <div class="meta">Any color</div>
+              <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+              <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+              <button type="button" class="earn">Earn ₹450</button>
+            </article>
+            <article class="c-dense">
+              <div class="ibox">
+                <span class="pin"><span class="mark fk">FK</span></span>
+                <span class="gst">GST</span>
+                <img class="prod" src="../images/samsung-tv-32.jpg" alt="TV deal" />
+              </div>
+              <div class="title">Samsung HD TV 32"</div>
+              <div class="meta">Black</div>
+              <div class="bank"><div class="lg"><span class="mark axis" style="width:22px;height:22px">AXIS</span></div>Axis Credit Card</div>
+              <div class="spend"><span class="l">You spend</span><span class="v">₹12,499</span></div>
+              <button type="button" class="earn">Earn ₹380</button>
+            </article>
+          </div>
+          <div class="phone-home">
+            <article class="c-dense">
+              <div class="ibox">
+                <span class="pin"><span class="mark fk">FK</span></span>
+                <span class="gst">GST</span>
+                <img class="prod" src="../images/motorola-g57.jpg" alt="Motorola deal" />
+              </div>
+              <div class="title">Motorola G57 Power 5G</div>
+              <div class="meta">Midnight Blue</div>
+              <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px;background:#EEF0F2"></span></div>Any credit / debit</div>
+              <div class="spend"><span class="l">You spend</span><span class="v">₹17,519</span></div>
+              <button type="button" class="earn">Earn ₹300</button>
+            </article>
+            <article class="c-dense">
+              <div class="ibox">
+                <span class="pin"><span class="mark az">AZ</span></span>
+                <img class="prod" src="../images/samsung-m35.png" alt="Phone deal" />
+              </div>
+              <div class="title">Samsung Galaxy M35 5G</div>
+              <div class="meta">Any color</div>
+              <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+              <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+              <button type="button" class="earn">Earn ₹450</button>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="m6">
+        <div class="ph">
+          <h2>6. Slots left <span class="tag spec">Affiliate spec</span></h2>
+          <p>Locked add-on: urgency on the photo (Trending + N slots). Fields under the image stay the same. GST would sit on the color row, not the photo.</p>
+        </div>
+        <div class="pb">
+          <article class="c-urg">
+            <div class="ibox">
+              <span class="pin"><span class="mark az">AZ</span></span>
+              <span class="badge">📈 Trending</span>
+              <span class="badge slots">⚡ 5 left</span>
+              <img class="prod" src="../images/samsung-m35.png" alt="Samsung Galaxy M35 5G" />
+            </div>
+            <div class="title">Samsung Galaxy M35 5G</div>
+            <div class="meta">Any color</div>
+            <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+            <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+            <button type="button" class="earn">Earn ₹450</button>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel" id="m7">
+        <div class="ph">
+          <h2>7. Polished, same stack <span class="tag alt">Alt</span></h2>
+          <p>What the designer brief asked: same field order, real photo, more radius, pill Earn. Layout unchanged — only finish.</p>
+        </div>
+        <div class="pb">
+          <article class="c-pol">
+            <div class="ibox">
+              <span class="pin"><span class="mark az">AZ</span></span>
+              <span class="badge">📈 Trending</span>
+              <img class="prod" src="../images/samsung-m35.png" alt="Samsung Galaxy M35 5G" />
+            </div>
+            <div class="title">Samsung Galaxy M35 5G</div>
+            <div class="meta">Any color</div>
+            <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+            <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+            <button type="button" class="earn">Earn ₹450</button>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel" id="m8">
+        <div class="ph">
+          <h2>8. Dark mode <span class="tag spec">Required later</span></h2>
+          <p>Black phone PNG almost vanishes on a dark image box. TV still reads. This is why contain + box color matter.</p>
+        </div>
+        <div class="pb" style="background:#121212">
+          <article class="c-dark">
+            <div class="ibox">
+              <span class="pin"><span class="mark az">AZ</span></span>
+              <span class="badge">📈 Trending</span>
+              <img class="prod" src="../images/samsung-m35.png" alt="Phone deal" />
+            </div>
+            <div class="title">Samsung Galaxy M35 5G</div>
+            <div class="meta">Any color</div>
+            <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+            <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+            <button type="button" class="earn">Earn ₹450</button>
+          </article>
+          <article class="c-dark">
+            <div class="ibox" style="background:#2A2A2A">
+              <span class="pin"><span class="mark fk">FK</span></span>
+              <img class="prod" src="../images/samsung-tv-32.jpg" alt="TV deal" />
+            </div>
+            <div class="title">Samsung HD TV 32"</div>
+            <div class="meta">Black</div>
+            <div class="bank"><div class="lg"><span class="mark axis" style="width:22px;height:22px">AXIS</span></div>Axis Credit Card</div>
+            <div class="spend"><span class="l">You spend</span><span class="v">₹12,499</span></div>
+            <button type="button" class="earn">Earn ₹380</button>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel" id="m9">
+        <div class="ph">
+          <h2>9. Hindi <span class="tag spec">v1 language</span></h2>
+          <p>English + Hindi. Two-line Earn and a longer title. If a layout breaks here, it is too tight for India.</p>
+        </div>
+        <div class="pb">
+          <article class="c-hi">
+            <div class="ibox">
+              <span class="pin"><span class="mark az">AZ</span></span>
+              <span class="badge">📈 ट्रेंडिंग</span>
+              <img class="prod" src="../images/samsung-m35.png" alt="Samsung Galaxy M35 5G" />
+            </div>
+            <div class="title">सैमसंग गैलेक्सी M35 5G</div>
+            <div class="meta">कोई भी रंग</div>
+            <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC क्रेडिट कार्ड</div>
+            <div class="spend"><span class="l">आप खर्च करें</span><span class="v">₹22,999</span></div>
+            <button type="button" class="earn">कमाएँ ₹450</button>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel span2" id="m10">
+        <div class="ph">
+          <h2>10. Pay, then earn <span class="tag alt">Alt</span></h2>
+          <p>Reads like the real job: order on Amazon with HDFC, pay ₹22,999 at checkout, then earn ₹450 in Wallet. Good teaching card; a bit long for a 2-column grid.</p>
+        </div>
+        <div class="pb">
+          <article class="c-story">
+            <div class="top">
+              <div class="ibox">
+                <span class="pin"><span class="mark az">AZ</span></span>
+                <img class="prod" src="../images/samsung-m35.png" alt="Samsung Galaxy M35 5G" />
+              </div>
+              <div>
+                <div class="title">Samsung Galaxy M35 5G</div>
+                <div class="meta" style="margin:4px 0 8px">Any color · 📈 Trending</div>
+                <div class="bank"><div class="lg"><span class="mark hdfc" style="width:22px;height:22px">HDFC</span></div>HDFC Credit Card</div>
+              </div>
+            </div>
+            <div class="step">1. Pay at <b>Amazon</b> checkout</div>
+            <div class="spend"><span class="l">You spend</span><span class="v">₹22,999</span></div>
+            <div class="step">2. Mintzer pays you after proof</div>
+            <button type="button" class="earn">Earn ₹450</button>
+          </article>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

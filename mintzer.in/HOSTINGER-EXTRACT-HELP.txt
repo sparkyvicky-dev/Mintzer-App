@@ -1,0 +1,52 @@
+HOSTINGER EXTRACT BLOCKED? — do this
+====================================
+
+Zip to try first (short name):
+  D:\dev\mintzer-app\mintzer.in\mintzer.zip
+
+Ready folder (no extract needed):
+  D:\dev\mintzer-app\mintzer.in\UPLOAD-TO-PUBLIC-HTML\
+
+------------------------------------------------
+OPTION A — Fix Extract dialog
+------------------------------------------------
+1. File Manager → open public_html (same place as newapp)
+2. Upload mintzer.zip into public_html
+3. Right-click mintzer.zip → Extract
+4. IMPORTANT:
+   - Destination: public_html (current folder)
+   - Folder name: LEAVE EMPTY / blank
+     (if Hostinger forces a name, type: .   or use Option B)
+   - Overwrite existing files: ON
+5. After extract, you must see assets/ next to newapp/
+   If you see public_html/mintzer/assets — wrong place; move files up.
+
+------------------------------------------------
+OPTION B — No extract (most reliable)
+------------------------------------------------
+1. Open local folder: UPLOAD-TO-PUBLIC-HTML
+2. In Hostinger public_html, upload these items one by one (or multi-select):
+   - index.html
+   - contact.html
+   - privacy.html
+   - terms.html
+   - privacypolicy.html
+   - termsandconditions.html
+   - aboutus.html
+   - faqs.html
+   - robots.txt
+   - sitemap.xml
+   - assets   (whole folder)
+3. When asked to overwrite index.html / privacy files → Yes
+4. Do NOT upload into newapp or beta
+
+------------------------------------------------
+NEVER delete
+------------------------------------------------
+  newapp
+  beta
+  cgi-bin
+
+Test after:
+  https://mintzer.in/
+  https://app.mintzer.in/

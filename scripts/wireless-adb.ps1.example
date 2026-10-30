@@ -1,0 +1,42 @@
+# Wireless Flutter debug — exact steps (Windows + Android 11+)
+# Same Wi-Fi for phone and PC. USB once for first pair (or use pairing code only).
+
+# 0) Make sure adb is available (Flutter ships one):
+#    $env:Path += ";$env:LOCALAPPDATA\Android\Sdk\platform-tools"
+#    Or: where.exe adb
+
+# --- OPTION A: Pair with code (no USB) ---
+# Phone: Settings → Developer options → Wireless debugging → Pair device with pairing code
+# Note the IP, pairing port, and 6-digit code shown on phone.
+
+adb pair 192.168.1.20:37123
+# When prompted, type the 6-digit pairing code from the phone.
+
+# After pair succeeds, phone Wireless debugging screen shows a different "IP address & port"
+# (debug port, not the pairing port). Connect with THAT:
+
+adb connect 192.168.1.20:43127
+adb devices
+# Expect: 192.168.1.20:43127   device
+
+# --- OPTION B: One USB plug, then unplug ---
+adb devices
+adb tcpip 5555
+# Unplug USB, then (phone IP from Wi-Fi settings):
+adb connect 192.168.1.20:5555
+adb devices
+
+# --- Run Mintzer (hot reload after this) ---
+cd D:\dev\mintzer-app\app
+flutter devices
+flutter run -d 192.168.1.20:43127
+# Or if only one device: flutter run
+
+# Hot reload: press r in that terminal
+# Hot restart: press R
+# Quit: press q
+
+# --- If connect fails ---
+# adb kill-server
+# adb start-server
+# Re-enable Wireless debugging on phone, pair again with a fresh code.

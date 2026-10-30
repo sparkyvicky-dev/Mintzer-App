@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>3 · The phone on the desk</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #eef0f6; color: #202124; font-family: "Segoe UI", system-ui, sans-serif; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 28px 22px 64px; display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
+  .kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #8b90a3; font-weight: 700; }
+  h1 { margin: 8px 0 6px; font-size: 28px; letter-spacing: -.03em; color: #1c2434; }
+  .lead { margin: 0 0 16px; color: #667085; font-size: 14px; }
+  .card { background: #fff; border: 1px solid #e6e8f0; border-radius: 14px; padding: 16px; }
+  .card h2 { margin: 0 0 12px; font-size: 14px; color: #3a4158; }
+  label { display: block; font-size: 12px; color: #667085; font-weight: 700; margin: 10px 0 5px; }
+  input { width: 100%; border: 1px solid #e4e7ee; border-radius: 10px; padding: 10px 12px; font-size: 15px; }
+  .send { margin-top: 14px; border: 0; background: #1c2434; color: #fff; border-radius: 10px; padding: 10px 14px; font-weight: 750; cursor: pointer; }
+  .sent { display: none; margin-top: 8px; font-size: 13px; color: #3d2e9e; font-weight: 700; }
+  .phone { width: 320px; background: #111; border-radius: 36px; padding: 14px 12px 18px; box-shadow: 0 18px 40px rgba(20, 20, 40, .18); }
+  .screen { background: #fff; border-radius: 26px; padding: 16px 14px 18px; min-height: 520px; }
+  .bar { font-size: 13px; font-weight: 800; margin-bottom: 10px; }
+  .sum h3 { margin: 0; font-size: 15px; }
+  .sum p { margin: 2px 0 12px; font-size: 12px; color: #5f6368; }
+  .line { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .line b { font-size: 14px; }
+  .line strong { font-size: 16px; }
+  .m { display: flex; justify-content: space-between; gap: 8px; margin-top: 10px; }
+  .m .t { font-size: 13px; font-weight: 750; }
+  .m .s { font-size: 11px; color: #5f6368; line-height: 1.3; }
+  .m .v { color: #188038; font-weight: 800; font-size: 14px; white-space: nowrap; }
+  .earn { margin-top: 12px; background: #e6f4ea; border: 1px solid #ceead6; border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; }
+  .earn .t { color: #188038; font-weight: 800; font-size: 13px; }
+  .earn .s { color: #137333; font-size: 11px; }
+  .earn .v { color: #188038; font-weight: 900; font-size: 20px; }
+  .how { margin-top: 10px; color: #7b61ff; font-size: 12px; font-weight: 750; }
+  .calc { display: flex; justify-content: space-between; font-size: 12px; color: #5f6368; padding: 2px 0; }
+  .calc span:last-child { font-weight: 700; color: #202124; }
+  .g span:last-child { color: #188038; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <div class="kicker">Look 3 of 3 · Their screen</div>
+    <h1>The phone sits on the desk</h1>
+    <p class="lead">You type in the panel. The phone shows the app. Same numbers, their words. Look only.</p>
+    <div class="card">
+      <h2>Card details</h2>
+      <label>Deal name</label>
+      <input id="name" value="Samsung 55 inch TV" />
+      <label>Card holder will spend</label>
+      <input id="spend" type="number" value="52999" />
+      <label>Cashback</label>
+      <input id="cashback" type="number" value="2500" />
+      <label>Card holder will earn</label>
+      <input id="earn" type="number" value="900" />
+      <label>Total card holder will receive</label>
+      <input id="receive" type="number" value="51399" />
+      <button class="send" id="send" type="button">Open on my phone</button>
+      <div class="sent" id="sent">This would open the real deal on your phone.</div>
+    </div>
+  </div>
+  <div class="phone">
+    <div class="screen">
+      <div class="bar">Deal detail</div>
+      <div class="sum">
+        <h3>Payment summary</h3>
+        <p>Here's what you pay and what you get back.</p>
+        <div class="line"><b>You pay at checkout</b><strong id="pSpend"></strong></div>
+        <div class="m" id="bankRow"><div><div class="t">Bank cashback</div><div class="s">Credited to your card/account according to the bank statements.</div></div><div class="v" id="pBank"></div></div>
+        <div class="m"><div><div class="t">Mintzer payout</div><div class="s">Reimbursement after verification.</div></div><div class="v" id="pPay"></div></div>
+        <div class="earn"><div><div class="t">Your earnings</div><div class="s">This is your profit.</div></div><div class="v" id="pEarn"></div></div>
+        <div class="how">How this is calculated?</div>
+        <div class="calc"><span>You pay at checkout</span><span id="cSpend"></span></div>
+        <div class="calc g" id="cBankRow"><span>Bank cashback</span><span id="cBank"></span></div>
+        <div class="calc g"><span>Mintzer payout</span><span id="cPay"></span></div>
+        <div class="calc g"><span>Cash reward</span><span id="cReward"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function inr(n) { return "₹" + Math.round(Number(n) || 0).toLocaleString("en-IN"); }
+function paint() {
+  const spend = inr(document.getElementById("spend").value);
+  const earn = inr(document.getElementById("earn").value);
+  const receive = inr(document.getElementById("receive").value);
+  const cb = Math.round(Number(document.getElementById("cashback").value) || 0);
+  document.getElementById("pSpend").textContent = spend;
+  document.getElementById("pPay").textContent = receive;
+  document.getElementById("pEarn").textContent = earn;
+  document.getElementById("cSpend").textContent = spend;
+  document.getElementById("cPay").textContent = receive;
+  document.getElementById("cReward").textContent = earn;
+  document.getElementById("pBank").textContent = inr(cb);
+  document.getElementById("cBank").textContent = inr(cb);
+  document.getElementById("bankRow").style.display = cb > 0 ? "flex" : "none";
+  document.getElementById("cBankRow").style.display = cb > 0 ? "flex" : "none";
+}
+document.querySelectorAll("input").forEach((el) => el.addEventListener("input", paint));
+document.getElementById("send").addEventListener("click", () => {
+  document.getElementById("sent").style.display = "block";
+});
+paint();
+</script>
+</body>
+</html>

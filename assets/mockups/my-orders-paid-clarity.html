@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Orders · Paid — now vs clear</title>
+  <style>
+    :root {
+      --purple: #7B61FF;
+      --ink: #202124;
+      --muted: #5F6368;
+      --line: #E8EAED;
+      --green: #188038;
+      --green-bg: #E6F4EA;
+      --green-bd: #CEEAD6;
+      --earn-fill: #E6F4EA;
+      --page: #F0F2F8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at 15% -10%, #ddd4ff 0%, transparent 55%),
+        var(--page);
+      padding: 24px 14px 48px;
+    }
+    h1 { max-width: 980px; margin: 0 auto 6px; font-size: 20px; font-weight: 800; }
+    .sub { max-width: 980px; margin: 0 auto 18px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .grid {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+    .tag {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .tag.bad { color: #B3261E; }
+    .tag.good { color: var(--green); }
+    .phone {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(32,33,36,.08);
+      max-width: 400px;
+    }
+    .top {
+      padding: 14px 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .tabs {
+      display: flex;
+      gap: 18px;
+      padding-bottom: 0;
+    }
+    .tab {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      padding-bottom: 10px;
+    }
+    .tab.on {
+      font-weight: 700;
+      color: var(--purple);
+      box-shadow: inset 0 -2px 0 var(--purple);
+    }
+    .pad { padding: 12px 14px 16px; }
+    .list-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .row { display: flex; gap: 12px; }
+    .thumb {
+      width: 64px; height: 64px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #eef0ff, #f7f8fc);
+      border: 1px solid var(--line);
+      display: grid; place-items: center;
+      font-size: 11px; font-weight: 800; color: var(--purple);
+      flex-shrink: 0;
+    }
+    .name { font-size: 14px; font-weight: 700; line-height: 1.25; margin: 0; }
+    .earn-chip {
+      font-size: 11px; font-weight: 700; color: var(--green);
+      background: var(--earn-fill);
+      border-radius: 99px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+    .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .tiny { font-size: 11px; color: #9AA0A6; margin-top: 2px; }
+    .rail {
+      display: flex;
+      gap: 0;
+      margin-top: 14px;
+      align-items: center;
+    }
+    .stage {
+      flex: 1;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--green);
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      margin: 0 auto 4px;
+    }
+    .done {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--green);
+    }
+    .section {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      margin: 4px 0 8px;
+    }
+    .detail {
+      border: 1px solid var(--green-bd);
+      background: var(--green-bg);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .detail.bad-border {
+      border-color: #F9DEDC;
+      background: #FCE8E6;
+    }
+    .credit {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--green);
+    }
+    .credit.bad { color: #B3261E; }
+    .kv { margin-top: 8px; display: grid; gap: 4px; }
+    .kv div { display: flex; gap: 8px; font-size: 12px; }
+    .kv span { width: 64px; color: var(--muted); flex-shrink: 0; }
+    .kv b { color: var(--green); font-weight: 700; }
+    .note {
+      margin-top: 8px;
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+    .note.warn { color: #B3261E; font-weight: 600; }
+    .lines { display: grid; gap: 8px; margin-bottom: 10px; }
+    .line {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .line .l { font-size: 12px; font-weight: 800; }
+    .line .s { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .line .v { font-size: 14px; font-weight: 900; white-space: nowrap; }
+    .line.mz { background: #fff; border-color: var(--green-bd); }
+    .line.mz .v { color: var(--green); }
+    .foot { max-width: 980px; margin: 18px auto 0; font-size: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <h1>My Orders → Completed → open Paid (last step)</h1>
+  <p class="sub">
+    Real order: <strong>9698687607</strong> · ORDGVD9663 · bank paid <strong>₹31,635</strong>.
+    Confusion comes from Order detail Paid card: app uses <code>You pay + You earn</code> (= ₹33,243).
+  </p>
+
+  <div class="grid">
+    <!-- NOW -->
+    <div>
+      <div class="tag bad">Now — how it looks</div>
+      <div class="phone">
+        <div class="top">
+          <div class="tabs">
+            <div class="tab">Ongoing</div>
+            <div class="tab on">Completed</div>
+          </div>
+        </div>
+        <div class="pad">
+          <div class="section">List card</div>
+          <div class="list-card">
+            <div class="row">
+              <div class="thumb">Phone</div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;gap:8px;justify-content:space-between;align-items:flex-start">
+                  <p class="name">Infinix GT 30 Pro (8GB/256GB)</p>
+                  <span class="earn-chip">Earn ₹900</span>
+                </div>
+                <div class="meta">ORDGVD9663</div>
+                <div class="meta">Flipkart · #OD338787534076189100</div>
+                <div class="tiny">Ordered on 3 Oct 2026</div>
+              </div>
+            </div>
+            <div class="rail">
+              <div class="stage"><div class="dot"></div>Ordered</div>
+              <div class="stage"><div class="dot"></div>Shipped</div>
+              <div class="stage"><div class="dot"></div>Delivered</div>
+              <div class="stage"><div class="dot"></div>Verified</div>
+            </div>
+            <div class="done">✓ Completed</div>
+          </div>
+
+          <div class="section">After tap → Paid (last)</div>
+          <div class="detail bad-border">
+            <div class="credit bad">₹33,243 credited</div>
+            <div class="kv">
+              <div><span>Account</span><b>••••••••</b></div>
+              <div><span>UTR</span><b>O9J6081026000001</b></div>
+              <div><span>Paid on</span><b>date · time</b></div>
+            </div>
+            <p class="note warn">
+              Code today: spend ₹32,343 + earn ₹900 = ₹33,243.<br>
+              Bank actually got ₹31,635.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROPOSED -->
+    <div>
+      <div class="tag good">Proposed — clearer</div>
+      <div class="phone">
+        <div class="top">
+          <div class="tabs">
+            <div class="tab">Ongoing</div>
+            <div class="tab on">Completed</div>
+          </div>
+        </div>
+        <div class="pad">
+          <div class="section">List card (same + payout line)</div>
+          <div class="list-card">
+            <div class="row">
+              <div class="thumb">Phone</div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;gap:8px;justify-content:space-between;align-items:flex-start">
+                  <p class="name">Infinix GT 30 Pro (8GB/256GB)</p>
+                  <span class="earn-chip">Earn ₹900</span>
+                </div>
+                <div class="meta">ORDGVD9663</div>
+                <div class="meta">Flipkart · #OD338787534076189100</div>
+                <div class="tiny">Ordered on 3 Oct 2026</div>
+              </div>
+            </div>
+            <div class="rail">
+              <div class="stage"><div class="dot"></div>Ordered</div>
+              <div class="stage"><div class="dot"></div>Shipped</div>
+              <div class="stage"><div class="dot"></div>Delivered</div>
+              <div class="stage"><div class="dot"></div>Verified</div>
+            </div>
+            <div class="done">✓ Completed · From Mintzer ₹31,635</div>
+          </div>
+
+          <div class="section">After tap → Paid (last)</div>
+          <div class="detail">
+            <div class="lines">
+              <div class="line mz">
+                <div>
+                  <div class="l">From Mintzer</div>
+                  <div class="s">Bank transfer (Total receive)</div>
+                </div>
+                <div class="v">₹31,635</div>
+              </div>
+              <div class="line">
+                <div>
+                  <div class="l">Bank cashback</div>
+                  <div class="s">Credited separately by your bank</div>
+                </div>
+                <div class="v">₹1,608</div>
+              </div>
+            </div>
+            <div class="credit">Your earnings ₹900</div>
+            <div class="kv">
+              <div><span>Account</span><b>••••••••</b></div>
+              <div><span>UTR</span><b>O9J6081026000001</b></div>
+              <div><span>Paid on</span><b>date · time</b></div>
+            </div>
+            <p class="note">Matches the real bank transfer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">
+    Matches live Flutter: My Orders list shows Earn chip + Completed only;
+    Order detail Paid uses <code>_payoutShown = spend + earn</code> → “₹… credited”.
+    Mock only — no app change yet.
+  </p>
+</body>
+</html>

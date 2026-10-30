@@ -1,0 +1,117 @@
+FIX GOOGLE RESULTS FOR “mintzer”
+================================
+Google copies titles and text from four public listings. Changing this
+repo alone does not update Google until those live pages change, then
+Google recrawls (usually a few days; request indexing to speed it up).
+
+What Google shows today, and the fix
+------------------------------------
+1) mintzer.in — “with your Credit Cards”
+   Cause: old homepage had no <title>, broken “Earn” headline.
+   Fix: upload the new marketing site (already has a real title).
+   Title Google should then use:
+     Mintzer — Card deals. Earn paid to your bank
+
+2) Google Play — “Mintzer - Let's make money”
+   Cause: Play Console app name + old description (typos, emoji).
+   Fix: paste the Play copy below. Package must stay com.mintzer.
+
+3) App Store — same cheap name
+   Cause: App Store Connect listing name.
+   Fix: paste the Apple copy below. Apple URL slug will stay
+   mintzer-lets-make-money; that is normal and cannot change.
+
+4) app.mintzer.in — “Welcome to Mintzer! Please sign-in…”
+   Cause: Google indexed the admin login.
+   Fix: noindex the subdomain (do not delete newapp).
+
+Do these in order
+-----------------
+A. Hostinger — new mintzer.in  (see UPLOAD-ME.txt)
+   Extract into public_html only. Never touch newapp / beta.
+   Confirm https://mintzer.in/ title is the new one, and
+   https://app.mintzer.in/ still loads.
+
+B. Hostinger — hide admin from Google
+   File Manager → public_html/newapp/public/.htaccess
+   Paste the 4 lines from:
+     app-mintzer-in-noindex/PASTE-AT-TOP-OF-HTACCESS.txt
+   at the TOP of that file. Save.
+   Optional extra (same folder):
+     public_html/newapp/resources/views/login/login.blade.php
+   Add this line inside <head>:
+     <meta name="robots" content="noindex, nofollow">
+
+C. Google Search Console (search.google.com/search-console)
+   Property: mintzer.in
+   - URL inspection → https://mintzer.in/ → Request indexing
+   - Also request: /contact /privacy /terms
+   Removals → hide https://app.mintzer.in/ (and prefix if offered)
+   If app.mintzer.in is a separate property, add it, then hide.
+
+D. Play Console → Mintzer (com.mintzer) → Main store listing
+   Paste App name, Short description, Full description below.
+   Submit. Do not change the package name.
+
+E. App Store Connect → Mintzer → App Information / version
+   Paste Name, Subtitle, Description below. Submit for review
+   if Apple requires a version for listing text.
+
+
+PLAY CONSOLE — paste this
+-------------------------
+App name (30 characters max):
+Mintzer: Earn on card deals
+
+Short description (80 characters max):
+Flipkart & Amazon card deals. Accept, order, earn paid to your bank.
+
+Full description:
+Mintzer lists Flipkart and Amazon card deals. Each deal shows the card, the spend, and how much you can earn before you accept.
+
+How it works:
+1. Pick a deal that matches your card.
+2. Accept in the app and place the store order to the Mintzer address shown.
+3. Submit proof in the app. After we verify the order, your earn is paid to your bank within 48 working hours (bank holidays are skipped).
+
+Wallet is your earn history. Payouts go to your bank account — there is no in-app withdraw.
+
+Login with your phone number. PAN and bank details are added when you accept your first deal.
+
+Need help? Email Contact@mintzer.in or WhatsApp +91 82486 26422.
+
+Website: https://mintzer.in/
+
+
+APP STORE CONNECT — paste this
+------------------------------
+Name (30 characters max):
+Mintzer: Earn on card deals
+
+Subtitle (30 characters max):
+Card deals. Paid to your bank.
+
+Description:
+Mintzer lists Flipkart and Amazon card deals. Each deal shows the card, the spend, and how much you can earn before you accept.
+
+Pick a deal, accept it in the app, and place the store order to the Mintzer address shown. Submit proof in the app. After we verify the order, your earn is paid to your bank within 48 working hours (bank holidays are skipped).
+
+Wallet is your earn history. Payouts go to your bank account — there is no in-app withdraw.
+
+Login with your phone number. PAN and bank details are added when you accept your first deal.
+
+Need help? Email Contact@mintzer.in or WhatsApp +91 82486 26422.
+
+Website: https://mintzer.in/
+
+
+Do not
+------
+- Change the Play package off com.mintzer
+- Delete or upload into newapp / beta
+- Expect Google to update the same hour you save
+- Leave the admin login indexed (step B)
+
+After go-live, a search for mintzer should start replacing
+“with your Credit Cards” with the new homepage title. Play and
+Apple lines change only after those consoles are updated.

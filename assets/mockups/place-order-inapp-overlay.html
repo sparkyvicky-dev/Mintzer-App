@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mintzer — In-app Place order</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --mz: #7B61FF;
+      --mz-deep: #6347E8;
+      --mz-soft: #EDE7FF;
+      --mz-wash: #F7F4FF;
+      --earn: #188038;
+      --earn-bg: #E6F4EA;
+      --warn: #E37400;
+      --warn-bg: #FEF7E0;
+      --danger: #D93025;
+      --ink: #202124;
+      --muted: #5F6368;
+      --faint: #9AA0A6;
+      --line: #E8EAED;
+      --bg: #F8F9FA;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: #E8EAED;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 48px;
+      color: var(--ink);
+    }
+    .intro {
+      text-align: center;
+      margin-bottom: 16px;
+      max-width: 400px;
+    }
+    .intro h1 {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--mz);
+    }
+    .intro p {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .toggles {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .toggles button {
+      border: 1px solid var(--line);
+      background: #fff;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 99px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .toggles button.on {
+      background: var(--mz-soft);
+      border-color: var(--mz);
+      color: var(--mz-deep);
+    }
+
+    .phone {
+      width: 390px;
+      max-width: 100%;
+      height: 780px;
+      background: #111;
+      border-radius: 36px;
+      border: 6px solid #1c1c1c;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 60px rgba(0,0,0,.2);
+    }
+    .phone.up .webview { flex: 0 0 36%; }
+    .phone.up .sheet { height: 58%; }
+    .phone.up .veil { opacity: 1; }
+
+    .status {
+      height: 26px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .appbar {
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      padding: 8px 10px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      z-index: 5;
+    }
+    .icon {
+      width: 36px; height: 36px;
+      border: none;
+      border-radius: 99px;
+      background: var(--bg);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+    .appbar h1 {
+      flex: 1;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .timer {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--warn-bg);
+      color: var(--warn);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 99px;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer .t { color: var(--danger); }
+    .timer.urgent {
+      background: #FCE8E6;
+      color: var(--danger);
+    }
+
+    .webview {
+      flex: 1;
+      min-height: 0;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+      transition: flex .28s ease;
+    }
+    .wv-search {
+      margin: 10px 12px 0;
+      background: #F1F3F4;
+      border-radius: 22px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .wv-hero {
+      margin: 12px;
+      height: 210px;
+      border-radius: 16px;
+      background: linear-gradient(160deg, #f5f5f7, #e8e8ec);
+      position: relative;
+    }
+    .wv-hero span {
+      position: absolute;
+      left: 12px; top: 12px;
+      background: var(--mz);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .wv-buy {
+      margin: 0 12px;
+      display: flex;
+      gap: 8px;
+    }
+    .wv-buy div {
+      height: 44px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .wv-buy .g { flex: 0 0 44px; border: 1px solid var(--line); }
+    .wv-buy .e { flex: 1; border: 1px solid #F9AB00; color: #B06000; }
+    .wv-buy .n { flex: 1.35; background: #F9AB00; color: #202124; }
+    .veil {
+      position: absolute;
+      inset: 0;
+      background: rgba(32,33,36,.22);
+      opacity: 0;
+      transition: opacity .25s;
+      pointer-events: none;
+    }
+
+    /* Sheet */
+    .sheet {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 78px;
+      background: #fff;
+      border-radius: 22px 22px 0 0;
+      box-shadow: 0 -10px 36px rgba(60,64,67,.16);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      transition: height .28s cubic-bezier(.2,.8,.2,1);
+      overflow: hidden;
+    }
+    .handle {
+      width: 36px;
+      height: 4px;
+      background: #DADCE0;
+      border-radius: 99px;
+      margin: 8px auto 0;
+      flex-shrink: 0;
+    }
+
+    /* Collapsed peek */
+    .peek {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .phone.up .peek { display: none; }
+    .peek-mid { flex: 1; min-width: 0; }
+    .peek-mid .k {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .peek-mid .v {
+      margin-top: 2px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .peek-mid .earn {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--earn);
+      letter-spacing: -0.02em;
+    }
+    .peek-mid .pay {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--faint);
+    }
+    .peek-btn {
+      width: 42px;
+      height: 42px;
+      border: none;
+      border-radius: 99px;
+      background: var(--mz);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(123,97,255,.35);
+      flex-shrink: 0;
+    }
+
+    /* Expanded chrome */
+    .sheet-top {
+      display: none;
+      padding: 4px 14px 0;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .phone.up .sheet-top { display: flex; }
+    .sheet-top .title {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .collapse {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 99px;
+      background: var(--mz-soft);
+      color: var(--mz-deep);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .tabs {
+      display: none;
+      gap: 6px;
+      padding: 10px 14px 0;
+      flex-shrink: 0;
+    }
+    .phone.up .tabs { display: flex; }
+    .tab {
+      flex: 1;
+      border: 1.5px solid transparent;
+      background: var(--bg);
+      color: var(--muted);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 9px 4px;
+      border-radius: 99px;
+      cursor: pointer;
+    }
+    .tab.on {
+      background: #fff;
+      color: var(--mz-deep);
+      border-color: var(--mz);
+      box-shadow: 0 1px 4px rgba(123,97,255,.12);
+    }
+
+    .body {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 12px 14px 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .phone.up .body { display: block; }
+    .panel { display: none; }
+    .panel.on { display: block; }
+
+    .prod {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    .money {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .money .cell {
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .money .cell.earn { background: var(--earn-bg); }
+    .money .k {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .money .earn .k { color: var(--earn); }
+    .money .v {
+      margin-top: 4px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .money .earn .v { color: var(--earn); }
+    .rules {
+      background: var(--warn-bg);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .rules b {
+      display: block;
+      color: var(--warn);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .addr {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .addr:last-of-type { border: 0; }
+    .addr .lbl {
+      width: 56px;
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--faint);
+      padding-top: 2px;
+    }
+    .addr .val {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+    .copy {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--mz-soft);
+      background: var(--mz-soft);
+      color: var(--mz-deep);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    .copy.ok {
+      background: var(--earn-bg);
+      border-color: #A8DAB5;
+      color: var(--earn);
+    }
+    .btn-all {
+      width: 100%;
+      margin-top: 12px;
+      border: none;
+      background: var(--mz);
+      color: #fff;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 13px;
+      border-radius: 14px;
+      cursor: pointer;
+    }
+    .btn-quiet {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      border: none;
+      background: none;
+      color: var(--mz);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .field { margin-bottom: 12px; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .field input {
+      width: 100%;
+      border: 1.5px solid var(--line);
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 13px 14px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+    }
+    .field input:focus {
+      border-color: var(--mz);
+      background: #fff;
+    }
+    .field .hint {
+      margin-top: 5px;
+      font-size: 11px;
+      color: var(--faint);
+    }
+    .submit {
+      width: 100%;
+      border: none;
+      background: var(--mz);
+      color: #fff;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 14px;
+      border-radius: 14px;
+      cursor: pointer;
+    }
+    .submit:disabled {
+      background: #DADCE0;
+      cursor: not-allowed;
+    }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 92px;
+      transform: translateX(-50%) translateY(8px);
+      background: #202124;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 99px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s;
+      z-index: 40;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="intro">
+    <h1>In-app Place order</h1>
+    <p>First layout — polished. Flipkart full screen · Mintzer sheet · Deal / Delivery / Order ID.</p>
+  </div>
+  <div class="toggles">
+    <button type="button" class="on" id="btnDown">Collapsed</button>
+    <button type="button" id="btnUp">Sheet open</button>
+  </div>
+
+  <div class="phone" id="phone">
+    <div class="status"><span>9:41</span><span>▮▮▮</span></div>
+
+    <header class="appbar">
+      <button type="button" class="icon" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h1>Place order</h1>
+      <div class="timer" id="timerChip">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span class="t" id="timerText">14:52</span>
+      </div>
+    </header>
+
+    <div class="webview">
+      <div class="wv-search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5F6368" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+        iphone 15
+      </div>
+      <div class="wv-hero"><span>BESTSELLER</span></div>
+      <div class="wv-buy">
+        <div class="g"></div>
+        <div class="e">Buy with EMI</div>
+        <div class="n">Buy now · ₹59,900</div>
+      </div>
+      <div class="veil"></div>
+    </div>
+
+    <div class="sheet" id="sheet">
+      <div class="handle"></div>
+
+      <div class="peek" id="peek">
+        <div class="peek-mid">
+          <div class="k">You earn after this order</div>
+          <div class="v">
+            <span class="earn">₹2,600</span>
+            <span class="pay">You pay ₹83,400</span>
+          </div>
+        </div>
+        <button type="button" class="peek-btn" id="expand" aria-label="Open">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 14l6-6 6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="sheet-top">
+        <div class="title">Checkout helper</div>
+        <button type="button" class="collapse" id="collapse" aria-label="Minimize">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 10l6 6 6-6"/></svg>
+        </button>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab on" data-tab="deal">Deal</button>
+        <button type="button" class="tab" data-tab="delivery">Delivery</button>
+        <button type="button" class="tab" data-tab="oid">Order ID</button>
+      </div>
+
+      <div class="body">
+        <div class="panel on" id="panel-deal">
+          <div class="prod">iPhone 15 128GB</div>
+          <div class="meta">Black · Flipkart · Any card · Qty 1</div>
+          <div class="money">
+            <div class="cell">
+              <div class="k">You pay</div>
+              <div class="v">₹83,400</div>
+            </div>
+            <div class="cell earn">
+              <div class="k">You earn</div>
+              <div class="v">₹2,600</div>
+            </div>
+          </div>
+          <div class="rules">
+            <b>Before you buy</b>
+            Exact model · same color/storage · pay with the listed card · no search substitutes.
+          </div>
+        </div>
+
+        <div class="panel" id="panel-delivery">
+          <div class="prod">Paste into Flipkart checkout</div>
+          <div class="meta">Tap copy on each line — paste in the store form above.</div>
+          <div class="addr">
+            <span class="lbl">Name</span>
+            <span class="val">Gitanjali Chadha</span>
+            <button type="button" class="copy" data-copy="Gitanjali Chadha" aria-label="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 012-2h10"/></svg>
+            </button>
+          </div>
+          <div class="addr">
+            <span class="lbl">Phone</span>
+            <span class="val">+91 93420 02247</span>
+            <button type="button" class="copy" data-copy="9342002247" aria-label="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 012-2h10"/></svg>
+            </button>
+          </div>
+          <div class="addr">
+            <span class="lbl">Flat</span>
+            <span class="val">House 37, PNB Colony, Idgah Hills</span>
+            <button type="button" class="copy" data-copy="House 37, PNB Colony, Idgah Hills" aria-label="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 012-2h10"/></svg>
+            </button>
+          </div>
+          <div class="addr">
+            <span class="lbl">Area</span>
+            <span class="val">Beside Shalimar Apartment, M G Road</span>
+            <button type="button" class="copy" data-copy="Beside Shalimar Apartment, M G Road" aria-label="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 012-2h10"/></svg>
+            </button>
+          </div>
+          <div class="addr">
+            <span class="lbl">City</span>
+            <span class="val">Bhopal · 462001 · Madhya Pradesh</span>
+            <button type="button" class="copy" data-copy="Bhopal 462001 Madhya Pradesh" aria-label="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 012-2h10"/></svg>
+            </button>
+          </div>
+          <button type="button" class="btn-all" id="copyAll">Copy all address lines</button>
+          <button type="button" class="btn-quiet" id="changeAddr">Change address</button>
+        </div>
+
+        <div class="panel" id="panel-oid">
+          <div class="prod">Submit Flipkart Order ID</div>
+          <div class="meta">After you place the order on Flipkart, paste the Order ID here.</div>
+          <div class="field">
+            <label for="oid">Flipkart order id</label>
+            <input id="oid" type="text" placeholder="Tap to paste Order ID" autocomplete="off" />
+            <div class="hint">One tap pastes from clipboard when empty</div>
+          </div>
+          <button type="button" class="submit" id="submit" disabled>Confirm order</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">Copied</div>
+  </div>
+
+  <script>
+    const phone = document.getElementById('phone');
+    const toast = document.getElementById('toast');
+    let sec = 14 * 60 + 52;
+
+    function tip(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(tip._t);
+      tip._t = setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+
+    function setUp(up) {
+      phone.classList.toggle('up', up);
+      document.getElementById('btnDown').classList.toggle('on', !up);
+      document.getElementById('btnUp').classList.toggle('on', up);
+    }
+
+    function showTab(key) {
+      document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.dataset.tab === key));
+      document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('on', p.id === 'panel-' + key));
+    }
+
+    document.getElementById('expand').onclick = (e) => { e.stopPropagation(); setUp(true); };
+    document.getElementById('peek').onclick = () => setUp(true);
+    document.getElementById('collapse').onclick = () => setUp(false);
+    document.getElementById('btnDown').onclick = () => setUp(false);
+    document.getElementById('btnUp').onclick = () => setUp(true);
+
+    document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => showTab(t.dataset.tab)));
+
+    async function copyText(text, btn) {
+      try { await navigator.clipboard.writeText(text); } catch (_) {}
+      if (btn) {
+        btn.classList.add('ok');
+        setTimeout(() => btn.classList.remove('ok'), 1100);
+      }
+      tip('Copied');
+    }
+
+    document.querySelectorAll('.copy').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        copyText(btn.dataset.copy || '', btn);
+      });
+    });
+
+    document.getElementById('copyAll').onclick = () => {
+      copyText([
+        'Gitanjali Chadha',
+        '9342002247',
+        'House 37, PNB Colony, Idgah Hills',
+        'Beside Shalimar Apartment, M G Road',
+        'Bhopal 462001 Madhya Pradesh',
+      ].join('\n'));
+      tip('All lines copied');
+    };
+    document.getElementById('changeAddr').onclick = () => tip('Address updated — copy again');
+
+    const oid = document.getElementById('oid');
+    const submit = document.getElementById('submit');
+    oid.addEventListener('click', async () => {
+      if (oid.value.trim()) return;
+      try {
+        const clip = (await navigator.clipboard.readText()).trim();
+        if (clip) {
+          oid.value = clip;
+          submit.disabled = false;
+          tip('Pasted');
+        } else tip('Copy Order ID from Flipkart first');
+      } catch (_) {
+        tip('Allow clipboard or type Order ID');
+      }
+    });
+    oid.addEventListener('input', () => { submit.disabled = !oid.value.trim(); });
+    submit.onclick = () => tip('Order submitted');
+
+    setInterval(() => {
+      sec = Math.max(0, sec - 1);
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      document.getElementById('timerText').textContent = m + ':' + s;
+      document.getElementById('timerChip').classList.toggle('urgent', sec < 120);
+    }, 1000);
+
+    setUp(false);
+    showTab('deal');
+  </script>
+</body>
+</html>

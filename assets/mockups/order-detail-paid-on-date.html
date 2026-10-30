@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GT 30 · after update · Paid on date only</title>
+  <style>
+    :root {
+      --purple: #7B61FF;
+      --ink: #202124;
+      --muted: #5F6368;
+      --line: #E8EAED;
+      --green: #188038;
+      --green-bg: #E6F4EA;
+      --green-bd: #CEEAD6;
+      --page: #F4F5F8;
+      --bad: #B3261E;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background:
+        radial-gradient(800px 400px at 10% -20%, #ddd4ff 0%, transparent 55%),
+        var(--page);
+      color: var(--ink);
+      padding: 20px 12px 48px;
+    }
+    h1 { max-width: 1100px; margin: 0 auto 6px; font-size: 20px; font-weight: 800; }
+    .sub { max-width: 1100px; margin: 0 auto 18px; font-size: 13px; color: var(--muted); line-height: 1.45; }
+    .grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+    .label {
+      font-size: 11px; font-weight: 800; letter-spacing: .04em;
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .label.bad { color: var(--bad); }
+    .label.mid { color: #B06000; }
+    .label.good { color: var(--green); }
+    .phone {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 14px 32px rgba(32,33,36,.08);
+      max-width: 360px;
+    }
+    .appbar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      font-size: 16px; font-weight: 800;
+    }
+    .scroll { padding: 12px 14px 18px; }
+    .hdr {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .thumb {
+      width: 52px; height: 52px; border-radius: 10px;
+      background: linear-gradient(145deg,#eef0ff,#f8f9fc);
+      border: 1px solid var(--line);
+      display: grid; place-items: center;
+      font-size: 10px; font-weight: 800; color: var(--purple);
+      flex-shrink: 0;
+    }
+    .pname { font-size: 13px; font-weight: 700; margin: 0 0 4px; line-height: 1.25; }
+    .pill {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 8px; border-radius: 8px;
+      background: var(--green-bg); color: var(--green);
+    }
+    .ids { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.35; }
+    .paid-card {
+      border: 1px solid var(--green-bd);
+      background: var(--green-bg);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .paid-card.warn { border-color: #F9DEDC; background: #FCE8E6; }
+    .credit-bad {
+      font-size: 16px; font-weight: 800; color: var(--bad); margin-bottom: 8px;
+    }
+    .lines { display: grid; gap: 8px; margin-bottom: 10px; }
+    .line {
+      display: flex; justify-content: space-between; gap: 8px;
+      background: #fff; border: 1px solid var(--line);
+      border-radius: 10px; padding: 10px;
+    }
+    .line.mz { border-color: var(--green-bd); }
+    .line .l { font-size: 12px; font-weight: 800; }
+    .line .s { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .line .v { font-size: 14px; font-weight: 900; white-space: nowrap; color: var(--green); }
+    .earn-line {
+      font-size: 14px; font-weight: 800; color: var(--green);
+      margin-bottom: 8px;
+    }
+    .kv { display: grid; gap: 6px; }
+    .kv div { display: flex; gap: 8px; font-size: 12px; align-items: baseline; }
+    .kv span { width: 64px; color: var(--muted); flex-shrink: 0; }
+    .kv b { color: var(--green); font-weight: 700; }
+    .kv .hl {
+      background: #FFF3C4;
+      color: #7A5B00;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+    .kv .hl.bad {
+      background: #F9DEDC;
+      color: var(--bad);
+    }
+    .note {
+      margin-top: 10px;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+    .note.bad { color: var(--bad); }
+    .note.mid { color: #8A5A00; }
+    .note.good { color: var(--green); }
+    .pick {
+      max-width: 1100px;
+      margin: 22px auto 0;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .pick h2 { margin: 0 0 8px; font-size: 15px; font-weight: 800; }
+    .pick ol { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.5; color: var(--ink); }
+    .pick li { margin-bottom: 6px; }
+    .pick .rec {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--green);
+    }
+  </style>
+</head>
+<body>
+  <h1>GT 30 Pro order — after update + Paid on (date only)</h1>
+  <p class="sub">
+    User <strong>9698687607</strong> · ORDGVD9663 · Infinix GT 30 Pro.
+    Money fix is in <strong>3.0.33</strong>. Paid on: <strong>date only</strong> (no clock). Bank day ≈ <strong>8 Oct</strong>.
+  </p>
+
+  <div class="grid">
+    <div>
+      <div class="label bad">Before update (old app)</div>
+      <div class="phone">
+        <div class="appbar"><span>←</span> Order detail</div>
+        <div class="scroll">
+          <div class="hdr">
+            <div class="thumb">Phone</div>
+            <div>
+              <p class="pname">Infinix GT 30 Pro (8GB/256GB)</p>
+              <span class="pill">Paid</span>
+              <div class="ids">Mintzer · ORDGVD9663</div>
+            </div>
+          </div>
+          <div class="paid-card warn">
+            <div class="credit-bad">₹33,243 credited</div>
+            <div class="kv">
+              <div><span>Account</span><b>Bank · ••••xxxx</b></div>
+              <div><span>UTR</span><b>O9J6081026000001</b></div>
+              <div><span>Paid on</span><b class="hl bad">12 Oct, 14:04</b></div>
+            </div>
+            <p class="note bad">Wrong ₹ (You pay + earn). Paid on = open time with clock.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="label mid">After 3.0.33 (what he sees now)</div>
+      <div class="phone">
+        <div class="appbar"><span>←</span> Order detail</div>
+        <div class="scroll">
+          <div class="hdr">
+            <div class="thumb">Phone</div>
+            <div>
+              <p class="pname">Infinix GT 30 Pro (8GB/256GB)</p>
+              <span class="pill">Paid</span>
+              <div class="ids">Mintzer · ORDGVD9663</div>
+            </div>
+          </div>
+          <div class="paid-card">
+            <div class="lines">
+              <div class="line mz">
+                <div>
+                  <div class="l">From Mintzer</div>
+                  <div class="s">Credited to your bank</div>
+                </div>
+                <div class="v">₹31,635</div>
+              </div>
+            </div>
+            <div class="earn-line">Your earnings ₹900</div>
+            <div class="kv">
+              <div><span>Account</span><b>Bank · ••••xxxx</b></div>
+              <div><span>UTR</span><b>O9J6081026000001</b></div>
+              <div><span>Paid on</span><b class="hl bad">12 Oct, 14:04</b></div>
+            </div>
+            <p class="note mid">₹ matches bank. Paid on still wrong until next small fix.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="label good">Target — Paid on date only</div>
+      <div class="phone">
+        <div class="appbar"><span>←</span> Order detail</div>
+        <div class="scroll">
+          <div class="hdr">
+            <div class="thumb">Phone</div>
+            <div>
+              <p class="pname">Infinix GT 30 Pro (8GB/256GB)</p>
+              <span class="pill">Paid</span>
+              <div class="ids">Mintzer · ORDGVD9663</div>
+            </div>
+          </div>
+          <div class="paid-card">
+            <div class="lines">
+              <div class="line mz">
+                <div>
+                  <div class="l">From Mintzer</div>
+                  <div class="s">Credited to your bank</div>
+                </div>
+                <div class="v">₹31,635</div>
+              </div>
+            </div>
+            <div class="earn-line">Your earnings ₹900</div>
+            <div class="kv">
+              <div><span>Account</span><b>Bank · ••••xxxx</b></div>
+              <div><span>UTR</span><b>O9J6081026000001</b></div>
+              <div><span>Paid on</span><b class="hl">8 Oct</b></div>
+            </div>
+            <p class="note good">Date only — no time. Real day from server; hide until then.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pick">
+    <h2>GT 30 user after installing 3.0.33</h2>
+    <ol>
+      <li><strong>From Mintzer</strong> ₹31,635 — matches bank / Total receive (not ₹33,243)</li>
+      <li><strong>Your earnings</strong> ₹900</li>
+      <li><strong>Bank cashback</strong> only if API sends it for that deal</li>
+      <li><strong>Account</strong> + <strong>UTR</strong> same as before</li>
+      <li><strong>Paid on</strong> still wrong in 3.0.33 — next fix: date only (e.g. 8 Oct), no clock; hide if no real date yet</li>
+    </ol>
+    <p class="rec">Agreed: Paid on = date only, no clock time.</p>
+  </div>
+</body>
+</html>

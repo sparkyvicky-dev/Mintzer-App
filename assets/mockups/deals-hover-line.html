@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Hover 1 · One line</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f5f5f9; color: #444; font-family: "Segoe UI", system-ui, sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 22px 18px 48px; }
+  .kicker { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #8b90a3; font-weight: 700; }
+  h1 { margin: 6px 0; font-size: 20px; color: #2b2f3a; }
+  .note { margin: 0 0 14px; font-size: 13px; color: #667085; }
+  .sheet { background: #fff; border-radius: 8px; border: 1px solid #eceef3; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 11px; letter-spacing: .04em; color: #a1a5b7; padding: 14px 12px; border-bottom: 1px solid #f0f1f5; font-weight: 700; }
+  td { padding: 12px; border-bottom: 1px solid #f4f5f8; font-size: 14px; vertical-align: middle; }
+  .img { width: 46px; height: 46px; border-radius: 6px; background: #f3f4f8 center/cover no-repeat; }
+  .name { color: #7367f0; font-weight: 600; }
+  td.price { cursor: default; font-weight: 700; color: #1c2434; }
+  tr.deal:hover td { background: transparent; }
+  tr.deal:has(td.price:hover) td { background: #fafbff; }
+  .sw { width: 38px; height: 22px; border-radius: 99px; background: #e4e6ef; position: relative; display: inline-block; }
+  .sw i { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; }
+  .sw.on { background: #7367f0; }
+  .sw.on i { left: 19px; }
+  .acts { display: flex; gap: 10px; font-size: 15px; }
+  .acts span { cursor: default; }
+  .tip {
+    position: fixed; z-index: 5; display: none;
+    background: #1c2434; color: #fff; border-radius: 8px;
+    padding: 7px 10px; font-size: 12px; font-weight: 650;
+    box-shadow: 0 8px 20px rgba(20,24,40,.18); white-space: normal; max-width: 460px; line-height: 1.5;
+    pointer-events: none;
+  }
+  .tip b { color: #d6c2ff; font-weight: 750; }
+  .tip.show { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Hover 1 of 3</div>
+  <h1>One line</h1>
+  <p class="note">Hover the Deal Price number only. Example amounts. Live page is not changed.</p>
+  <div class="sheet"><table id="tbl"><thead><tr>
+    <th>SL.NO</th><th>IMAGE</th><th>DEAL NAME</th><th>DEAL PRICE</th><th>ORDER QTY</th><th>STATUS</th><th>LAST LIVE</th><th>ACTION</th>
+  </tr></thead><tbody></tbody></table></div>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+const rows = [
+  ["Iphone 16 128GB", "76999", "15", true, "21-10-2026 12:49 am", "74999", "73299", "1800", "3500", "#e8eef8", 4, 3, 5],
+  ["Acer Aspire 7 A715-79G", "75990", "1", false, "18-10-2026 07:26 pm", "73990", "71190", "2200", "5000", "#1d2438", 0, 0, 1],
+  ["Vivo T5X 6GB/128GB", "27499", "17", false, "14-10-2026 07:58 pm", "25999", "25299", "700", "0", "#f3e6e4", 2, 3, 1],
+  ["Oneplus Z3 Neck Bank (7 qty)", "8918", "15", false, "14-10-2026 03:20 pm", "8499", "8449", "250", "300", "#fff", 8, 1, 2],
+  ["S25 12GB/256GB", "60299", "10", false, "11-10-2026 06:45 pm", "57999", "56599", "1400", "2800", "#d9ecf8", 1, 1, 1]
+];
+const inr = (n) => "₹" + Number(n).toLocaleString("en-IN");
+const body = document.querySelector("tbody");
+rows.forEach((r, i) => {
+  const tr = document.createElement("tr");
+  tr.className = "deal";
+  tr.innerHTML = `<td>${i+1}</td><td><div class="img" style="background:${r[9]}"></div></td><td class="name">${r[0]}</td><td class="price">${r[1]}</td><td>${r[2]}</td><td><span class="sw ${r[3]?"on":""}"><i></i></span></td><td>${r[4]}</td><td class="acts"><span style="color:#20c997">🔔</span><span style="color:#28c76f">⧉</span><span style="color:#ff9f43">✎</span><span style="color:#ea5455">🗑</span></td>`;
+  const accepted = r[10] + r[11] + r[12];
+  tr.dataset.tip = `Accepted <b>${accepted}</b> · Trying <b>${r[10]}</b> · Delivered <b>${r[11]}</b> · Cancelled <b>${r[12]}</b><br>You pay <b>${inr(r[5])}</b> · Mintzer payout <b>${inr(r[6])}</b> · You earn <b>${inr(r[7])}</b>` + (r[8] !== "0" ? ` · Bank <b>${inr(r[8])}</b>` : "");
+  body.appendChild(tr);
+});
+const tip = document.getElementById("tip");
+document.querySelectorAll("td.price").forEach((cell) => {
+  const tr = cell.closest("tr");
+  cell.addEventListener("mouseenter", () => {
+    tip.innerHTML = tr.dataset.tip;
+    tip.classList.add("show");
+    const box = cell.getBoundingClientRect();
+    let left = box.left;
+    let top = box.bottom + 6;
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
+    const w = tip.offsetWidth;
+    if (left + w > innerWidth - 12) tip.style.left = Math.max(12, innerWidth - w - 12) + "px";
+  });
+  cell.addEventListener("mouseleave", () => tip.classList.remove("show"));
+});
+</script>
+</body>
+</html>

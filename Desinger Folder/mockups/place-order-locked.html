@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Place order LOCKED v3 (External + In-app)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: #E8EAED;
+      padding: 20px 12px 40px;
+      color: #202124;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; }
+    .intro { text-align: center; margin-bottom: 24px; }
+    .intro h1 { font-size: 18px; color: #1A73E8; margin-bottom: 6px; }
+    .intro p { font-size: 12px; color: #5F6368; line-height: 1.5; max-width: 560px; margin: 0 auto; }
+
+    .locked-banner {
+      max-width: 620px; margin: 0 auto 16px;
+      background: #E6F4EA; border: 1px solid #188038; border-radius: 10px;
+      padding: 10px 14px; font-size: 11px; line-height: 1.55; text-align: center;
+    }
+    .locked-banner strong { color: #188038; font-size: 12px; display: block; margin-bottom: 4px; }
+
+    .section { margin-bottom: 32px; }
+    .section-head { text-align: center; margin-bottom: 14px; }
+    .section-head h2 { font-size: 15px; color: #188038; }
+    .section-head p { font-size: 11px; color: #5F6368; margin-top: 4px; }
+
+    .phones { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+    .phone-wrap { text-align: center; }
+    .phone-label { font-size: 11px; font-weight: 600; margin-bottom: 8px; color: #202124; }
+    .phone-sub { font-size: 10px; color: #5F6368; margin-bottom: 8px; max-width: 260px; margin-left: auto; margin-right: auto; }
+
+    .phone {
+      width: 340px;
+      height: 700px;
+      background: #F8F9FA;
+      border-radius: 26px;
+      border: 5px solid #202124;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      box-shadow: 0 6px 24px rgba(0,0,0,.1);
+    }
+
+    .appbar {
+      background: #fff;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #E8EAED;
+      flex-shrink: 0;
+    }
+    .appbar h1 { flex: 1; text-align: center; font-size: 15px; font-weight: 500; margin-right: 18px; }
+    .cancel { color: #D93025; font-size: 11px; font-weight: 500; }
+
+    .scroll { flex: 1; overflow-y: auto; padding: 8px 10px; min-height: 0; }
+
+    /* External V1 blocks */
+    .prod { background: #fff; border: 1px solid #E8EAED; border-radius: 8px; padding: 8px; margin-bottom: 6px; }
+    .prod-row { display: flex; gap: 8px; }
+    .thumb { width: 44px; height: 44px; background: #ddd; border-radius: 6px; flex-shrink: 0; }
+    .pn { font-weight: 600; font-size: 11px; line-height: 1.25; }
+    .meta { color: #5F6368; font-size: 9px; margin-top: 3px; line-height: 1.4; }
+    .meta b { color: #202124; }
+    .logos { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+    .logo { width: 26px; height: 26px; background: #E8EAED; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 700; }
+    .logo-t { font-size: 9px; color: #5F6368; }
+
+    .money-big { text-align: center; background: #fff; border: 2px solid #1A73E8; border-radius: 8px; padding: 10px; margin-bottom: 6px; }
+    .money-big .chk { font-size: 20px; font-weight: 700; color: #202124; }
+    .money-big .sub { font-size: 9px; color: #5F6368; }
+    .money-big .disc { color: #188038; font-size: 10px; margin-top: 4px; }
+    .money-big .earn { color: #188038; font-weight: 700; font-size: 11px; margin-top: 4px; }
+
+    .open-zone { background: #E8F0FE; border-radius: 8px; padding: 8px; margin-bottom: 6px; border: 1px dashed #1A73E8; text-align: center; }
+    .open-zone .lbl { font-size: 9px; color: #1A73E8; margin-bottom: 6px; font-weight: 600; }
+    .btn-open { width: 100%; border: none; border-radius: 14px; padding: 10px; font-size: 12px; font-weight: 600; background: #1A73E8; color: #fff; }
+    .scroll-hint { font-size: 9px; color: #5F6368; text-align: center; margin: 4px 0 6px; }
+
+    .addr { background: #fff; border: 1px solid #E8EAED; border-radius: 6px; padding: 6px; margin-bottom: 6px; }
+    .ar { display: flex; gap: 4px; padding: 3px 0; border-bottom: 1px solid #F1F3F4; align-items: center; }
+    .ar:last-child { border: 0; }
+    .ar .l { width: 42px; color: #5F6368; font-size: 8px; flex-shrink: 0; }
+    .ar .v { flex: 1; font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ar .c { background: #E8F0FE; color: #1A73E8; border: none; border-radius: 3px; padding: 2px 6px; font-size: 8px; font-weight: 700; }
+    .gen { text-align: center; font-size: 10px; color: #1A73E8; margin: 4px 0 8px; font-weight: 500; }
+
+    /* In-app WebView */
+    .webview {
+      flex: 1;
+      min-height: 100px;
+      background: linear-gradient(180deg, #2874F0 0%, #eee 50%);
+      padding: 8px;
+      position: relative;
+    }
+    .phone.inapp-expanded .webview { flex: 0 0 160px; }
+    .wv-badge { position: absolute; top: 6px; right: 8px; background: rgba(0,0,0,.55); color: #fff; font-size: 8px; padding: 2px 6px; border-radius: 4px; }
+    .wv-inner { background: #fff; border-radius: 6px; padding: 10px; height: 100%; font-size: 10px; color: #878787; }
+    .wv-inner strong { display: block; color: #212121; font-size: 12px; margin-top: 6px; }
+
+    /* In-app sheet */
+    .sheet {
+      background: #fff;
+      border-radius: 14px 14px 0 0;
+      box-shadow: 0 -3px 12px rgba(0,0,0,.08);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .phone.inapp-collapsed .sheet { flex: 0 0 auto; }
+    .phone.inapp-expanded .sheet { flex: 0 0 280px; }
+
+    .handle { width: 32px; height: 3px; background: #DADCE0; border-radius: 2px; margin: 6px auto 0; }
+    .sheet-peek {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 12px 8px;
+    }
+    .expand-btn {
+      width: 32px; height: 32px; background: #1A73E8; color: #fff;
+      border: none; border-radius: 50%; font-size: 14px; font-weight: 700;
+    }
+    .pull-hint { font-size: 10px; color: #1A73E8; font-weight: 500; }
+
+    .phone.inapp-collapsed .chip-row,
+    .phone.inapp-collapsed .tabs,
+    .phone.inapp-collapsed .sheet-body { display: none; }
+
+    .chip-row { padding: 6px 12px; display: flex; gap: 8px; align-items: center; font-size: 11px; }
+    .chip { background: #E8F0FE; color: #1A73E8; padding: 3px 8px; border-radius: 10px; font-size: 10px; }
+    .change { color: #1A73E8; font-weight: 500; font-size: 11px; }
+
+    .tabs { display: flex; border-bottom: 1px solid #E8EAED; }
+    .tab { flex: 1; text-align: center; padding: 9px 2px; font-size: 10px; color: #5F6368; }
+    .tab.on { color: #1A73E8; border-bottom: 2px solid #1A73E8; font-weight: 600; }
+
+    .sheet-body { padding: 10px 12px; overflow-y: auto; flex: 1; }
+    .field { margin-bottom: 8px; }
+    .field-label { font-size: 9px; color: #5F6368; text-transform: uppercase; margin-bottom: 3px; }
+    .field-row {
+      display: flex; align-items: center; gap: 6px;
+      background: #F8F9FA; border: 1px solid #E8EAED; border-radius: 6px; padding: 7px 8px;
+    }
+    .field-val { flex: 1; font-size: 11px; line-height: 1.3; }
+    .copy-btn { color: #1A73E8; font-size: 11px; font-weight: 600; background: none; border: none; }
+
+    /* Bottom dock — external: 2 rows · in-app: 1 row */
+    .bottom-dock {
+      background: #fff;
+      border-top: 2px solid #188038;
+      padding: 8px 10px 10px;
+      flex-shrink: 0;
+      box-shadow: 0 -3px 12px rgba(0,0,0,.08);
+    }
+    .bottom-dock.external-dock .timer {
+      text-align: center;
+      background: #FEF7E0;
+      color: #E37400;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .bottom-dock.external-dock .timer b { color: #D93025; }
+    .bottom-dock.external-dock .id-row { display: flex; gap: 6px; }
+
+    /* In-app: timer + field + submit — ONE row */
+    .bottom-dock.inapp-dock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 8px 9px;
+    }
+    .timer-inline {
+      flex-shrink: 0;
+      background: #FEF7E0;
+      color: #E37400;
+      font-weight: 700;
+      font-size: 10px;
+      padding: 8px 6px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .timer-inline b { color: #D93025; }
+
+    .id-field {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #1A73E8;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11px;
+      background: #F8F9FA;
+      color: #5F6368;
+    }
+    .id-field.filled { color: #202124; font-weight: 500; background: #fff; }
+    .id-field-hint { font-size: 9px; color: #1A73E8; display: block; margin-top: 1px; }
+
+    .btn-submit {
+      background: #1A73E8; color: #fff; border: none;
+      border-radius: 8px; padding: 9px 12px; font-size: 11px; font-weight: 600;
+      flex-shrink: 0;
+    }
+    .btn-submit-wide { padding: 9px 14px; }
+
+    .spec {
+      margin-top: 8px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 11px;
+      line-height: 1.55;
+      border-left: 4px solid #188038;
+    }
+    .spec h3 { font-size: 13px; color: #188038; margin-bottom: 6px; }
+    .spec ul { margin-left: 16px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="intro">
+      <h1>Place order — LOCKED v3 final</h1>
+      <div class="locked-banner">
+        <strong>LOCKED — build this</strong>
+        1) External: timer row + tap-to-paste Order ID + Submit<br/>
+        2) In-app: single row — timer · Order ID · Submit<br/>
+        3) One tap on field = paste clipboard (no Paste button)
+      </div>
+      <p>Spec: <code>docs/design/PLACE-ORDER-REQUIREMENTS.md</code> · PDF: <code>DESIGNER-HANDOFF.html</code> → Ctrl+P</p>
+    </header>
+
+    <!-- EXTERNAL -->
+    <section class="section">
+      <div class="section-head">
+        <h2>External — Open Flipkart (default)</h2>
+        <p>Single scroll · Open FK after checkout · address below</p>
+      </div>
+      <div class="phones">
+        <div class="phone-wrap">
+          <div class="phone-label">External mode</div>
+          <div class="phone">
+            <div class="appbar">
+              <span>←</span>
+              <h1>Place order</h1>
+              <span class="cancel">Cancel</span>
+            </div>
+            <div class="scroll">
+              <div class="prod">
+                <div class="prod-row">
+                  <div class="thumb"></div>
+                  <div style="flex:1">
+                    <div class="pn">Motorola G57 Power 5G</div>
+                    <div class="meta"><b>Color:</b> Regatta blue · <b>Variant:</b> 8GB/128GB · <b>Qty:</b> 1</div>
+                  </div>
+                </div>
+                <div class="logos">
+                  <div class="logo">FK</div><span class="logo-t">Flipkart</span>
+                  <div class="logo">AX</div><span class="logo-t">Any card</span>
+                </div>
+              </div>
+              <div class="money-big">
+                <div class="sub">Checkout amount</div>
+                <div class="chk">₹17,519</div>
+                <div class="disc">Discount −₹500</div>
+                <div class="earn">You earn ₹300</div>
+              </div>
+              <div class="open-zone">
+                <div class="lbl">No scroll needed</div>
+                <button class="btn-open">Open Flipkart</button>
+              </div>
+              <div class="scroll-hint">↓ Copy address (scroll)</div>
+              <div class="addr">
+                <div class="ar"><span class="l">Name</span><span class="v">Baljeet Garg</span><button class="c">Copy</button></div>
+                <div class="ar"><span class="l">Addr 1</span><span class="v">House 37 PNB Colony</span><button class="c">Copy</button></div>
+                <div class="ar"><span class="l">Addr 2</span><span class="v">Gupte Road</span><button class="c">Copy</button></div>
+                <div class="ar"><span class="l">City</span><span class="v">Bhopal</span><button class="c">Copy</button></div>
+                <div class="ar"><span class="l">State</span><span class="v">M.P.</span><button class="c">Copy</button></div>
+                <div class="ar"><span class="l">Pin</span><span class="v">462001</span><button class="c">Copy</button></div>
+                <div class="ar"><span class="l">Phone</span><span class="v">9342002247</span><button class="c">Copy</button></div>
+              </div>
+              <div class="gen">Generate new address</div>
+            </div>
+            <div class="bottom-dock external-dock">
+              <div class="timer">⏱ Complete order in <b>24:18</b></div>
+              <div class="id-row">
+                <button type="button" class="id-field" style="text-align:left;cursor:pointer;flex:1">
+                  Tap to paste Order ID
+                  <span class="id-field-hint">One tap — reads clipboard from Flipkart</span>
+                </button>
+                <button class="btn-submit btn-submit-wide">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IN-APP -->
+    <section class="section">
+      <div class="section-head">
+        <h2>In-app — Flipkart WebView</h2>
+        <p>PerkPay drag-up sheet · in-app bottom = <strong>single row</strong></p>
+      </div>
+      <div class="phones">
+
+        <div class="phone-wrap">
+          <div class="phone-label">In-app · collapsed</div>
+          <div class="phone-sub">Max WebView. Pull ↑ for Deal / Address / Help.</div>
+          <div class="phone inapp-collapsed">
+            <div class="appbar">
+              <span>←</span>
+              <h1>Place order</h1>
+              <span class="cancel">Cancel</span>
+            </div>
+            <div class="webview">
+              <span class="wv-badge">Flipkart</span>
+              <div class="wv-inner">
+                flipkart.com
+                <strong>Motorola G57 · Checkout ₹17,519</strong>
+              </div>
+            </div>
+            <div class="sheet">
+              <div class="handle"></div>
+              <div class="sheet-peek">
+                <span class="pull-hint">↑ Deal · Address · Help</span>
+                <button class="expand-btn" title="Expand">⌃</button>
+              </div>
+            </div>
+            <div class="bottom-dock inapp-dock">
+              <span class="timer-inline">⏱ <b>24:18</b></span>
+              <button type="button" class="id-field" style="text-align:left;cursor:pointer">
+                Tap to paste
+              </button>
+              <button class="btn-submit">Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone-wrap">
+          <div class="phone-label">In-app · expanded</div>
+          <div class="phone-sub">Delivery tab · single-row dock unchanged</div>
+          <div class="phone inapp-expanded">
+            <div class="appbar">
+              <span>←</span>
+              <h1>Place order</h1>
+              <span class="cancel">Cancel</span>
+            </div>
+            <div class="webview">
+              <span class="wv-badge">Flipkart</span>
+              <div class="wv-inner">flipkart.com · address step</div>
+            </div>
+            <div class="sheet">
+              <div class="handle"></div>
+              <div class="sheet-peek">
+                <span class="pull-hint">Mintzer panel</span>
+                <button class="expand-btn">⌄</button>
+              </div>
+              <div class="chip-row">
+                <span class="chip">Ordering in Mintzer</span>
+                <span class="change">Change mode</span>
+              </div>
+              <div class="tabs">
+                <div class="tab">Deal details</div>
+                <div class="tab on">Delivery details</div>
+                <div class="tab">Help</div>
+              </div>
+              <div class="sheet-body">
+                <div class="field">
+                  <div class="field-label">Name</div>
+                  <div class="field-row"><span class="field-val">Baljeet Garg</span><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Address line 1</div>
+                  <div class="field-row"><span class="field-val">House 37 PNB Colony</span><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="field">
+                  <div class="field-label">City · Pin</div>
+                  <div class="field-row"><span class="field-val">Bhopal · 462001</span><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Phone</div>
+                  <div class="field-row"><span class="field-val">9342002247</span><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="gen">Generate new address</div>
+              </div>
+            </div>
+            <div class="bottom-dock inapp-dock">
+              <span class="timer-inline">⏱ <b>24:18</b></span>
+              <button type="button" class="id-field filled" style="text-align:left;cursor:pointer">
+                OD1234567890123
+              </button>
+              <button class="btn-submit">Submit</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="spec">
+      <h3>LOCKED v3 — bottom dock rules</h3>
+      <ul>
+        <li><strong>In-app — one row:</strong> ⏱ timer · Order ID field · Submit</li>
+        <li><strong>External — two rows:</strong> timer full width · tap-to-paste field + Submit</li>
+        <li><strong>Tap-to-paste (external):</strong> user copies Order ID on Flipkart → returns → <strong>one tap on field</strong> = focus + paste from clipboard (no separate Paste button)</li>
+        <li>Empty field shows <em>Tap to paste Order ID</em> · after paste show ID · toast <em>Pasted</em></li>
+        <li>Field already filled → tap to edit / replace manually</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

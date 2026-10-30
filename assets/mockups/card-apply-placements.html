@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Affiliate marketing placements</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: linear-gradient(180deg, #E8F0FE 0%, #F8F9FA 40%, #E8EAED 100%);
+      color: #202124; min-height: 100vh; padding: 28px 16px 48px;
+    }
+    .page-head { text-align: center; max-width: 720px; margin: 0 auto 28px; }
+    .page-head h1 { font-size: 22px; color: #1A73E8; margin-bottom: 8px; }
+    .page-head p { font-size: 13px; color: #5F6368; line-height: 1.55; }
+    .page-head .tag {
+      display: inline-block; margin-top: 10px; padding: 4px 12px; border-radius: 20px;
+      background: #E6F4EA; color: #188038; font-size: 11px; font-weight: 700;
+    }
+
+    .grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px; max-width: 1320px; margin: 0 auto;
+    }
+    .example {
+      background: #fff; border-radius: 16px; border: 1px solid #E8EAED;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06); overflow: hidden;
+    }
+    .example-head { padding: 14px 16px 10px; border-bottom: 1px solid #F1F3F4; }
+    .example-num {
+      font-size: 10px; font-weight: 800; color: #1A73E8; text-transform: uppercase;
+      letter-spacing: .5px; margin-bottom: 4px;
+    }
+    .example-head h2 { font-size: 15px; margin-bottom: 4px; }
+    .example-head p { font-size: 11px; color: #5F6368; line-height: 1.45; }
+    .why {
+      margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: #FEF7E0;
+      font-size: 10px; color: #5F6368; line-height: 1.4;
+    }
+    .why b { color: #E37400; }
+
+    .phone-wrap { padding: 16px; display: flex; justify-content: center; background: #F8F9FA; }
+    .phone {
+      width: 280px; height: 520px; background: #F8F9FA; border-radius: 22px;
+      border: 4px solid #202124; overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 6px 24px rgba(0,0,0,.12); position: relative; font-size: 11px;
+    }
+    .status-bar {
+      height: 18px; background: #fff; padding: 0 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 9px; font-weight: 600; flex-shrink: 0;
+    }
+    .appbar {
+      background: #fff; padding: 8px 12px; border-bottom: 1px solid #E8EAED;
+      font-size: 13px; font-weight: 700; flex-shrink: 0;
+    }
+    .appbar.row { display: flex; align-items: center; gap: 8px; }
+    .scroll { flex: 1; overflow: hidden; padding: 10px 12px 52px; min-height: 0; }
+    .mini-nav {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 44px;
+      background: #fff; border-top: 1px solid #E8EAED;
+      display: flex; align-items: center; justify-content: space-around;
+      font-size: 8px; color: #5F6368;
+    }
+    .mini-nav span.on { color: #1A73E8; font-weight: 700; }
+
+    /* ── Example 1: Home carousel slide (118px banner) ── */
+    .greeting { margin-bottom: 8px; }
+    .greeting b { font-size: 14px; display: block; }
+    .greeting span { font-size: 10px; color: #5F6368; }
+    .chip-row { display: flex; gap: 6px; margin-bottom: 8px; overflow: hidden; }
+    .chip {
+      flex-shrink: 0; padding: 4px 10px; border-radius: 14px; font-size: 9px;
+      border: 1px solid #E8EAED; background: #fff; color: #5F6368;
+    }
+    .chip.on { border-color: #1A73E8; color: #1A73E8; background: #E8F0FE; font-weight: 600; }
+    .promo-carousel { margin-bottom: 4px; }
+    .promo-track {
+      position: relative; height: 118px; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(26, 115, 232, .15);
+    }
+    .promo-slide-cards {
+      position: absolute; inset: 0; padding: 10px 12px;
+      display: flex; align-items: stretch; gap: 8px;
+      background: linear-gradient(135deg, #174EA6 0%, #1A73E8 50%, #4285F4 100%);
+      color: #fff;
+    }
+    .promo-slide-cards .promo-body {
+      flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;
+    }
+    .promo-slide-cards .promo-kicker {
+      font-size: 8px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .4px; opacity: .88; margin-bottom: 3px;
+    }
+    .promo-slide-cards .promo-title {
+      font-size: 12px; font-weight: 800; line-height: 1.25; margin-bottom: 3px;
+    }
+    .promo-slide-cards .promo-sub {
+      font-size: 8px; opacity: .9; line-height: 1.35; margin-bottom: 8px;
+    }
+    .promo-slide-cards .promo-cta {
+      align-self: flex-start; border: none; border-radius: 16px;
+      background: #fff; color: #1A73E8; font-size: 9px; font-weight: 800;
+      padding: 5px 11px; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,.12);
+    }
+    .promo-art-cards {
+      width: 78px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .card-stack {
+      position: relative; width: 64px; height: 44px;
+    }
+    .card-stack .c {
+      position: absolute; width: 58px; height: 36px; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,.45);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 800; color: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,.2);
+    }
+    .card-stack .c:nth-child(1) {
+      top: 0; right: 0; transform: rotate(8deg);
+      background: linear-gradient(135deg, #003399, #0052cc);
+    }
+    .card-stack .c:nth-child(2) {
+      top: 6px; right: 8px; transform: rotate(-6deg);
+      background: linear-gradient(135deg, #7B1FA2, #AB47BC);
+    }
+    .promo-dots {
+      display: flex; justify-content: center; gap: 5px; margin-top: 5px; margin-bottom: 8px;
+    }
+    .promo-dot {
+      width: 5px; height: 5px; border-radius: 50%; background: #DADCE0;
+    }
+    .promo-dot.active { background: #1A73E8; width: 12px; border-radius: 3px; }
+    .deal-mini {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 10px; padding: 8px;
+      display: flex; gap: 8px; opacity: .7;
+    }
+    .deal-mini .thumb {
+      width: 40px; height: 40px; background: #F1F3F4; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .deal-mini .earn { color: #188038; font-weight: 700; font-size: 10px; }
+
+    /* ── Example 2: Deal detail ── */
+    .detail-hero { display: flex; gap: 10px; margin-bottom: 10px; }
+    .detail-img {
+      width: 56px; height: 56px; background: #F1F3F4; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative;
+    }
+    .detail-img .gst {
+      position: absolute; top: 2px; right: 2px; font-size: 7px; font-weight: 700;
+      background: #FEF7E0; color: #E37400; padding: 1px 4px; border-radius: 3px;
+    }
+    .detail-title { font-size: 12px; font-weight: 700; line-height: 1.25; }
+    .earn-tag {
+      display: inline-block; margin-top: 4px; padding: 2px 8px; border-radius: 12px;
+      background: #E6F4EA; color: #188038; font-size: 10px; font-weight: 700;
+    }
+    .apply-block {
+      border-radius: 12px; padding: 12px; margin-bottom: 10px;
+      background: linear-gradient(135deg, #FFF8E1 0%, #E8F0FE 100%);
+      border: 1px solid #F9AB00;
+    }
+    .apply-block .hook {
+      font-size: 10px; font-weight: 800; color: #E37400; margin-bottom: 4px;
+    }
+    .apply-block h4 { font-size: 12px; margin-bottom: 4px; line-height: 1.3; }
+    .apply-block p { font-size: 9px; color: #5F6368; line-height: 1.4; margin-bottom: 8px; }
+    .apply-row { display: flex; align-items: center; gap: 8px; }
+    .bank-logo {
+      width: 36px; height: 36px; background: #fff; border-radius: 8px;
+      border: 1px solid #E8EAED; display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 800; color: #003399;
+    }
+    .btn-apply {
+      flex: 1; border: none; border-radius: 8px; padding: 9px;
+      background: #1A73E8; color: #fff; font-size: 10px; font-weight: 700;
+    }
+    .perks { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .perk {
+      font-size: 8px; padding: 3px 6px; border-radius: 6px;
+      background: #fff; color: #188038; font-weight: 600; border: 1px solid #CEEAD6;
+    }
+    .money-mini {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 10px; padding: 8px;
+      font-size: 9px; color: #5F6368;
+    }
+    .money-mini b { color: #202124; float: right; }
+    .sticky-btn {
+      position: absolute; bottom: 44px; left: 12px; right: 12px;
+      background: #1A73E8; color: #fff; border: none; border-radius: 10px;
+      padding: 10px; font-size: 11px; font-weight: 700;
+    }
+
+    /* ── Example 3: Profile hero ── */
+    .profile-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .avatar {
+      width: 40px; height: 40px; border-radius: 50%; background: #1A73E8;
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700;
+    }
+    .profile-cards-hero {
+      border-radius: 14px; padding: 14px; margin-bottom: 10px;
+      background: linear-gradient(145deg, #202124 0%, #3C4043 100%);
+      color: #fff; position: relative; overflow: hidden;
+    }
+    .profile-cards-hero::before {
+      content: ''; position: absolute; width: 120px; height: 120px;
+      border-radius: 50%; background: rgba(26,115,232,.25);
+      top: -40px; right: -30px;
+    }
+    .pch-label { font-size: 8px; text-transform: uppercase; letter-spacing: .5px; opacity: .7; margin-bottom: 4px; }
+    .pch-title { font-size: 14px; font-weight: 800; line-height: 1.25; margin-bottom: 4px; max-width: 75%; }
+    .pch-sub { font-size: 9px; opacity: .85; line-height: 1.4; margin-bottom: 10px; }
+    .pch-stat {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(255,255,255,.15); border-radius: 20px; padding: 4px 10px;
+      font-size: 9px; font-weight: 600; margin-bottom: 10px;
+    }
+    .pch-stat em { font-style: normal; color: #81C995; font-weight: 800; }
+    .pch-btn {
+      display: block; width: 100%; border: none; border-radius: 10px; padding: 10px;
+      background: #1A73E8; color: #fff; font-size: 11px; font-weight: 700;
+    }
+    .menu-fake .row {
+      display: flex; justify-content: space-between; padding: 10px 0;
+      border-bottom: 1px solid #F1F3F4; font-size: 11px; color: #5F6368;
+    }
+    .menu-fake .row:first-child { color: #1A73E8; font-weight: 600; }
+
+    /* ── Example 4: Success upsell ── */
+    .success-bg {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 16px 14px 60px; text-align: center;
+      background: linear-gradient(180deg, #E8F0FE 0%, #F8F9FA 50%);
+    }
+    .success-check {
+      width: 52px; height: 52px; border-radius: 50%; background: #E6F4EA;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(24,128,56,.2);
+    }
+    .success-bg h3 { font-size: 16px; margin-bottom: 4px; }
+    .success-bg > p { font-size: 10px; color: #5F6368; margin-bottom: 12px; line-height: 1.45; }
+    .earn-pill {
+      background: #fff; border: 1px solid #CEEAD6; border-radius: 20px;
+      padding: 5px 12px; font-size: 10px; color: #188038; font-weight: 600; margin-bottom: 14px;
+    }
+    .upsell-card {
+      width: 100%; text-align: left; border-radius: 14px; padding: 14px;
+      background: #fff; border: 2px solid #1A73E8;
+      box-shadow: 0 6px 20px rgba(26,115,232,.2); margin-bottom: 10px;
+    }
+    .upsell-badge {
+      display: inline-block; font-size: 8px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .3px; color: #1A73E8; background: #E8F0FE;
+      padding: 3px 8px; border-radius: 6px; margin-bottom: 6px;
+    }
+    .upsell-card h4 { font-size: 12px; line-height: 1.3; margin-bottom: 6px; }
+    .upsell-card p { font-size: 9px; color: #5F6368; line-height: 1.45; margin-bottom: 10px; }
+    .card-chips { display: flex; gap: 6px; margin-bottom: 10px; }
+    .card-chip {
+      flex: 1; padding: 8px 4px; border-radius: 8px; background: #F8F9FA;
+      border: 1px solid #E8EAED; text-align: center; font-size: 8px; font-weight: 700;
+    }
+    .card-chip span { display: block; font-size: 14px; margin-bottom: 2px; }
+    .btn-upsell {
+      width: 100%; border: none; border-radius: 10px; padding: 10px;
+      background: linear-gradient(135deg, #1A73E8, #174EA6); color: #fff;
+      font-size: 11px; font-weight: 700;
+    }
+    .btn-secondary {
+      width: 100%; border: 1px solid #E8EAED; border-radius: 10px; padding: 9px;
+      background: #fff; color: #5F6368; font-size: 10px; font-weight: 600;
+    }
+    .rotate-note {
+      width: 100%; font-size: 8px; color: #5F6368; margin-bottom: 8px;
+      padding: 6px 8px; background: #FEF7E0; border-radius: 8px; line-height: 1.4;
+    }
+    .rotate-dots { display: flex; justify-content: center; gap: 4px; margin-bottom: 6px; }
+    .rotate-dots span {
+      width: 6px; height: 6px; border-radius: 50%; background: #DADCE0;
+    }
+    .rotate-dots span.on { background: #1A73E8; }
+
+    /* Affiliate vision section */
+    .affiliate-section {
+      max-width: 900px; margin: 36px auto 0; padding: 20px 22px;
+      background: #fff; border-radius: 16px; border: 1px solid #E8EAED;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+    }
+    .affiliate-section h2 { font-size: 17px; color: #1A73E8; margin-bottom: 10px; }
+    .affiliate-section > p { font-size: 12px; color: #5F6368; line-height: 1.55; margin-bottom: 16px; }
+    .aff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .aff-card {
+      padding: 12px; border-radius: 10px; background: #F8F9FA; border: 1px solid #E8EAED;
+    }
+    .aff-card b { display: block; font-size: 12px; margin-bottom: 4px; }
+    .aff-card span { font-size: 10px; color: #5F6368; line-height: 1.4; }
+
+    .footnote {
+      max-width: 720px; margin: 32px auto 0; text-align: center;
+      font-size: 11px; color: #5F6368; line-height: 1.5;
+    }
+    .footnote a { color: #1A73E8; }
+  </style>
+</head>
+<body>
+
+  <header class="page-head">
+    <h1>Affiliate marketing placements</h1>
+    <p>Not just “order & earn” — Mintzer as a <strong>deals + cards + community</strong> affiliate hub. Admin rotates banner templates; same engine everywhere.</p>
+    <span class="tag">Home carousel · Deal detail · Profile · Order success — all rotatable</span>
+  </header>
+
+  <div class="grid">
+
+    <!-- 1. HOME -->
+    <article class="example">
+      <div class="example-head">
+        <div class="example-num">Placement 1 — Home</div>
+        <h2>Rich card image — inside banner area</h2>
+        <p>Same visual as before (gradient + card stack art), but as <strong>carousel slide 3</strong> — fits exact 118px banner box. Designer can replace right art with PNG.</p>
+        <div class="why"><b>Hook:</b> Full affiliate feel without extra height. Rotates with WhatsApp + tutorial slides.</div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scroll">
+            <div class="greeting"><b>Hi, Arun</b><span>Earn with your card</span></div>
+            <div class="chip-row">
+              <span class="chip on">All</span><span class="chip">Flipkart</span><span class="chip">Amazon</span>
+            </div>
+            <div class="promo-carousel">
+              <div class="promo-track">
+                <div class="promo-slide-cards">
+                  <div class="promo-body">
+                    <div class="promo-kicker">Partner cards</div>
+                    <div class="promo-title">Unlock ₹12,000+ in deals this month</div>
+                    <div class="promo-sub">HDFC & Axis · Fee waived on select cards</div>
+                    <button type="button" class="promo-cta">Browse cards →</button>
+                  </div>
+                  <div class="promo-art-cards">
+                    <div class="card-stack" aria-hidden="true">
+                      <div class="c">HDFC</div>
+                      <div class="c">AXIS</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="promo-dots">
+                <span class="promo-dot"></span>
+                <span class="promo-dot"></span>
+                <span class="promo-dot active"></span>
+              </div>
+            </div>
+            <div class="deal-mini">
+              <div class="thumb">📱</div>
+              <div><div style="font-weight:600;font-size:10px">Samsung M35</div><div class="earn">Earn ₹450</div></div>
+            </div>
+          </div>
+          <div class="mini-nav">
+            <span class="on">Home</span><span>Orders</span><span>Wallet</span><span>Profile</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2. DEAL DETAIL -->
+    <article class="example">
+      <div class="example-head">
+        <div class="example-num">Placement 2 — Deal detail</div>
+        <h2>Contextual “need this card” block</h2>
+        <p>Only when user doesn’t have the required card. Sits above money breakdown.</p>
+        <div class="why"><b>Hook:</b> Urgency + FOMO — they’re already sold on the deal; card is the last step to ₹450.</div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+          <div class="appbar row">← Deal detail</div>
+          <div class="scroll">
+            <div class="detail-hero">
+              <div class="detail-img">📱<span class="gst">GST</span></div>
+              <div>
+                <div class="detail-title">Samsung Galaxy M35 5G</div>
+                <span class="earn-tag">Earn ₹450</span>
+              </div>
+            </div>
+            <div class="apply-block">
+              <div class="hook">⚡ You’re one card away from this deal</div>
+              <h4>Get HDFC Credit Card — apply in ~5 min</h4>
+              <p>Most Mintzer users on this deal use HDFC. Partner link — no Mintzer fee.</p>
+              <div class="apply-row">
+                <div class="bank-logo">HDFC</div>
+                <button type="button" class="btn-apply">Apply & come back →</button>
+              </div>
+              <div class="perks">
+                <span class="perk">Lifetime free*</span>
+                <span class="perk">5% on Flipkart</span>
+                <span class="perk">₹500 welcome</span>
+              </div>
+            </div>
+            <div class="money-mini">Total at checkout <b>₹14,999</b></div>
+          </div>
+          <button type="button" class="sticky-btn">Accept deal</button>
+          <div class="mini-nav">
+            <span class="on">Home</span><span>Orders</span><span>Wallet</span><span>Profile</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3. PROFILE -->
+    <article class="example">
+      <div class="example-head">
+        <div class="example-num">Placement 3 — Profile</div>
+        <h2>Hero card at top of Profile</h2>
+        <p>Permanent home for the full card catalog. Menu row below as backup.</p>
+        <div class="why"><b>Hook:</b> Trust — “recommended for Mintzer” feels curated, not spammy bank ads.</div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+          <div class="appbar">Profile</div>
+          <div class="scroll">
+            <div class="profile-top">
+              <div class="avatar">A</div>
+              <div><b style="font-size:13px">Arun</b><br><span style="font-size:9px;color:#5F6368">+91 98765 43210</span></div>
+            </div>
+            <div class="profile-cards-hero">
+              <div class="pch-label">Mintzer picks</div>
+              <div class="pch-title">Cards that match today’s best deals</div>
+              <div class="pch-sub">HDFC, Axis & more — hand-picked for Flipkart & Amazon earn.</div>
+              <div class="pch-stat">Users earned <em>₹8.2L+</em> with partner cards</div>
+              <button type="button" class="pch-btn">See recommended cards →</button>
+            </div>
+            <div class="menu-fake">
+              <div class="row">Apply for cards ›</div>
+              <div class="row">KYC · Verified</div>
+              <div class="row">Payout details</div>
+            </div>
+          </div>
+          <div class="mini-nav">
+            <span>Home</span><span>Orders</span><span>Wallet</span><span class="on">Profile</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4. ORDER SUCCESS -->
+    <article class="example">
+      <div class="example-head">
+        <div class="example-num">Placement 4 — Order success</div>
+        <h2>Full upsell card — rotates with other templates</h2>
+        <p>One big marketing slot below earn chip. Admin picks template per session: <em>Order more</em> · <em>Partner cards</em> · <em>Referral</em> · <em>WA join</em>.</p>
+        <div class="why"><b>Hook:</b> Momentum — not two CTAs fighting; <strong>one rotating template</strong> each time user lands here.</div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone" style="display:flex;flex-direction:column">
+          <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+          <div class="success-bg">
+            <div class="success-check">✓</div>
+            <h3>Order placed!</h3>
+            <p>Track delivery in My Orders.</p>
+            <div class="earn-pill">You’re earning <b>₹450</b> on this order</div>
+            <div class="rotate-dots" title="Admin rotates template">
+              <span></span><span class="on"></span><span></span>
+            </div>
+            <div class="rotate-note">Template B of 3 · Partner cards (rotates daily)</div>
+            <div class="upsell-card">
+              <span class="upsell-badge">Level up</span>
+              <h4>Bigger earn deals need a partner card</h4>
+              <p>Today's top deals (TV, GST) often need HDFC or Axis. Apply once — use on every deal.</p>
+              <div class="card-chips">
+                <div class="card-chip"><span>💳</span>HDFC</div>
+                <div class="card-chip"><span>💳</span>Axis</div>
+              </div>
+              <button type="button" class="btn-upsell">Explore partner cards →</button>
+            </div>
+            <button type="button" class="btn-secondary">Go to My Orders</button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <section class="affiliate-section">
+    <h2>Mintzer as affiliate hub (not just order & earn)</h2>
+    <p>Same admin “template engine” powers Home carousel, Order success, Profile hero, and push notifications. You swap creatives + copy without app updates. User always feels: <em>discover → apply card → grab deal → earn → repeat.</em></p>
+    <div class="aff-grid">
+      <div class="aff-card"><b>Home carousel</b><span>WA · Tutorial · Partner cards · Seasonal (Diwali earn boost)</span></div>
+      <div class="aff-card"><b>Order success</b><span>Rotate: Order more · Partner cards · Refer a friend · Join WA</span></div>
+      <div class="aff-card"><b>Profile</b><span>Card catalog hero · Referral code · “Top earners this week”</span></div>
+      <div class="aff-card"><b>Deal detail</b><span>Card apply when missing · Offer text · Limited slots badge</span></div>
+      <div class="aff-card"><b>Notifications</b><span>New card live · Deal drop · Payout · Referral bonus</span></div>
+      <div class="aff-card"><b>Future Offers</b><span>Not bottom nav — Profile link or carousel slot for promos</span></div>
+    </div>
+  </section>
+
+  <p class="footnote">
+    Open: <code>assets/mockups/card-apply-placements.html</code><br/>
+    <strong>Home:</strong> rich card art inside 118px banner (slide 3). <strong>Order success:</strong> one rotating marketing template — not stacked hooks.<br/>
+    Designer delivers banner PNGs at ~328×118 (2×) for card slides; HTML/CSS fallback until assets ready.
+  </p>
+
+</body>
+</html>

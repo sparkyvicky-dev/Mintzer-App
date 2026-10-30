@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Mintzer marketing mockups</title>
+<style>
+  @font-face { font-family: "Plus Jakarta Sans"; font-weight: 500; src: url("fonts/PlusJakartaSans-Medium.ttf") format("truetype"); }
+  @font-face { font-family: "Plus Jakarta Sans"; font-weight: 600; src: url("fonts/PlusJakartaSans-SemiBold.ttf") format("truetype"); }
+  @font-face { font-family: "Plus Jakarta Sans"; font-weight: 700; src: url("fonts/PlusJakartaSans-Bold.ttf") format("truetype"); }
+  @font-face { font-family: "Plus Jakarta Sans"; font-weight: 800; src: url("fonts/PlusJakartaSans-ExtraBold.ttf") format("truetype"); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #f6f1ff; }
+
+  .shot {
+    display: none;
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+    background:
+      radial-gradient(68% 42% at 50% 86%, rgba(176, 140, 255, 0.45), transparent 70%),
+      linear-gradient(180deg, #ffffff 0%, #fbf9ff 30%, #efe6ff 100%);
+  }
+  .shot:target { display: block; }
+
+  .copy {
+    position: absolute;
+    z-index: 6;
+    top: 72px;
+    left: 64px;
+    right: 64px;
+    text-align: center;
+  }
+  .copy.left { text-align: left; }
+
+  .kicker {
+    display: inline-block;
+    margin-bottom: 18px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #efe8ff;
+    color: #6a45e0;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  h1 {
+    color: #141218;
+    font-size: 92px;
+    font-weight: 800;
+    line-height: 0.94;
+    letter-spacing: -0.05em;
+  }
+  h1 em { font-style: normal; color: #0f9a4a; }
+  .sub {
+    margin-top: 18px;
+    color: #746e80;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .phone {
+    position: absolute;
+    z-index: 2;
+    filter: drop-shadow(0 34px 36px rgba(70, 36, 140, 0.26));
+  }
+  .bezel {
+    position: relative;
+    padding: 12px;
+    border-radius: 64px;
+    background: linear-gradient(165deg, #3c3c42, #101012 30%, #0b0b0d);
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.22);
+  }
+  .bezel::after {
+    content: "";
+    position: absolute;
+    top: 210px;
+    right: -3px;
+    width: 4px;
+    height: 120px;
+    border-radius: 2px;
+    background: #2c2c30;
+  }
+  .screen {
+    overflow: hidden;
+    border-radius: 52px;
+    background: #fff;
+    aspect-ratio: 1170 / 2532;
+  }
+  .screen img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .island {
+    position: absolute;
+    z-index: 4;
+    top: 22px;
+    left: 50%;
+    width: 30%;
+    height: 32px;
+    transform: translateX(-50%);
+    border-radius: 20px;
+    background: #0b0b0d;
+  }
+
+  .float {
+    position: absolute;
+    z-index: 7;
+    background: #fff;
+    border-radius: 28px;
+    box-shadow: 0 18px 40px rgba(60, 30, 120, 0.18);
+  }
+  .float b { font-weight: 800; letter-spacing: -0.03em; }
+  .money { color: #0f9a4a; }
+
+  #s1 .phone { width: 700px; top: 470px; left: 190px; transform: rotate(-7deg); }
+  #s2 .phone { width: 760px; top: 500px; left: 150px; transform: rotate(12deg); }
+  #s3 .phone { width: 680px; top: 500px; left: 200px; }
+  #s4 .phone { width: 720px; top: 480px; left: 180px; transform: rotate(-8deg); }
+  #s5 .phone { width: 680px; top: 470px; left: 200px; transform: rotate(3deg); }
+  #s6 .phone { width: 640px; top: 520px; left: 70px; transform: rotate(-5deg); }
+  #s7 .phone { width: 660px; top: 560px; left: 210px; }
+  #s8 .phone-a { width: 560px; top: 560px; left: -20px; transform: rotate(-12deg); }
+  #s8 .phone-b { width: 520px; top: 640px; left: 500px; transform: rotate(12deg); }
+  #s9 .phone { width: 700px; top: 480px; left: 190px; transform: rotate(-4deg); }
+  #s10 .phone-a { width: 600px; top: 560px; left: 20px; transform: rotate(-11deg); z-index: 3; }
+  #s10 .phone-b { width: 540px; top: 680px; left: 480px; transform: rotate(14deg); z-index: 2; }
+
+  #s3 .float {
+    top: 720px;
+    right: 36px;
+    width: 460px;
+    padding: 22px 24px;
+  }
+  #s3 .float .label { font-size: 22px; font-weight: 700; color: #6f6a78; }
+  #s3 .float .big { margin-top: 4px; font-size: 64px; font-weight: 800; letter-spacing: -0.05em; color: #e07a12; }
+  #s3 .float .note { margin-top: 4px; font-size: 22px; font-weight: 600; color: #8a8496; }
+
+  #s5 .float {
+    top: 700px;
+    right: 28px;
+    padding: 20px 24px 18px;
+    width: 420px;
+  }
+  #s5 .float .label { font-size: 22px; color: #6f6a78; font-weight: 700; }
+  #s5 .float .big { font-size: 72px; font-weight: 800; letter-spacing: -0.05em; color: #0f9a4a; line-height: 1; }
+  #s5 .float .note { margin-top: 6px; font-size: 22px; font-weight: 600; color: #3a3644; }
+
+  #s6 .stack { position: absolute; z-index: 7; top: 640px; right: 36px; display: flex; flex-direction: column; gap: 16px; }
+  #s6 .pill {
+    min-width: 340px;
+    padding: 18px 22px;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 14px 30px rgba(60, 30, 120, 0.14);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #241f2e;
+  }
+  #s6 .pill b { font-size: 36px; color: #0f9a4a; letter-spacing: -0.04em; }
+  #s6 .pill.hot { outline: 3px solid #d7ccff; }
+
+  #s7 .float {
+    top: 430px;
+    left: 64px;
+    right: 64px;
+    padding: 22px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #s7 .col .label { font-size: 20px; font-weight: 800; letter-spacing: 0.08em; color: #8a8496; }
+  #s7 .col .big { font-size: 52px; font-weight: 800; letter-spacing: -0.05em; color: #1a1720; }
+  #s7 .col.earn .big { color: #0f9a4a; }
+  #s7 .arrow { font-size: 40px; color: #b9b2c6; }
+</style>
+</head>
+<body>
+  <section class="shot" id="s1">
+    <div class="copy">
+      <div class="kicker">High commission</div>
+      <h1>Earn <em>₹500</em></h1>
+      <p class="sub">On one card deal. Paid into your wallet.</p>
+    </div>
+    <div class="phone"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/home.png" alt="" /></div></div></div>
+  </section>
+
+  <section class="shot" id="s2">
+    <div class="copy">
+      <div class="kicker">You earn</div>
+      <h1><em>₹300</em> back</h1>
+      <p class="sub">You pay the store. The commission is yours.</p>
+    </div>
+    <div class="phone"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/place.png" alt="" /></div></div></div>
+  </section>
+
+  <section class="shot" id="s3">
+    <div class="copy">
+      <div class="kicker">Still coming</div>
+      <h1><em>₹950</em> pending</h1>
+      <p class="sub">High commission, waiting in Wallet.</p>
+    </div>
+    <div class="phone"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/wallet.png" alt="" /></div></div></div>
+    <div class="float">
+      <div class="label">Pending rewards</div>
+      <div class="big">₹950</div>
+      <div class="note">Two deals still pending</div>
+    </div>
+  </section>
+
+  <section class="shot" id="s4">
+    <div class="copy">
+      <div class="kicker">Before you pay</div>
+      <h1>See <em>₹300</em></h1>
+      <p class="sub">The earn is on the deal. Then you swipe.</p>
+    </div>
+    <div class="phone"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/deal.png" alt="" /></div></div></div>
+  </section>
+
+  <section class="shot" id="s5">
+    <div class="copy">
+      <div class="kicker">This order</div>
+      <h1><em>+₹500</em></h1>
+      <p class="sub">Follow it until the commission is paid.</p>
+    </div>
+    <div class="phone"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/orders.png" alt="" /></div></div></div>
+    <div class="float">
+      <div class="label">iQOO Neo 10</div>
+      <div class="big">+₹500</div>
+      <div class="note">On the way to Wallet</div>
+    </div>
+  </section>
+
+  <section class="shot" id="s6">
+    <div class="copy left">
+      <div class="kicker">Pick the big one</div>
+      <h1>Highest<br />commission</h1>
+      <p class="sub">₹500, ₹450 and ₹380, live now.</p>
+    </div>
+    <div class="phone"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/home.png" alt="" /></div></div></div>
+    <div class="stack">
+      <div class="pill hot"><span>iQOO Neo 10</span><b>₹500</b></div>
+      <div class="pill"><span>Galaxy M35</span><b>₹450</b></div>
+      <div class="pill"><span>Samsung TV</span><b>₹380</b></div>
+    </div>
+  </section>
+
+  <section class="shot" id="s7">
+    <div class="copy">
+      <div class="kicker">Same order</div>
+      <h1>Pay. Then <em>earn.</em></h1>
+      <p class="sub">Store price on the left. Commission on the right.</p>
+    </div>
+    <div class="float">
+      <div class="col"><div class="label">YOU PAY</div><div class="big">₹17,519</div></div>
+      <div class="arrow">→</div>
+      <div class="col earn"><div class="label">YOU EARN</div><div class="big">₹300</div></div>
+    </div>
+    <div class="phone"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/place.png" alt="" /></div></div></div>
+  </section>
+
+  <section class="shot" id="s8">
+    <div class="copy">
+      <div class="kicker">Order to paid</div>
+      <h1><em>+₹500</em></h1>
+      <p class="sub">From the store, all the way into Wallet.</p>
+    </div>
+    <div class="phone phone-a"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/orders.png" alt="" /></div></div></div>
+    <div class="phone phone-b"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/wallet.png" alt="" /></div></div></div>
+  </section>
+
+  <section class="shot" id="s9">
+    <div class="copy">
+      <div class="kicker">Every store</div>
+      <h1>One wallet</h1>
+      <p class="sub">Flipkart and Amazon. The commission stays.</p>
+    </div>
+    <div class="phone"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/orders.png" alt="" /></div></div></div>
+  </section>
+
+  <section class="shot" id="s10">
+    <div class="copy left">
+      <div class="kicker">No surprise</div>
+      <h1>Commission<br />first</h1>
+      <p class="sub">See the earn. Then accept the deal.</p>
+    </div>
+    <div class="phone phone-a"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/home.png" alt="" /></div></div></div>
+    <div class="phone phone-b"><div class="bezel"><div class="island"></div><div class="screen"><img src="../raw/deal.png" alt="" /></div></div></div>
+  </section>
+</body>
+</html>

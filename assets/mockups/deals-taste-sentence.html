@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>1 · Say the deal</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f4f1ea; color: #1c1915; font-family: "Segoe UI", system-ui, sans-serif; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 28px 22px 64px; }
+  .kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #8a8175; font-weight: 700; }
+  h1 { margin: 8px 0 6px; font-size: 28px; font-weight: 750; letter-spacing: -.03em; }
+  .lead { margin: 0 0 22px; color: #6d655c; font-size: 14px; max-width: 520px; }
+  .sentence {
+    background: #1c1915; color: #f6f1e8; border-radius: 18px; padding: 26px 28px 22px;
+    font-size: 26px; line-height: 1.35; font-weight: 650; letter-spacing: -.02em;
+  }
+  .sentence em { font-style: normal; color: #d6c2ff; }
+  .who { margin-top: 14px; font-size: 12px; color: #b7aea3; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+  label { display: block; font-size: 12px; color: #6d655c; margin-bottom: 6px; font-weight: 700; }
+  input, select {
+    width: 100%; border: 1px solid #e4ddd2; background: #fff; border-radius: 10px;
+    padding: 11px 12px; font-size: 15px; color: #1c1915;
+  }
+  .span2 { grid-column: span 2; }
+  .hint { margin-top: 14px; font-size: 12px; color: #8a8175; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Look 1 of 3 · While you type</div>
+  <h1>Say the deal out loud</h1>
+  <p class="lead">The boxes stay. The sentence is what you trust. Change a number and the sentence changes. Look only.</p>
+  <div class="sentence" id="sentence"></div>
+  <div class="grid">
+    <div class="span2">
+      <label>Deal name</label>
+      <input id="name" value="Samsung 55 inch TV" />
+    </div>
+    <div>
+      <label>Store</label>
+      <input id="store" value="Flipkart" />
+    </div>
+    <div>
+      <label>Card</label>
+      <input id="card" value="Axis" />
+    </div>
+    <div>
+      <label>Card holder will spend</label>
+      <input id="spend" type="number" value="52999" />
+    </div>
+    <div>
+      <label>Cashback</label>
+      <input id="cashback" type="number" value="2500" />
+    </div>
+    <div>
+      <label>Card holder will earn</label>
+      <input id="earn" type="number" value="900" />
+    </div>
+    <div>
+      <label>Total card holder will receive</label>
+      <input id="receive" type="number" value="51399" />
+    </div>
+  </div>
+  <p class="hint">Cash reward stays out of this sentence. The app shows it only under How this is calculated.</p>
+</div>
+<script>
+function inr(n) {
+  const x = Math.round(Number(n) || 0);
+  return "₹" + x.toLocaleString("en-IN");
+}
+function say() {
+  const name = document.getElementById("name").value.trim() || "this deal";
+  const store = document.getElementById("store").value.trim() || "the store";
+  const card = document.getElementById("card").value.trim() || "the card";
+  const spend = inr(document.getElementById("spend").value);
+  const earn = inr(document.getElementById("earn").value);
+  const receive = inr(document.getElementById("receive").value);
+  const cb = Math.round(Number(document.getElementById("cashback").value) || 0);
+  const bank = cb > 0 ? ` Bank may give <em>${inr(cb)}</em>.` : "";
+  document.getElementById("sentence").innerHTML =
+    `User pays <em>${spend}</em> on ${store} with ${card}.${bank} We pay <em>${receive}</em>. User earns <em>${earn}</em>.`
+    + `<div class="who">${name}</div>`;
+}
+document.querySelectorAll("input").forEach((el) => el.addEventListener("input", say));
+say();
+</script>
+</body>
+</html>

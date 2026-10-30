@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Tickets · open the order</title>
+<link rel="stylesheet" href="smart-work.css">
+</head><body>
+<div class="app"><aside class="rail"><div class="mark">M</div><i class="on">☺</i></aside>
+<main class="main">
+<h1>Tickets</h1>
+<p class="note">Reply stays. If the ticket is about an order, open that order from here. No hunting on the Orders list.</p>
+<div class="tag">Suggestion · Open order next to Reply</div>
+<div class="card"><table>
+<thead><tr><th>Customer</th><th>Subject</th><th>Message</th><th>Status</th><th></th></tr></thead>
+<tbody>
+<tr>
+  <td>User5749<div class="sub">Example ticket</div></td>
+  <td>Payout not received</td>
+  <td>I have 3 delivered orders. One payment?</td>
+  <td>Open</td>
+  <td><button class="btn p" id="reply">Reply</button> <button class="btn g" id="order">Open order</button></td>
+</tr>
+<tr>
+  <td>Pavithra M<div class="sub">Example ticket</div></td>
+  <td>Invoice rejected</td>
+  <td>Please check the new bill.</td>
+  <td>Open</td>
+  <td><button class="btn g">Reply</button> <button class="btn g">Open order</button></td>
+</tr>
+<tr>
+  <td>User7607<div class="sub">Example · no order</div></td>
+  <td>How does Mintzer work</td>
+  <td>No order on this ticket.</td>
+  <td>Open</td>
+  <td><button class="btn g">Reply</button></td>
+</tr>
+</tbody></table></div>
+<div class="panel" id="box" style="display:none">
+  <div>
+    <strong>Reply · Payout not received</strong>
+    <p class="note">User5749 · order ORD77885M9 and 2 more</p>
+    <label>Your reply</label>
+    <textarea rows="4">Your 3 orders are delivered and verified. One transfer covers ₹1,17,651.</textarea>
+    <button class="btn p" style="margin-top:8px" id="send">Send reply</button>
+  </div>
+  <div>
+    <strong>Their orders</strong>
+    <div class="sib"><span>Vivo T5X · ORD77885M9</span><b class="to">₹24,211</b></div>
+    <div class="sib"><span>Vivo T5X · ORD1833E83</span><b class="to">₹24,211</b></div>
+    <div class="sib"><span>Acer Aspire 7 · ORD389JV9OZ</span><b class="to">₹69,229</b></div>
+    <p class="note"><a href="smart-person.html">Open User5749 on Orders</a></p>
+  </div>
+</div>
+</main></div>
+<div class="toast" id="t"></div>
+<script>
+document.getElementById("reply").onclick = () => document.getElementById("box").style.display = "grid";
+document.getElementById("order").onclick = () => location.href = "smart-person.html";
+document.getElementById("send").onclick = () => {
+  const t = document.getElementById("t");
+  t.textContent = "Look only. Reply was not sent.";
+  t.classList.add("show");
+};
+</script>
+</body></html>

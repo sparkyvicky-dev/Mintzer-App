@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <rect width="48" height="48" rx="8" fill="#232F3E"/>
+  <text x="24" y="22" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">amazon</text>
+  <path d="M8 32 Q24 40 40 32" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

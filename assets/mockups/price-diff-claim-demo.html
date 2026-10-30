@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mintzer · Price difference — visual options</title>
+<style>
+  :root {
+    --bg: #12141a;
+    --paper: #f4f5f8;
+    --ink: #1c1915;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --purple: #7B61FF;
+    --purple-soft: #efeaff;
+    --green: #0f7a45;
+    --green-soft: #e8f6ee;
+    --amber: #9a6700;
+    --amber-soft: #fff6e0;
+    --rose: #b42318;
+    --wa: #25D366;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(900px 500px at 10% -10%, #2a2150 0%, transparent 55%),
+      radial-gradient(700px 400px at 100% 0%, #1a2a22 0%, transparent 50%),
+      var(--bg);
+    color: #f3f4f6;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 28px 20px 48px; }
+  h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .sub { color: #a1a1aa; margin: 0 0 28px; font-size: 15px; max-width: 62ch; line-height: 1.45; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+  .tab {
+    border: 1px solid #3f3f46; background: #1c1f28; color: #e4e4e7;
+    border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .tab.on { background: var(--purple); border-color: var(--purple); color: #fff; }
+  .panel { display: none; }
+  .panel.on { display: block; }
+  .row { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }
+  .phone {
+    width: 320px; background: #0b0c10; border-radius: 36px; padding: 12px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.45);
+    flex: 0 0 auto;
+  }
+  .screen {
+    background: var(--paper); color: var(--ink); border-radius: 28px;
+    min-height: 620px; overflow: hidden; display: flex; flex-direction: column;
+  }
+  .status { height: 28px; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-size: 11px; color: #111; font-weight: 600; }
+  .appbar { background: #fff; padding: 10px 14px 12px; border-bottom: 1px solid var(--line); }
+  .appbar h2 { margin: 0; font-size: 16px; }
+  .appbar p { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+  .body { padding: 14px; flex: 1; }
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px;
+  }
+  .card h3 { margin: 0 0 6px; font-size: 13px; }
+  .money { display: flex; justify-content: space-between; font-size: 13px; margin: 4px 0; }
+  .money b { font-variant-numeric: tabular-nums; }
+  .diff { background: var(--amber-soft); color: var(--amber); border-radius: 10px; padding: 8px 10px; font-size: 12px; font-weight: 600; margin-top: 8px; }
+  .cta {
+    display: block; width: 100%; border: 0; border-radius: 12px; padding: 12px 14px;
+    background: var(--purple); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 8px;
+  }
+  .cta.ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  .cta.wa { background: var(--wa); color: #063; }
+  .sheet {
+    margin-top: auto; background: #fff; border-radius: 20px 20px 0 0; padding: 14px 14px 18px;
+    border-top: 1px solid var(--line); box-shadow: 0 -10px 30px rgba(0,0,0,.06);
+  }
+  .sheet h3 { margin: 0 0 4px; font-size: 15px; }
+  .sheet .hint { font-size: 12px; color: var(--muted); margin: 0 0 12px; line-height: 1.4; }
+  .field { margin-bottom: 10px; }
+  .field label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+  .field input, .field select {
+    width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 14px; background: #fafafa;
+  }
+  .upload {
+    border: 1.5px dashed #c4b5fd; background: var(--purple-soft); border-radius: 12px; padding: 16px; text-align: center;
+    font-size: 13px; color: #5b4bdb; font-weight: 600;
+  }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 12px; }
+  .chip { font-size: 11px; padding: 6px 10px; border-radius: 999px; background: #f3f4f6; border: 1px solid var(--line); font-weight: 600; }
+  .chip.on { background: var(--purple-soft); border-color: #c4b5fd; color: #5b4bdb; }
+  .aside {
+    flex: 1; min-width: 280px; max-width: 520px;
+  }
+  .aside .card { background: #1c1f28; border-color: #2f333d; color: #e4e4e7; }
+  .aside .card h3 { color: #fff; font-size: 15px; }
+  .aside .card p, .aside li { color: #a1a1aa; font-size: 13px; line-height: 1.45; }
+  .aside ol { margin: 8px 0 0; padding-left: 18px; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--purple); background: var(--purple-soft); padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; }
+  .admin {
+    background: #fff; color: var(--ink); border-radius: 16px; padding: 14px; border: 1px solid #2f333d;
+  }
+  .admin .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .admin .head strong { font-size: 14px; }
+  .pill { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; }
+  .grid2 div { background: #f8fafc; border-radius: 8px; padding: 8px; }
+  .grid2 span { display: block; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+  .btns { display: flex; gap: 8px; margin-top: 10px; }
+  .btns button { flex: 1; border: 0; border-radius: 10px; padding: 10px; font-weight: 700; font-size: 12px; cursor: pointer; }
+  .ok { background: var(--green-soft); color: var(--green); }
+  .no { background: #fee4e2; color: var(--rose); }
+  .note { margin-top: 18px; font-size: 12px; color: #71717a; }
+  .buf {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 8px; font-size: 12px;
+  }
+  .buf em { font-style: normal; color: var(--green); font-weight: 800; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Price difference — what we can do</h1>
+    <p class="sub">Visual only. When Amazon / Flipkart adds fees and checkout goes above You pay, holders hit WA. These three lanes stop the chat spam and keep proof in admin.</p>
+
+    <div class="tabs">
+      <button class="tab on" data-tab="claim">1 · In-app claim</button>
+      <button class="tab" data-tab="buffer">2 · Fee buffer</button>
+      <button class="tab" data-tab="rules">3 · Hard rules + WA redirect</button>
+    </div>
+
+    <!-- CLAIM -->
+    <div class="panel on" id="claim">
+      <div class="row">
+        <div class="phone">
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>Mintzer</span></div>
+            <div class="appbar">
+              <h2>Order ORD3RM45L8</h2>
+              <p>Iqoo 15R · Amazon</p>
+            </div>
+            <div class="body">
+              <div class="card">
+                <h3>Money</h3>
+                <div class="money"><span>You pay (app)</span><b>₹49,198</b></div>
+                <div class="money"><span>You earn</span><b>₹1,000</b></div>
+                <div class="money"><span>From Mintzer</span><b>₹48,500</b></div>
+                <div class="diff">Checkout was higher? Tap below — don’t WhatsApp.</div>
+              </div>
+              <button class="cta">Paid more than You pay?</button>
+              <button class="cta ghost">Tell Mintzer (delivery)</button>
+            </div>
+            <div class="sheet">
+              <h3>Price claim</h3>
+              <p class="hint">Upload the store payment / checkout screenshot. Ops checks the gap. Mintzer payout stays Total receive unless approved.</p>
+              <div class="field">
+                <label>What you paid at store</label>
+                <input value="₹49,348" readonly />
+              </div>
+              <div class="field">
+                <label>Gap vs You pay</label>
+                <input value="+ ₹150 (platform fee)" readonly />
+              </div>
+              <div class="upload">+ Add checkout screenshot</div>
+              <button class="cta" style="margin-top:12px">Send claim</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="aside">
+          <div class="tag">Admin sees</div>
+          <div class="admin">
+            <div class="head">
+              <strong>ORD3RM45L8 · User7607</strong>
+              <span class="pill">Price claim</span>
+            </div>
+            <div class="grid2">
+              <div><span>You pay</span><b>₹49,198</b></div>
+              <div><span>Claimed paid</span><b>₹49,348</b></div>
+              <div><span>Gap</span><b>+ ₹150</b></div>
+              <div><span>Screenshot</span><b>Attached</b></div>
+            </div>
+            <div class="btns">
+              <button class="ok">Approve +₹150 adjust</button>
+              <button class="no">Reject</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <h3>Why this lane</h3>
+            <ol>
+              <li>Stops personal WA for fee gaps</li>
+              <li>Every claim has Order ID + proof</li>
+              <li>One-tap Approve / Reject on admin</li>
+              <li>Payout base stays Total receive unless you choose adjust</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUFFER -->
+    <div class="panel" id="buffer">
+      <div class="row">
+        <div class="phone">
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>Deal</span></div>
+            <div class="appbar">
+              <h2>Iqoo 15R 8/256</h2>
+              <p>Amazon · ICICI</p>
+            </div>
+            <div class="body">
+              <div class="card">
+                <h3>YOU PAY</h3>
+                <div class="money"><span>Product − discount</span><b>₹49,999</b></div>
+                <div class="money"><span>Platform fee (known)</span><b>₹49</b></div>
+                <div class="money"><span>Fee buffer</span><b>₹100</b></div>
+                <div class="money"><span><b>Total You pay</b></span><b>₹49,198</b></div>
+                <div class="buf">Typical Amazon noise covered <em>up to ₹100</em></div>
+              </div>
+              <div class="card">
+                <h3>If checkout still higher</h3>
+                <p style="margin:0;font-size:12px;color:var(--muted);line-height:1.4">Only then open Price claim. Small gaps under buffer = no ticket.</p>
+              </div>
+              <button class="cta">Swipe to accept</button>
+            </div>
+          </div>
+        </div>
+        <div class="aside">
+          <div class="tag">Admin deal form</div>
+          <div class="admin">
+            <div class="head"><strong>New Deal · money</strong></div>
+            <div class="field"><label>Card holder will spend</label><input value="49198" /></div>
+            <div class="field"><label>Fee buffer (optional)</label><input value="100" /></div>
+            <p style="margin:0;font-size:12px;color:var(--muted)">Buffer folds into You pay so holders expect a little noise. Big gaps still use claim.</p>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <h3>Why this lane</h3>
+            <ol>
+              <li>Fewer tickets for ₹29–₹150 noise</li>
+              <li>No app redesign of locked Home card</li>
+              <li>You control buffer per store / deal</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RULES -->
+    <div class="panel" id="rules">
+      <div class="row">
+        <div class="phone">
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>WhatsApp</span></div>
+            <div class="body" style="background:#efeae2">
+              <div class="card" style="background:#d9fdd3;border-color:#b6e9ae">
+                <p style="margin:0;font-size:13px;line-height:1.45">
+                  Hi Mintzer I paid 150 extra on Amazon for ORD3RM45L8 please add
+                </p>
+              </div>
+              <div class="card" style="background:#fff">
+                <p style="margin:0;font-size:13px;line-height:1.45">
+                  Please open the Mintzer app → that order → <b>Paid more than You pay?</b> and upload the checkout screenshot.<br><br>
+                  We don’t adjust from WhatsApp text.<br><br>
+                  Rules:<br>
+                  · Under ₹99 → no adjust<br>
+                  · ₹99–₹300 → claim + screenshot<br>
+                  · Over ₹300 or wrong item → cancel / review
+                </p>
+              </div>
+              <button class="cta wa">Open Mintzer app</button>
+            </div>
+          </div>
+        </div>
+        <div class="aside">
+          <div class="tag">Ops playbook</div>
+          <div class="card">
+            <h3>Same reply every time</h3>
+            <ol>
+              <li>Never negotiate fees on WA</li>
+              <li>Always send them to in-app claim</li>
+              <li>Approve only with screenshot</li>
+              <li>Publish the ₹ bands once in FAQ</li>
+            </ol>
+          </div>
+          <div class="card">
+            <h3>Suggested bands</h3>
+            <div class="chips">
+              <span class="chip on">&lt; ₹99 ignore</span>
+              <span class="chip on">₹99–300 claim</span>
+              <span class="chip on">&gt; ₹300 review</span>
+            </div>
+            <p>Bands are editable later. Visual only for now.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">Brave demo · not live · not a Play build. Pick a lane when ready and we implement carefully.</p>
+  </div>
+  <script>
+    document.querySelectorAll('.tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.tab').forEach(function (b) { b.classList.remove('on'); });
+        document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('on'); });
+        btn.classList.add('on');
+        document.getElementById(btn.getAttribute('data-tab')).classList.add('on');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mintzer push templates (short)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+body { margin:0; font-family:"DM Sans",system-ui,sans-serif; background:#f6f4f1; color:#1c1917;
+  line-height:1.65; font-size:18px; }
+main { max-width:720px; margin:24px auto; background:#fff; border:1px solid #e7e5e4;
+  border-radius:18px; padding:32px 28px 48px; box-shadow:0 8px 30px rgba(0,0,0,.04); }
+h1 { font-size:1.75rem; margin:0 0 12px; letter-spacing:-.02em; }
+h2 { font-size:1.25rem; margin:28px 0 10px; border-top:1px solid #e7e5e4; padding-top:16px; }
+h3 { font-size:1.05rem; margin:22px 0 8px; }
+p { margin:0 0 12px; }
+a { color:#7B61FF; font-weight:600; }
+code { font-family:"JetBrains Mono",monospace; font-size:.86em; background:#f5f5f4;
+  padding:2px 6px; border-radius:6px; }
+.tw { overflow:auto; margin:12px 0 18px; border:1px solid #e7e5e4; border-radius:12px; }
+table { width:100%; border-collapse:collapse; font-size:15px; }
+th, td { padding:10px 12px; text-align:left; border-bottom:1px solid #e7e5e4; vertical-align:top; }
+th { background:#fafaf9; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#57534e; }
+.badge { display:inline-block; background:#efeaff; color:#7B61FF; font-weight:700;
+  font-size:12px; padding:5px 10px; border-radius:99px; margin-bottom:12px; }
+@media (max-width:640px) { main { margin:12px; padding:22px 16px 36px; } body { font-size:16.5px; } }
+</style>
+</head>
+<body>
+<main>
+<div class="badge">LOCKED · easy read</div>
+<h1 id="mintzer-push-templates-locked-short">Mintzer — Push templates (<strong>LOCKED · short</strong>)</h1><p><strong>FINAL</strong> 22 Sep 2026 · Firebase <code>mintzer-e45d6</code> <strong>Banks (30+ each):</strong> <a href="./NOTIFICATION-TEMPLATE-BANKS-LOCKED.md">NOTIFICATION-TEMPLATE-BANKS-LOCKED.md</a> <strong>Brave:</strong> <code>NOTIFICATION-TEMPLATES-LOCKED.html</code></p><p>This product needs users <strong>in-app often</strong>. Caps below are <strong>engagement-first</strong> (not “2/day”).</p><hr><h2 id="money">Money</h2><p>Only when <strong>₹ released to bank</strong> → Wallet. No “payment verified” spam.</p><hr><h2 id="deal-live-fire-every-time">Deal live — fire every time</h2><div class="tw"><table><thead><tr><th>Event</th><th>Push?</th></tr></thead><tbody><tr><td>Deal goes live (any time, 24×7)</td><td><strong>Yes — always</strong> <code>deal.live</code></td></tr><tr><td><strong>2nd / 3rd deal</strong> same day</td><td><strong>Yes — each</strong> gets its own live push</td></tr><tr><td>Same deal <strong>off → on again</strong></td><td><strong>Yes — always</strong> <code>deal.relist</code> (different templates)</td></tr><tr><td>Quiet hours</td><td><strong>Still send</strong> live + relist (manual not required)</td></tr></tbody></table></div><ul><li>Deal <strong>ON</strong> → push live (bank: Deal live / funny)</li><li>Deal <strong>OFF</strong> → no push</li><li>Deal <strong>ON again</strong> → push relist (bank: Deal relist)</li></ul><p>Home always shows deals; push is the shoulder tap <strong>every</strong> publish/re-publish.</p><hr><h2 id="after-user-opens-a-deal-leaves-without-accept">After user opens a deal · leaves without Accept</h2><p><strong>Tight follow-up</strong> (drive return):</p><div class="tw"><table><thead><tr><th>Wave</th><th>Timing</th><th>Count</th><th>Bank</th></tr></thead><tbody><tr><td>Early</td><td><strong>30–60 min</strong> after view</td><td><strong>1–2</strong> pushes</td><td>Viewed follow-up (30–60 min)</td></tr><tr><td>Mid</td><td><strong>~1.5 hours</strong> after view (or after early)</td><td><strong>1–2</strong> pushes</td><td>Viewed follow-up (~1.5h)</td></tr><tr><td>Then</td><td>Stop <strong>this</strong> view-sequence unless they open again</td><td>—</td><td>—</td></tr></tbody></table></div><p>Rules:</p><ul><li>Qualifying view: dwell <strong>≥15–30s</strong> (bounce &amp;lt;5s = no follow-up)</li><li>They Accept → <strong>cancel</strong> remaining view follow-ups  </li><li>They open the deal again → <strong>restart</strong> tight sequence  </li><li>Deep link → <strong>Deal detail</strong></li></ul><hr><h2 id="deal-stays-live-2-3-days">Deal stays live 2–3 days</h2><p><strong>Heavy “still live”</strong> while deal is ON:</p><div class="tw"><table><thead><tr><th>Cadence</th><th>Example</th></tr></thead><tbody><tr><td>~ every <strong>8–12 hours</strong></td><td>morning + evening</td></tr><tr><td>Or <strong>2–3 / day</strong> while live</td><td>still-live bank</td></tr></tbody></table></div><p>Use bank <strong>Still-live (day 2–3)</strong>. Stop when deal turns OFF or user Accepts.</p><hr><h2 id="after-accept-order-id-order-steps">After Accept (Order ID / order steps)</h2><div class="tw"><table><thead><tr><th>When</th><th>Open</th></tr></thead><tbody><tr><td>No Order ID · left</td><td>Place order · abandon + timers</td></tr><tr><td>Tracking / OTP / invoice</td><td>Order detail</td></tr><tr><td>₹ paid to bank</td><td>Wallet</td></tr></tbody></table></div><p>Order steps stay clear (not funny). Active placement → <strong>no</strong> other-deal spam optional; product may still allow still-live on *other* deals if you want max engagement — default: <strong>suppress other-deal commercial while placement active</strong>.</p><hr><h2 id="soft-safety-not-2-day">Soft safety (not “2/day”)</h2><div class="tw"><table><thead><tr><th>Guard</th><th>Value</th></tr></thead><tbody><tr><td>Min gap between <strong>any</strong> two pushes</td><td><strong>20–30 min</strong> (avoid triple-stack)</td></tr><tr><td>Soft ceiling</td><td>~<strong>8–12</strong> commercial pushes / user / day (raise if needed)</td></tr><tr><td>Deal alerts OFF</td><td>Respect Profile toggle</td></tr><tr><td>Force / emergency</td><td>Admin can always send</td></tr></tbody></table></div><p><strong>Removed:</strong> old “max 1 deal-live/day” and “max 2 pushes/day” as product defaults.</p><hr><h2 id="banks-to-use">Banks to use</h2><p>Live · Funny · <strong>Relist</strong> · <strong>Viewed 30–60m</strong> · <strong>Viewed 1.5h</strong> · <strong>Still-live</strong> · Order ID · OTP · Tracking · Invoice · Payout · Ticket · Timers</p><hr><p><strong>LOCKED</strong> to this engagement plan. Tune timings in config; don’t silently go back to 1–2/day.</p>
+</main>
+</body>
+</html>

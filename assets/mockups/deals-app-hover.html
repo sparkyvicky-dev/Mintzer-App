@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Deals — app preview on hover</title>
+<style>
+  :root {
+    --bg: #f5f5f9;
+    --ink: #202124;
+    --muted: #5f6368;
+    --line: #e8eaed;
+    --purple: #7b61ff;
+    --green: #188038;
+    --green-bg: #e6f4ea;
+    --green-line: #ceead6;
+    --card: #fff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: #3a4158;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 22px 20px 80px; }
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 14px; }
+  h1 { margin: 0; font-size: 22px; color: #2b2f3a; }
+  .note { margin: 6px 0 0; font-size: 13px; color: #667085; max-width: 640px; }
+  .pill {
+    background: #fff;
+    border: 1px solid #ece6ff;
+    color: #5b4bdb;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .tabs { display: flex; gap: 0; margin: 14px 0; }
+  .tab {
+    background: #fff;
+    border: 1px solid #e6e8f0;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .tab.on { color: var(--purple); border-bottom-color: #fff; }
+  .sheet {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #ececf3;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 12px;
+    color: #7b8498;
+    font-weight: 700;
+    padding: 12px 14px;
+    background: #f7f8fc;
+    border-bottom: 1px solid #eceef5;
+  }
+  td { padding: 12px 14px; border-bottom: 1px solid #f1f2f6; vertical-align: middle; font-size: 14px; }
+  tr.deal { cursor: default; }
+  tr.deal:hover td { background: #fafaff; }
+  .thumb {
+    width: 52px; height: 48px; border-radius: 8px;
+    background: #f3f1ff; color: #5b4bdb;
+    display: grid; place-items: center; font-size: 11px; font-weight: 800;
+  }
+  .name { font-weight: 700; color: #2c3a8e; }
+  .sub { display: block; margin-top: 2px; font-size: 12px; color: #7b8498; font-weight: 500; }
+  .onoff {
+    width: 36px; height: 20px; border-radius: 99px; background: #7b61ff; position: relative; display: inline-block;
+  }
+  .onoff i {
+    position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff;
+  }
+  .off { background: #d0d5dd; }
+  .off i { right: auto; left: 2px; }
+
+  .pop {
+    position: fixed;
+    z-index: 20;
+    width: 320px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(32, 33, 36, 0.16);
+    padding: 12px 14px 10px;
+    display: none;
+    pointer-events: auto;
+  }
+  .pop.show { display: block; }
+  .pop h2 { margin: 0; font-size: 15px; font-weight: 800; color: var(--ink); }
+  .lead { margin: 2px 0 10px; font-size: 12px; color: var(--muted); }
+  .deal-mini { font-size: 12px; font-weight: 700; color: #3d2e9e; margin-bottom: 8px; }
+  .rowline { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .rowline b { font-size: 14px; font-weight: 800; color: var(--ink); }
+  .rowline strong { font-size: 16px; font-weight: 900; }
+  .money {
+    display: flex; gap: 8px; margin-top: 8px; align-items: flex-start;
+  }
+  .money .t { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .money .s { font-size: 11px; color: var(--muted); line-height: 1.3; margin-top: 1px; }
+  .money .v { font-size: 14px; font-weight: 800; color: var(--green); white-space: nowrap; }
+  .earn {
+    margin-top: 10px;
+    background: var(--green-bg);
+    border: 1px solid var(--green-line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .earn .t { font-size: 13px; font-weight: 800; color: var(--green); }
+  .earn .s { font-size: 11px; color: #137333; }
+  .earn .v { font-size: 20px; font-weight: 900; color: var(--green); }
+  .calc-h { margin: 8px 0 2px; font-size: 12px; font-weight: 700; color: var(--purple); }
+  .calc { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; padding: 2px 0; color: var(--muted); }
+  .calc span:last-child { font-weight: 700; color: var(--ink); }
+  .calc.g span:last-child { color: var(--green); }
+  .calc.b span:first-child { font-weight: 700; color: var(--ink); }
+  .calc.b span:last-child { font-weight: 800; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 6px 0; }
+  .gst {
+    margin-top: 8px;
+    background: #e0f2f1;
+    border: 1px solid #80cbc4;
+    color: #00796b;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .admin {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #98a2b3;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Deals</h1>
+      <p class="note">Hover a deal name. A small card shows the same money the app shows. The list stays on screen. This look is not live.</p>
+    </div>
+    <div class="pill">Look only</div>
+  </div>
+  <div class="tabs"><div class="tab on">Deals</div><div class="tab">Pine Lab Deals</div></div>
+  <div class="sheet">
+    <table>
+      <thead>
+        <tr>
+          <th>Sl.No</th>
+          <th>Image</th>
+          <th>Deal Name</th>
+          <th>Deal Price</th>
+          <th>Order Qty</th>
+          <th>Status</th>
+          <th>Last live</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+<div class="pop" id="pop"></div>
+<script>
+const deals = [
+  {
+    name: "Samsung 55 inch TV",
+    meta: "Flipkart · Axis Bank",
+    price: "52,999",
+    qty: 8,
+    live: "24-10-2026 06:10 pm",
+    product: "54,999",
+    discount: "2,000",
+    platform: "0",
+    cardFee: "0",
+    youPay: "52,999",
+    cashback: "2,500",
+    payout: "51,399",
+    cashReward: "900",
+    tds: "0",
+    earn: "900",
+    earnNote: "This is your profit.",
+    gst: false
+  },
+  {
+    name: "boAt Airdopes 141",
+    meta: "Amazon · ICICI",
+    price: "12,499",
+    qty: 20,
+    live: "24-10-2026 04:40 pm",
+    product: "12,499",
+    discount: "0",
+    platform: "0",
+    cardFee: "0",
+    youPay: "12,499",
+    cashback: "0",
+    payout: "11,800",
+    cashReward: "450",
+    tds: "0",
+    earn: "450",
+    earnNote: "This is your profit.",
+    gst: false
+  },
+  {
+    name: "LG 1.5 Ton AC",
+    meta: "Flipkart · HDFC · GST",
+    price: "31,628",
+    qty: 4,
+    live: "23-10-2026 11:05 am",
+    product: "32,000",
+    discount: "500",
+    platform: "49",
+    cardFee: "79",
+    youPay: "31,628",
+    cashback: "1,500",
+    payout: "30,400",
+    cashReward: "1,200",
+    tds: "120",
+    earn: "1,080",
+    earnNote: "Profit after TDS.",
+    gst: true
+  },
+  {
+    name: "Apple AirPods Pro",
+    meta: "Instant link · SBI",
+    price: "18,900",
+    qty: 6,
+    live: "22-10-2026 09:18 pm",
+    product: "21,900",
+    discount: "3,000",
+    platform: "0",
+    cardFee: "0",
+    youPay: "18,900",
+    cashback: "900",
+    payout: "18,200",
+    cashReward: "700",
+    tds: "0",
+    earn: "700",
+    earnNote: "This is your profit.",
+    gst: false
+  }
+];
+
+const ru = (n) => "₹" + n;
+const rows = document.getElementById("rows");
+deals.forEach((d, i) => {
+  const tr = document.createElement("tr");
+  tr.className = "deal";
+  tr.innerHTML = `
+    <td>${i + 1}</td>
+    <td><div class="thumb">IMG</div></td>
+    <td><span class="name">${d.name}</span><span class="sub">${d.meta}</span></td>
+    <td>${ru(d.price)}</td>
+    <td>${d.qty}</td>
+    <td><span class="onoff"><i></i></span></td>
+    <td>${d.live}</td>`;
+  tr.addEventListener("mouseenter", (e) => openPop(d, tr));
+  tr.addEventListener("mouseleave", (e) => {
+    if (e.relatedTarget && pop.contains(e.relatedTarget)) return;
+    closePop();
+  });
+  rows.appendChild(tr);
+});
+
+const pop = document.getElementById("pop");
+pop.addEventListener("mouseleave", () => closePop());
+
+function line(label, value, green) {
+  return `<div class="calc${green ? " g" : ""}"><span>${label}</span><span>${value}</span></div>`;
+}
+
+function openPop(d, tr) {
+  const cash = d.cashback !== "0"
+    ? `<div class="money"><div><div class="t">Bank cashback</div><div class="s">Credited to your card/account according to the bank statements.</div></div><div class="v">${ru(d.cashback)}</div></div>`
+    : "";
+  const tds = d.tds !== "0" ? line("TDS", "− " + ru(d.tds), false) : "";
+  const gst = d.gst
+    ? `<div class="gst">GST invoice needed. At checkout, enter the Company and GST No. shown in the delivery address.</div>`
+    : "";
+  pop.innerHTML = `
+    <h2>Payment summary</h2>
+    <div class="lead">Here's what you pay and what you get back.</div>
+    <div class="deal-mini">${d.name}</div>
+    <div class="rowline"><b>You pay at checkout</b><strong>${ru(d.youPay)}</strong></div>
+    ${cash}
+    <div class="money"><div><div class="t">Mintzer payout</div><div class="s">Reimbursement after verification.</div></div><div class="v">${ru(d.payout)}</div></div>
+    <div class="earn"><div><div class="t">Your earnings</div><div class="s">${d.earnNote}</div></div><div class="v">${ru(d.earn)}</div></div>
+    <div class="calc-h">How this is calculated?</div>
+    ${line("Product price", ru(d.product))}
+    ${line("Discount", "− " + ru(d.discount), true)}
+    ${line("Platform fee", ru(d.platform))}
+    ${line("Card fee", ru(d.cardFee))}
+    <hr>
+    ${line("You pay at checkout", ru(d.youPay)).replace("calc", "calc b")}
+    ${d.cashback !== "0" ? line("Bank cashback", ru(d.cashback), true) : ""}
+    ${line("Mintzer payout", ru(d.payout), true)}
+    <hr>
+    ${line("Cash reward", ru(d.cashReward), true)}
+    ${tds}
+    <div class="earn" style="margin-top:6px;padding:8px 10px"><div class="t" style="font-size:12px">Your earnings</div><div class="v" style="font-size:14px">${ru(d.earn)}</div></div>
+    ${gst}
+    <div class="admin">App labels. You pay = Card holder will spend. Mintzer payout = Total receive. Your earnings = Card holder will earn, after TDS when TDS is set. Cash reward stays under How this is calculated.</div>`;
+  pop.classList.add("show");
+  const rect = tr.getBoundingClientRect();
+  const w = 320;
+  let left = rect.left + 280;
+  if (left + w > window.innerWidth - 12) left = Math.max(12, rect.right - w - 12);
+  let top = rect.top + 8;
+  pop.style.left = left + "px";
+  pop.style.top = top + "px";
+  const h = pop.offsetHeight;
+  if (top + h > window.innerHeight - 12) {
+    top = Math.max(12, window.innerHeight - h - 12);
+    pop.style.top = top + "px";
+  }
+}
+
+function closePop() { pop.classList.remove("show"); }
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+﻿Flow fix: Ship → Status → Bill → Verify + OTP bell
+==================================================
+cd ~/domains/mintzer.in/public_html/newapp
+unzip -o upload-orders-ship-status-bill-verify.zip
+php artisan view:clear
+php artisan optimize:clear
+Ctrl+F5
+
+- Column order: Ship | Status | Bill | Verify | Payout
+- No tracking → tracking 🔔 (tracking-notify)
+- Has tracking, no OTP → OTP 🔔 (otp-notify / otp-send-notify) restored
+- Has OTP → shows OTP number

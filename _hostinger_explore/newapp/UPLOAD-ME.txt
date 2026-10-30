@@ -1,0 +1,10 @@
+﻿Orders row hover (soft blue highlight)
+======================================
+Upload zip to newapp, then SSH:
+
+cd ~/domains/mintzer.in/public_html/newapp
+unzip -o upload-orders-row-hover.zip
+php artisan view:clear
+php artisan optimize:clear
+
+Then Ctrl+F5 on /orders

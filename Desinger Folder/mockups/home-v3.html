@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Home v3</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #E8EAED;
+      padding: 20px 12px 40px;
+      color: #202124;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .page-title { font-size: 18px; font-weight: 600; color: #1A73E8; margin-bottom: 6px; }
+    .page-sub { font-size: 11px; color: #5F6368; text-align: center; max-width: 340px; line-height: 1.5; margin-bottom: 16px; }
+
+    .phone {
+      width: 360px; max-width: 100%; height: 800px;
+      background: #F8F9FA; border-radius: 28px; border: 5px solid #202124;
+      overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0,0,0,.12); position: relative;
+    }
+    .status-bar {
+      height: 22px; background: #fff; padding: 0 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 10px; font-weight: 600; flex-shrink: 0;
+    }
+
+    /* Header */
+    .header {
+      background: #fff; padding: 10px 16px; border-bottom: 1px solid #E8EAED; flex-shrink: 0;
+    }
+    .header-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .greeting h1 { font-size: 17px; font-weight: 700; }
+    .greeting p { font-size: 11px; color: #5F6368; margin-top: 1px; }
+    .header-actions { display: flex; align-items: center; gap: 4px; }
+    .wallet-pill {
+      padding: 6px 11px; border: 1px solid #E8EAED; border-radius: 18px;
+      background: #fff; font-size: 13px; font-weight: 700; color: #1A73E8; cursor: pointer;
+    }
+    .icon-btn {
+      width: 36px; height: 36px; border: none; background: transparent; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;
+    }
+    .icon-btn:active { background: #F1F3F4; }
+    .notif-dot {
+      position: absolute; top: 5px; right: 5px; width: 8px; height: 8px;
+      background: #D93025; border-radius: 50%; border: 2px solid #fff;
+    }
+    .wa-btn { background: #E7F8EE; }
+
+    .scroll { flex: 1; overflow-y: auto; min-height: 0; }
+
+    /* Toolbar: search + view toggle */
+    .toolbar {
+      padding: 10px 16px 0; display: flex; gap: 8px; align-items: center;
+    }
+    .search-field {
+      flex: 1; display: flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid #E8EAED; border-radius: 24px; padding: 9px 14px; min-width: 0;
+    }
+    .search-field input {
+      border: none; outline: none; flex: 1; font-size: 14px; background: transparent; min-width: 0;
+    }
+    .search-field input::placeholder { color: #5F6368; }
+    .view-toggle {
+      display: flex; border: 1px solid #E8EAED; border-radius: 10px; overflow: hidden; background: #fff; flex-shrink: 0;
+    }
+    .view-btn {
+      width: 36px; height: 36px; border: none; background: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: #5F6368;
+    }
+    .view-btn.active { background: #E8F0FE; color: #1A73E8; }
+    .view-btn + .view-btn { border-left: 1px solid #E8EAED; }
+
+    /* Chips */
+    .chips-row {
+      display: flex; gap: 8px; padding: 10px 16px; overflow-x: auto; scrollbar-width: none;
+    }
+    .chips-row::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0; padding: 6px 13px; border-radius: 18px; font-size: 12px; font-weight: 500;
+      border: 1px solid #E8EAED; background: #fff; color: #5F6368; cursor: pointer;
+    }
+    .chip.active { border-color: #1A73E8; color: #1A73E8; font-weight: 600; background: #E8F0FE; }
+    .filter-btn {
+      width: 34px; height: 34px; border: 1px solid #E8EAED; border-radius: 50%;
+      background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5F6368; flex-shrink: 0;
+    }
+
+    /* First-time tutorial only */
+    .tutorial {
+      margin: 0 16px 10px; background: #E8F0FE; border-radius: 10px; padding: 10px 12px;
+      display: flex; align-items: center; gap: 10px; border: 1px solid #D2E3FC;
+    }
+    .tutorial.hidden { display: none; }
+    .tutorial-play {
+      width: 28px; height: 28px; background: #1A73E8; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .tutorial-text { flex: 1; font-size: 12px; color: #1A73E8; font-weight: 500; line-height: 1.3; }
+    .tutorial-close {
+      width: 28px; height: 28px; border: none; background: transparent; cursor: pointer;
+      color: #5F6368; font-size: 18px; line-height: 1; flex-shrink: 0;
+    }
+
+    .list-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 16px 10px; font-size: 11px;
+    }
+    .list-meta .count { color: #5F6368; }
+    .list-meta .sort { color: #1A73E8; font-weight: 600; border: none; background: none; cursor: pointer; font-size: 11px; }
+
+    /* Deals container */
+    .deals { padding: 0 16px 12px; display: flex; flex-direction: column; gap: 12px; }
+    .deals.grid-view {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+
+    /* ── LIST CARD ── */
+    .deal-card {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 12px;
+      padding: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    }
+    .deal-card.hidden { display: none; }
+
+    .card-top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 13px; font-weight: 700; line-height: 1.35; flex: 1;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .earn-hero { text-align: right; flex-shrink: 0; }
+    .earn-hero .lbl { font-size: 9px; font-weight: 600; color: #188038; text-transform: uppercase; letter-spacing: .4px; }
+    .earn-hero .amt { font-size: 22px; font-weight: 800; color: #188038; line-height: 1.1; }
+
+    .card-mid { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+
+    .img-wrap { position: relative; flex-shrink: 0; width: 92px; }
+    .deal-image {
+      width: 92px; height: 92px; background: #F8F9FA; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      border: 1px solid #F1F3F4;
+    }
+    .deal-image img { width: 100%; height: 100%; object-fit: contain; }
+    .deal-image .ph { font-size: 34px; line-height: 1; }
+    .store-badge {
+      position: absolute; top: -4px; left: -4px; width: 26px; height: 26px;
+      border-radius: 6px; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.12);
+      overflow: hidden; background: #fff;
+    }
+    .store-badge img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+    .card-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .color-line { font-size: 11px; color: #5F6368; }
+    .bank-row {
+      display: flex; align-items: center; gap: 8px;
+      background: #F8F9FA; border-radius: 8px; padding: 6px 8px; border: 1px solid #E8EAED;
+    }
+    .bank-logo {
+      width: 28px; height: 28px; border-radius: 6px; overflow: hidden; flex-shrink: 0;
+      border: 1px solid #E8EAED; background: #fff;
+    }
+    .bank-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .bank-info { min-width: 0; }
+    .bank-name { font-size: 11px; font-weight: 600; color: #202124; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .store-name { font-size: 10px; color: #5F6368; margin-top: 1px; }
+
+    /* Spend / Earn stat row — aligned grid */
+    .money-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;
+    }
+    .money-box {
+      border-radius: 8px; padding: 8px 10px; text-align: center; border: 1px solid #E8EAED;
+    }
+    .money-box.spend { background: #F8F9FA; }
+    .money-box.earn { background: #E6F4EA; border-color: #CEEAD6; }
+    .money-box .lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .35px; color: #5F6368; margin-bottom: 2px; }
+    .money-box.spend .val { font-size: 15px; font-weight: 700; color: #202124; }
+    .money-box.earn .val { font-size: 15px; font-weight: 800; color: #188038; }
+
+    /* CTA — Spend primary + earn chip (NOT "View deal") */
+    .cta-btn {
+      width: 100%; border: none; border-radius: 10px; padding: 0;
+      background: #1A73E8; color: #fff; cursor: pointer;
+      display: flex; align-items: stretch; overflow: hidden; min-height: 44px;
+      box-shadow: 0 2px 6px rgba(26,115,232,.25);
+    }
+    .cta-btn:active { opacity: .92; }
+    .cta-spend {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 8px 10px;
+    }
+    .cta-spend .sl { font-size: 9px; opacity: .85; font-weight: 500; text-transform: uppercase; letter-spacing: .3px; }
+    .cta-spend .sv { font-size: 15px; font-weight: 800; margin-top: 1px; }
+    .cta-earn {
+      background: #188038; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 8px 14px; min-width: 88px; border-left: 1px solid rgba(255,255,255,.2);
+    }
+    .cta-earn .el { font-size: 9px; font-weight: 600; opacity: .9; }
+    .cta-earn .ev { font-size: 14px; font-weight: 800; margin-top: 1px; }
+
+    .speed-tag {
+      display: inline-block; font-size: 9px; font-weight: 600; color: #E37400;
+      background: #FEF7E0; padding: 2px 7px; border-radius: 10px; margin-top: 4px;
+    }
+
+    /* ── GRID CARD overrides ── */
+    .grid-view .deal-card { padding: 10px; }
+    .grid-view .card-top { flex-direction: column; margin-bottom: 6px; }
+    .grid-view .earn-hero { text-align: left; display: flex; align-items: baseline; gap: 6px; }
+    .grid-view .earn-hero .amt { font-size: 18px; }
+    .grid-view .card-mid { flex-direction: column; margin-bottom: 8px; }
+    .grid-view .img-wrap { width: 100%; }
+    .grid-view .deal-image { width: 100%; height: 100px; }
+    .grid-view .store-badge { top: 6px; left: 6px; }
+    .grid-view .card-title { font-size: 12px; -webkit-line-clamp: 2; }
+    .grid-view .money-row { gap: 6px; margin-bottom: 8px; }
+    .grid-view .money-box { padding: 6px 4px; }
+    .grid-view .money-box .val { font-size: 13px; }
+    .grid-view .cta-btn { flex-direction: column; min-height: auto; }
+    .grid-view .cta-spend { padding: 7px; }
+    .grid-view .cta-spend .sv { font-size: 13px; }
+    .grid-view .cta-earn {
+      flex-direction: row; gap: 4px; min-width: auto; border-left: none;
+      border-top: 1px solid rgba(255,255,255,.2); padding: 6px;
+    }
+    .grid-view .bank-row { padding: 5px 6px; }
+    .grid-view .bank-logo { width: 24px; height: 24px; }
+
+    .fab {
+      position: absolute; right: 14px; bottom: 68px; width: 52px; height: 52px;
+      background: #1A73E8; border: none; border-radius: 50%; color: #fff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(26,115,232,.35); z-index: 5;
+    }
+    .bottom-nav {
+      background: #fff; border-top: 1px solid #E8EAED; height: 56px;
+      display: flex; flex-shrink: 0;
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; border: none; background: none; cursor: pointer; color: #5F6368; font-size: 10px; font-weight: 500;
+    }
+    .nav-item.active { color: #1A73E8; }
+
+    .toast {
+      position: fixed; bottom: 20px; right: 20px; background: #323232; color: #fff;
+      padding: 11px 14px; border-radius: 8px; font-size: 12px; opacity: 0; transform: translateY(6px);
+      transition: .25s; pointer-events: none; z-index: 99; max-width: 260px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .demo-reset {
+      margin-top: 14px; font-size: 11px; color: #5F6368; cursor: pointer; border: none; background: none; text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="page-title">Mintzer — Home v3</h1>
+  <p class="page-sub">Earn + spend focus · store &amp; bank logos · list/grid toggle · tutorial once only</p>
+
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+
+    <header class="header">
+      <div class="header-row">
+        <div class="greeting">
+          <h1>Hi, Arun</h1>
+          <p>Earn with your card</p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="wallet-pill" data-toast="→ Wallet">₹1,240</button>
+          <button type="button" class="icon-btn" data-toast="→ Notifications" aria-label="Notifications">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#5F6368" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notif-dot"></span>
+          </button>
+          <button type="button" class="icon-btn wa-btn" id="waBtn" aria-label="Join WhatsApp community">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="scroll">
+      <div class="toolbar">
+        <div class="search-field">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5F6368" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="search" id="searchInput" placeholder="Search deals..." />
+        </div>
+        <div class="view-toggle" role="group" aria-label="List or grid view">
+          <button type="button" class="view-btn active" id="btnList" title="List view" aria-pressed="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
+          </button>
+          <button type="button" class="view-btn" id="btnGrid" title="Grid view" aria-pressed="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="chips-row">
+        <button type="button" class="chip active" data-filter="all">All Deals</button>
+        <button type="button" class="chip" data-filter="direct">Direct</button>
+        <button type="button" class="chip" data-filter="link">Link</button>
+        <button type="button" class="filter-btn" data-toast="Filter: store · card · min earn" aria-label="More filters">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        </button>
+      </div>
+
+      <!-- First-time only — hidden after dismiss (backend: user.tutorialSeen) -->
+      <div class="tutorial" id="tutorialBanner">
+        <div class="tutorial-play"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>
+        <span class="tutorial-text">New here? Watch how Mintzer works (1 min)</span>
+        <button type="button" class="tutorial-close" id="tutorialClose" aria-label="Dismiss">&times;</button>
+      </div>
+
+      <div class="list-meta">
+        <span class="count" id="dealCount">3 deals live</span>
+        <button type="button" class="sort" data-toast="Sort: highest earn · newest">Highest earn ↓</button>
+      </div>
+
+      <div class="deals" id="dealList">
+
+        <article class="deal-card" data-type="direct" data-name="motorola g57" data-spend="17519" data-earn="300">
+          <div class="card-top">
+            <h2 class="card-title">Motorola G57 Power 5G</h2>
+            <div class="earn-hero">
+              <div class="lbl">You earn</div>
+              <div class="amt">₹300</div>
+            </div>
+          </div>
+          <div class="card-mid">
+            <div class="img-wrap">
+              <div class="store-badge"><img src="../logos/flipkart.svg" alt="Flipkart" /></div>
+              <div class="deal-image"><span class="ph">📱</span></div>
+            </div>
+            <div class="card-meta">
+              <div class="color-line">Any color · Instant payout</div>
+              <div class="bank-row">
+                <div class="bank-logo"><img src="../logos/any-card.svg" alt="Any card" /></div>
+                <div class="bank-info">
+                  <div class="bank-name">Any credit / debit card</div>
+                  <div class="store-name">Flipkart</div>
+                </div>
+              </div>
+              <span class="speed-tag">Instant</span>
+            </div>
+          </div>
+          <div class="money-row">
+            <div class="money-box spend"><div class="lbl">You spend</div><div class="val">₹17,519</div></div>
+            <div class="money-box earn"><div class="lbl">You earn</div><div class="val">₹300</div></div>
+          </div>
+          <button type="button" class="cta-btn deal-cta">
+            <span class="cta-spend"><span class="sl">Spend</span><span class="sv">₹17,519</span></span>
+            <span class="cta-earn"><span class="el">Earn</span><span class="ev">₹300</span></span>
+          </button>
+        </article>
+
+        <article class="deal-card" data-type="direct" data-name="samsung m35" data-spend="22999" data-earn="450">
+          <div class="card-top">
+            <h2 class="card-title">Samsung Galaxy M35 5G</h2>
+            <div class="earn-hero">
+              <div class="lbl">You earn</div>
+              <div class="amt">₹450</div>
+            </div>
+          </div>
+          <div class="card-mid">
+            <div class="img-wrap">
+              <div class="store-badge"><img src="../logos/amazon.svg" alt="Amazon" /></div>
+              <div class="deal-image"><span class="ph">📱</span></div>
+            </div>
+            <div class="card-meta">
+              <div class="color-line">Midnight Blue</div>
+              <div class="bank-row">
+                <div class="bank-logo"><img src="../logos/hdfc.svg" alt="HDFC" /></div>
+                <div class="bank-info">
+                  <div class="bank-name">HDFC Credit Card</div>
+                  <div class="store-name">Amazon</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="money-row">
+            <div class="money-box spend"><div class="lbl">You spend</div><div class="val">₹22,999</div></div>
+            <div class="money-box earn"><div class="lbl">You earn</div><div class="val">₹450</div></div>
+          </div>
+          <button type="button" class="cta-btn deal-cta">
+            <span class="cta-spend"><span class="sl">Spend</span><span class="sv">₹22,999</span></span>
+            <span class="cta-earn"><span class="el">Earn</span><span class="ev">₹450</span></span>
+          </button>
+        </article>
+
+        <article class="deal-card" data-type="link" data-name="samsung tv" data-spend="12499" data-earn="380">
+          <div class="card-top">
+            <h2 class="card-title">Samsung HD TV 32"</h2>
+            <div class="earn-hero">
+              <div class="lbl">You earn</div>
+              <div class="amt">₹380</div>
+            </div>
+          </div>
+          <div class="card-mid">
+            <div class="img-wrap">
+              <div class="store-badge"><img src="../logos/flipkart.svg" alt="Flipkart" /></div>
+              <div class="deal-image"><span class="ph">📺</span></div>
+            </div>
+            <div class="card-meta">
+              <div class="color-line">Link deal · 48h review</div>
+              <div class="bank-row">
+                <div class="bank-logo"><img src="../logos/axis.svg" alt="Axis" /></div>
+                <div class="bank-info">
+                  <div class="bank-name">Axis Credit Card</div>
+                  <div class="store-name">Flipkart</div>
+                </div>
+              </div>
+              <span class="speed-tag">48h review</span>
+            </div>
+          </div>
+          <div class="money-row">
+            <div class="money-box spend"><div class="lbl">You spend</div><div class="val">₹12,499</div></div>
+            <div class="money-box earn"><div class="lbl">You earn</div><div class="val">₹380</div></div>
+          </div>
+          <button type="button" class="cta-btn deal-cta">
+            <span class="cta-spend"><span class="sl">Spend</span><span class="sv">₹12,499</span></span>
+            <span class="cta-earn"><span class="el">Earn</span><span class="ev">₹380</span></span>
+          </button>
+        </article>
+
+      </div>
+    </div>
+
+    <button type="button" class="fab" data-toast="→ Support tickets" aria-label="Support">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </button>
+
+    <nav class="bottom-nav">
+      <button type="button" class="nav-item active">Home</button>
+      <button type="button" class="nav-item">Orders</button>
+      <button type="button" class="nav-item">Wallet</button>
+      <button type="button" class="nav-item">Profile</button>
+    </nav>
+  </div>
+
+  <button type="button" class="demo-reset" id="resetTutorial">Reset tutorial banner (demo)</button>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const toast = document.getElementById('toast');
+    let tmr;
+    function showToast(msg) {
+      clearTimeout(tmr);
+      toast.textContent = msg;
+      toast.classList.add('show');
+      tmr = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    document.querySelectorAll('[data-toast]').forEach(el => {
+      el.addEventListener('click', () => showToast(el.dataset.toast));
+    });
+
+    document.getElementById('waBtn').addEventListener('click', () => {
+      showToast('→ WhatsApp community');
+      window.open('https://chat.whatsapp.com/EXAMPLE', '_blank');
+    });
+
+    /* Tutorial — show once (app: user.tutorialSeen from API) */
+    const TUTORIAL_KEY = 'mintzer_tutorial_dismissed';
+    const tutorial = document.getElementById('tutorialBanner');
+    if (localStorage.getItem(TUTORIAL_KEY)) tutorial.classList.add('hidden');
+    document.getElementById('tutorialClose').addEventListener('click', () => {
+      tutorial.classList.add('hidden');
+      localStorage.setItem(TUTORIAL_KEY, '1');
+      showToast('Tutorial hidden — find it in Profile → Help');
+    });
+    tutorial.querySelector('.tutorial-play').parentElement.addEventListener('click', e => {
+      if (e.target.id === 'tutorialClose') return;
+      showToast('→ Tutorial video');
+    });
+    document.getElementById('resetTutorial').addEventListener('click', () => {
+      localStorage.removeItem(TUTORIAL_KEY);
+      tutorial.classList.remove('hidden');
+      showToast('Tutorial banner restored');
+    });
+
+    /* List / Grid toggle */
+    const dealList = document.getElementById('dealList');
+    const btnList = document.getElementById('btnList');
+    const btnGrid = document.getElementById('btnGrid');
+    const VIEW_KEY = 'mintzer_home_view';
+
+    function setView(mode) {
+      const isGrid = mode === 'grid';
+      dealList.classList.toggle('grid-view', isGrid);
+      btnList.classList.toggle('active', !isGrid);
+      btnGrid.classList.toggle('active', isGrid);
+      btnList.setAttribute('aria-pressed', !isGrid);
+      btnGrid.setAttribute('aria-pressed', isGrid);
+      localStorage.setItem(VIEW_KEY, mode);
+    }
+    btnList.addEventListener('click', () => setView('list'));
+    btnGrid.addEventListener('click', () => setView('grid'));
+    if (localStorage.getItem(VIEW_KEY) === 'grid') setView('grid');
+
+    /* Chips + search */
+    const chips = document.querySelectorAll('.chip');
+    const cards = document.querySelectorAll('.deal-card');
+    const dealCount = document.getElementById('dealCount');
+
+    function refreshList() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const filter = document.querySelector('.chip.active')?.dataset.filter || 'all';
+      let n = 0;
+      cards.forEach(card => {
+        const okType = filter === 'all' || card.dataset.type === filter;
+        const okSearch = !q || (card.dataset.name || '').includes(q);
+        const show = okType && okSearch;
+        card.classList.toggle('hidden', !show);
+        if (show) n++;
+      });
+      dealCount.textContent = n + (n === 1 ? ' deal live' : ' deals live');
+    }
+    chips.forEach(chip => chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      refreshList();
+    }));
+    document.getElementById('searchInput').addEventListener('input', refreshList);
+
+    document.querySelectorAll('.deal-cta').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        showToast('→ Deal detail');
+      });
+    });
+  </script>
+</body>
+</html>

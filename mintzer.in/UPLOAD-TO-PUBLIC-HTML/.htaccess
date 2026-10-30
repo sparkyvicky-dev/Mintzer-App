@@ -1,0 +1,31 @@
+# Mintzer marketing site — clean URLs (no .html in address bar)
+# Safe for Hostinger public_html: leaves /newapp and /beta alone
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Never touch Laravel / staging apps
+  RewriteRule ^(newapp|beta)(/|$) - [L]
+
+  # Old pages Google still shows → homepage
+  RewriteRule ^aboutus(/|\.html)?$ / [R=301,L]
+  RewriteRule ^faqs(/|\.html)?$ / [R=301,L]
+
+  # Browser asked for /index.html → send to /
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^ / [R=301,L]
+
+  # Browser asked for /page.html → send to /page
+  RewriteCond %{THE_REQUEST} \s/+([^\s?]+?)\.html[\s?] [NC]
+  RewriteRule ^ /%1 [R=301,L]
+
+  # Real files/folders (css, images, etc.) — leave alone
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # /contact → serve contact.html
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
+</IfModule>

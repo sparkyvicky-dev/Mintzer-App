@@ -1,0 +1,190 @@
+{
+    "ok": true,
+    "find": [
+        {
+            "id": 633,
+            "display_name": "User7607",
+            "mobile": "9698687607",
+            "email": null,
+            "created_at": "2026-09-26 21:57:52"
+        },
+        {
+            "id": 300,
+            "display_name": "User7607",
+            "mobile": "9976997607",
+            "email": null,
+            "created_at": "2025-06-30 22:32:14"
+        }
+    ],
+    "byName": [
+        {
+            "id": 300,
+            "display_name": "User7607",
+            "mobile": "9976997607",
+            "created_at": "2025-06-30 22:32:14"
+        },
+        {
+            "id": 633,
+            "display_name": "User7607",
+            "mobile": "9698687607",
+            "created_at": "2026-09-26 21:57:52"
+        }
+    ],
+    "ticketHits": [],
+    "recentTickets": [
+        {
+            "id": 83,
+            "user_id": 633,
+            "subject": "Others",
+            "message": "Order ORD3RM45L8 · 404-0094883-0110734\nWhere is my payment order delivered yesterday but why are you late payment issue",
+            "ticket_status": 1,
+            "created_at": "2026-10-27 16:51:09",
+            "display_name": "User7607",
+            "mobile": "9698687607"
+        },
+        {
+            "id": 82,
+            "user_id": 1,
+            "subject": "Others",
+            "message": "Order ORDKS21TV0\nStore canceled. Yes",
+            "ticket_status": 3,
+            "created_at": "2026-10-26 18:34:04",
+            "display_name": "admin",
+            "mobile": "9876543210"
+        },
+        {
+            "id": 81,
+            "user_id": 779,
+            "subject": "Others",
+            "message": "Order ORDZA103H5 · arunkumbakonam\nI canceled. Yes",
+            "ticket_status": 3,
+            "created_at": "2026-10-22 09:53:27",
+            "display_name": "User9285",
+            "mobile": "9344839285"
+        },
+        {
+            "id": 80,
+            "user_id": 884,
+            "subject": "Others",
+            "message": "tamil contact number please",
+            "ticket_status": 3,
+            "created_at": "2026-10-21 22:40:09",
+            "display_name": "User3627",
+            "mobile": "8610663627"
+        },
+        {
+            "id": 79,
+            "user_id": 611,
+            "subject": "Delivery Support",
+            "message": "Delivery person asking for address. Number is 8807894860.",
+            "ticket_status": 3,
+            "created_at": "2026-10-20 12:54:41",
+            "display_name": "User9479",
+            "mobile": "9840929479"
+        },
+        {
+            "id": 78,
+            "user_id": 633,
+            "subject": "Others",
+            "message": "Order ORD92LC67V · OD338885397968514100\nWhere is my payment already too late give me immediately",
+            "ticket_status": 3,
+            "created_at": "2026-10-20 09:27:25",
+            "display_name": "User7607",
+            "mobile": "9698687607"
+        },
+        {
+            "id": 77,
+            "user_id": 884,
+            "subject": "Payment Support",
+            "message": "orders card credit how many times return",
+            "ticket_status": 3,
+            "created_at": "2026-10-19 15:01:47",
+            "display_name": "User3627",
+            "mobile": "8610663627"
+        },
+        {
+            "id": 76,
+            "user_id": 775,
+            "subject": "Payment Support",
+            "message": "send my money",
+            "ticket_status": 3,
+            "created_at": "2026-10-17 18:43:08",
+            "display_name": "User4372",
+            "mobile": "9360384372"
+        },
+        {
+            "id": 75,
+            "user_id": 839,
+            "subject": "Order Support",
+            "message": "price mismatch",
+            "ticket_status": 3,
+            "created_at": "2026-10-16 14:32:43",
+            "display_name": "User6313",
+            "mobile": "9488416313"
+        },
+        {
+            "id": 74,
+            "user_id": 839,
+            "subject": "Others",
+            "message": "price mismatch",
+            "ticket_status": 3,
+            "created_at": "2026-10-16 14:32:18",
+            "display_name": "User6313",
+            "mobile": "9488416313"
+        },
+        {
+            "id": 73,
+            "user_id": 888,
+            "subject": "Others",
+            "message": "Order ORDI58DN0X\nYes. Yes",
+            "ticket_status": 3,
+            "created_at": "2026-10-15 15:33:37",
+            "display_name": "User4404",
+            "mobile": "9655664404"
+        },
+        {
+            "id": 72,
+            "user_id": 611,
+            "subject": "Order Support",
+            "message": "OnePlus Z3 Neckband - what is the order quantity?",
+            "ticket_status": 3,
+            "created_at": "2026-10-14 15:30:53",
+            "display_name": "User9479",
+            "mobile": "9840929479"
+        },
+        {
+            "id": 71,
+            "user_id": 633,
+            "subject": "Others",
+            "message": "Order ORD25D0582\nYes. Yes",
+            "ticket_status": 3,
+            "created_at": "2026-10-13 10:23:27",
+            "display_name": "User7607",
+            "mobile": "9698687607"
+        },
+        {
+            "id": 70,
+            "user_id": 624,
+            "subject": "Others",
+            "message": "delivery boy calling. what to do",
+            "ticket_status": 3,
+            "created_at": "2026-10-12 15:21:39",
+            "display_name": "Pavithra M",
+            "mobile": "9944973935"
+        },
+        {
+            "id": 69,
+            "user_id": 624,
+            "subject": "Delivery Support",
+            "message": "delivery boy calling",
+            "ticket_status": 3,
+            "created_at": "2026-10-12 15:21:24",
+            "display_name": "Pavithra M",
+            "mobile": "9944973935"
+        }
+    ],
+    "usersMeta": {
+        "max_id": 896,
+        "cnt": 887
+    }
+}

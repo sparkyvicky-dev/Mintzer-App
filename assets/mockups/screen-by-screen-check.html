@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Screen-by-screen check</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: #F8F9FA; color: #202124; line-height: 1.45;
+      padding: 28px 16px 64px;
+    }
+    .wrap { max-width: 880px; margin: 0 auto; }
+    h1 { font-size: 22px; color: #1A73E8; margin-bottom: 6px; }
+    .sub { font-size: 13px; color: #5F6368; margin-bottom: 16px; }
+    .sub a { color: #1A73E8; font-weight: 600; text-decoration: none; }
+    .sub a:hover { text-decoration: underline; }
+    .stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: #fff; border: 1px solid #E8EAED; border-radius: 12px;
+      padding: 12px 10px; text-align: center;
+    }
+    .stat b { display: block; font-size: 22px; color: #1A73E8; }
+    .stat.ok b { color: #188038; }
+    .stat.thin b { color: #E37400; }
+    .stat.miss b { color: #D93025; }
+    .stat span { font-size: 11px; color: #5F6368; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .filters button {
+      border: 1px solid #E8EAED; background: #fff; color: #5F6368;
+      font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 20px;
+      cursor: pointer;
+    }
+    .filters button.on { background: #1A73E8; color: #fff; border-color: #1A73E8; }
+    h2 {
+      font-size: 12px; text-transform: uppercase; letter-spacing: .5px;
+      color: #188038; margin: 22px 0 10px; padding-bottom: 4px;
+      border-bottom: 2px solid #188038;
+    }
+    .row {
+      display: grid; grid-template-columns: 36px 1fr 110px 110px;
+      gap: 10px; align-items: start;
+      background: #fff; border: 1px solid #E8EAED; border-radius: 10px;
+      padding: 12px 14px; margin-bottom: 8px;
+    }
+    .num {
+      width: 28px; height: 28px; border-radius: 50%; background: #1A73E8;
+      color: #fff; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .row h3 { font-size: 14px; font-weight: 600; }
+    .row .meta { font-size: 11px; color: #5F6368; margin-top: 3px; }
+    .row .note { font-size: 11px; color: #202124; margin-top: 6px; background: #F8F9FA; border-radius: 6px; padding: 6px 8px; }
+    .pill {
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px;
+      text-align: center; align-self: start; margin-top: 4px;
+    }
+    .in { background: #E6F4EA; color: #188038; }
+    .thin { background: #FEF7E0; color: #E37400; }
+    .out { background: #F1F3F4; color: #5F6368; }
+    .miss { background: #FCE8E6; color: #D93025; }
+    .locked { background: #E8F0FE; color: #1A73E8; }
+    .callout {
+      background: #E8F0FE; border-left: 4px solid #1A73E8; border-radius: 10px;
+      padding: 12px 14px; font-size: 13px; margin-bottom: 16px;
+    }
+    .warn {
+      background: #FEF7E0; border-left: 4px solid #E37400; border-radius: 10px;
+      padding: 12px 14px; font-size: 13px; margin-top: 18px;
+    }
+    .warn ul, .callout ul { margin: 8px 0 0 18px; }
+    .warn li, .callout li { margin: 4px 0; }
+    @media (max-width: 640px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .row { grid-template-columns: 28px 1fr; }
+      .pill { justify-self: start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Mintzer — Screen-by-screen check</h1>
+    <p class="sub">
+      Compared against <b>COMPLETE-DECISIONS-LOG</b> + SCREEN-INVENTORY vs interactive demo
+      <a href="./mintzer-app-demo.html">mintzer-app-demo.html</a> (v2.4 affiliate).
+      Specs exist for every v1 screen. This page answers: is it in the HTML demo?
+    </p>
+
+    <div class="stats">
+      <div class="stat ok"><b>13/13</b><span>Main routes in demo<br>(Offers retired)</span></div>
+      <div class="stat ok"><b>8</b><span>Overlays fully in demo</span></div>
+      <div class="stat thin"><b>4</b><span>In demo but thin / simplified</span></div>
+      <div class="stat miss"><b>1</b><span>Missing: ticket detail tap</span></div>
+    </div>
+
+    <div class="callout">
+      <b>Headline:</b> Everything we discussed as a v1 <i>page</i> is in the demo.
+      Bottom nav is Home · Orders · Wallet · Profile (no Offers, no withdraw).
+      Gaps are overlays that are stubbed: ticket detail, Appearance sheet, resume banner, in-app PerkPay tabs.
+    </div>
+
+    <div class="filters" id="filters">
+      <button type="button" class="on" data-f="all">All</button>
+      <button type="button" data-f="in">In demo</button>
+      <button type="button" data-f="thin">Thin</button>
+      <button type="button" data-f="miss">Missing</button>
+      <button type="button" data-f="out">Out of scope (correctly absent)</button>
+    </div>
+
+    <h2>A — Main routes (14 discussed)</h2>
+
+    <div class="row" data-s="in">
+      <div class="num">1</div>
+      <div>
+        <h3>Login — phone</h3>
+        <p class="meta">Spec: 01-login.md · +91 · 10 digits · Continue disabled until valid · no KYC at login</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">2</div>
+      <div>
+        <h3>Login — OTP</h3>
+        <p class="meta">4–6 digits · resend timer · wrong OTP snackbar · success → Home or suspended</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">3</div>
+      <div>
+        <h3>Home (tab) — LOCKED</h3>
+        <p class="meta">Hi name · wallet pill · bell · WhatsApp · search · list/grid · chips · carousel · social proof · tutorial · active strip · deal cards</p>
+        <p class="note">Locked layout also in home-samples.html. Affiliate: carousel slide 3 (partner cards), badges, social proof strip.</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">4</div>
+      <div>
+        <h3>Deal detail</h3>
+        <p class="meta">Money card · variant/qty · Accept · Report error WA · WhatsApp · no timer/address/Order ID</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">5</div>
+      <div>
+        <h3>Place order — LOCKED</h3>
+        <p class="meta">Timer dock · tap-to-paste Order ID · address copy-per-line · Cancel · shop mode chip</p>
+        <p class="note">External layout is in the demo. In-app is a WebView hint, not the full PerkPay 3-tab sheet (see layouts below).</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">6</div>
+      <div>
+        <h3>Order placed success</h3>
+        <p class="meta">Confirmation · Go to My Orders · rotating marketing (order more / cards / referral / WA)</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">7</div>
+      <div>
+        <h3>My Orders list (tab)</h3>
+        <p class="meta">Ongoing | Completed · search model/Order ID/tracking · store chips · sort · action badge · Continue order</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">8</div>
+      <div>
+        <h3>Order detail</h3>
+        <p class="meta">6-step timeline · Add note · Report · Cancel · tracking · OTP · invoice · 48h payment</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">9</div>
+      <div>
+        <h3>Wallet (tab) — LOCKED</h3>
+        <p class="meta">Available · Pending · Total earned · transactions · Excel · date range · no withdraw</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="out">
+      <div class="num">10</div>
+      <div>
+        <h3>Offers tab — retired</h3>
+        <p class="meta">08-offers.md kept as deferred. Not in bottom nav. Correctly absent from demo.</p>
+      </div>
+      <span class="pill out">Out of scope</span>
+      <span class="pill out">Deferred</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">11</div>
+      <div>
+        <h3>Profile (tab) — LOCKED</h3>
+        <p class="meta">KYC · Payout · Language · Appearance · tickets · Help · Notifications · Terms · Delete · Logout · Refer &amp; earn banner</p>
+        <p class="note">No Wallet / Orders shortcuts (use nav). Help, tutorials, notification prefs are snack stubs, not full screens.</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">12</div>
+      <div>
+        <h3>My tickets list</h3>
+        <p class="meta">Profile → My tickets · ID · subject · status · date</p>
+        <p class="note">List is in the demo. Tapping a ticket does not open ticket detail (gap below).</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">13</div>
+      <div>
+        <h3>Account suspended — LOCKED</h3>
+        <p class="meta">Not active copy · Contact support · Back to login · no “banned” wording</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">14</div>
+      <div>
+        <h3>Account deleted — LOCKED</h3>
+        <p class="meta">After delete · back to login</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+
+    <h2>Extra screens in demo (not in the 14-route count)</h2>
+    <div class="row" data-s="in">
+      <div class="num">+</div>
+      <div>
+        <h3>Notifications inbox</h3>
+        <p class="meta">Home bell → list. Spec lives in notifications backend doc + design brief.</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">+</div>
+      <div>
+        <h3>Partner cards list</h3>
+        <p class="meta">Affiliate v2.5 full screen from Home carousel / success. Also a sheet variant.</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED affiliate</span>
+    </div>
+
+    <h2>B — Overlays / gates (11 discussed)</h2>
+    <div class="row" data-s="in">
+      <div class="num">1</div>
+      <div>
+        <h3>KYC (Name + PAN)</h3>
+        <p class="meta">First Accept only — not at login</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="thin">
+      <div class="num">2</div>
+      <div>
+        <h3>Payout details (UPI / bank)</h3>
+        <p class="meta">After KYC, first Accept · edit later in Profile</p>
+        <p class="note">Demo is one UPI field + optional account number. Spec wants UPI confirm OR full bank (holder, account, confirm, IFSC).</p>
+      </div>
+      <span class="pill thin">Thin in demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">3</div>
+      <div>
+        <h3>How do you want to shop?</h3>
+        <p class="meta">External vs In-app · remember default · Change from Place order</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">4</div>
+      <div>
+        <h3>Cancel order + reason picker</h3>
+        <p class="meta">Place order + Order detail · preset reasons</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">5</div>
+      <div>
+        <h3>Add note</h3>
+        <p class="meta">Order detail · 200 chars · save / edit</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">6</div>
+      <div>
+        <h3>Finish current order first</h3>
+        <p class="meta">Accept blocked while placement timer running</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="thin">
+      <div class="num">7</div>
+      <div>
+        <h3>Resume order (optional once/session banner)</h3>
+        <p class="meta">App reopen. Home strip + My Orders Continue are LOCKED and present.</p>
+        <p class="note">Optional once-per-session resume overlay is not a separate modal in the demo. Home active strip is there.</p>
+      </div>
+      <span class="pill thin">Strip only</span>
+      <span class="pill locked">Optional</span>
+    </div>
+    <div class="row" data-s="thin">
+      <div class="num">8</div>
+      <div>
+        <h3>Raise ticket</h3>
+        <p class="meta">Order detail + FAB · spec: category → questions → message</p>
+        <p class="note">Demo is Subject + Details only — not the guided wizard.</p>
+      </div>
+      <span class="pill thin">Thin in demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="miss">
+      <div class="num">9</div>
+      <div>
+        <h3>Ticket detail</h3>
+        <p class="meta">My tickets → tap ticket · ID · status · thread</p>
+        <p class="note">Not in the demo. List items are not tappable. This is the only missing overlay from the 11.</p>
+      </div>
+      <span class="pill miss">Missing</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="thin">
+      <div class="num">10</div>
+      <div>
+        <h3>Appearance (Light / Dark / System)</h3>
+        <p class="meta">Profile · full dark theme required</p>
+        <p class="note">Demo toggles Light ↔ Dark. No System option sheet.</p>
+      </div>
+      <span class="pill thin">Toggle only</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">11</div>
+      <div>
+        <h3>Delete account</h3>
+        <p class="meta">Confirm · blocked if order in progress</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+
+    <h2>C — Place order layouts (one route, two layouts)</h2>
+    <div class="row" data-s="in">
+      <div class="num">E</div>
+      <div>
+        <h3>External (default)</h3>
+        <p class="meta">Open store · scroll · 2-row dock: timer + Order ID + Submit</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="thin">
+      <div class="num">I</div>
+      <div>
+        <h3>In-app WebView + PerkPay sheet</h3>
+        <p class="meta">Spec: 3 tabs Deal · Delivery · Help · 1-row dock. Also place-order-locked.html.</p>
+        <p class="note">Demo shows a WebView hint box when you pick in-app — not the full 3-tab PerkPay sheet.</p>
+      </div>
+      <span class="pill thin">Hint only</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+
+    <h2>Affiliate extras (discussed, LOCKED direction)</h2>
+    <div class="row" data-s="in">
+      <div class="num">A</div>
+      <div>
+        <h3>Home promo carousel (WA · tutorial · partner cards)</h3>
+        <p class="meta">118dp · dots · auto-rotate</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">A</div>
+      <div>
+        <h3>Deal badges (Hot · Trending · slots left)</h3>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">A</div>
+      <div>
+        <h3>Refer &amp; earn (Profile + sheet + WA share)</h3>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">LOCKED</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">A</div>
+      <div>
+        <h3>GST deal alert overlay</h3>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill locked">Spec</span>
+    </div>
+    <div class="row" data-s="in">
+      <div class="num">A</div>
+      <div>
+        <h3>Home / Orders / Wallet filter &amp; sort sheets</h3>
+        <p class="meta">Optional v1 overlays — present in demo</p>
+      </div>
+      <span class="pill in">In demo</span>
+      <span class="pill out">Optional v1</span>
+    </div>
+
+    <h2>Correctly not in the user app (v1)</h2>
+    <div class="row" data-s="out">
+      <div class="num">—</div>
+      <div>
+        <h3>Wallet withdraw · Offers tab · Instant orders · Admin panel · in-app WhatsApp chat · live GPS · OCR · 5th nav tab for cards</h3>
+        <p class="meta">These were discussed and explicitly out of scope. Demo does not include them.</p>
+      </div>
+      <span class="pill out">Out of scope</span>
+      <span class="pill out">Do not build</span>
+    </div>
+
+    <div class="warn">
+      <b>If something feels missing, it is almost always one of these (not a missing main screen):</b>
+      <ul>
+        <li><b>Ticket detail</b> — list exists, tap does nothing</li>
+        <li><b>Appearance</b> — Light/Dark toggle, no System radio sheet</li>
+        <li><b>Payout</b> — simplified fields vs full UPI confirm / bank IFSC</li>
+        <li><b>Raise ticket</b> — not the guided category wizard</li>
+        <li><b>In-app Place order</b> — hint, not PerkPay 3 tabs (see place-order-locked.html)</li>
+        <li><b>Language</b> — EN/HI toggle via snack, no picker overlay</li>
+        <li><b>Help / tutorials / notification prefs</b> — Profile rows snack only</li>
+        <li><b>Timer expired overlay</b> — optional v1, not in demo</li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    const buttons = document.querySelectorAll('#filters button');
+    const rows = document.querySelectorAll('.row');
+    const headings = document.querySelectorAll('h2');
+    function applyFilter(f) {
+      rows.forEach(r => {
+        r.style.display = (f === 'all' || r.dataset.s === f) ? '' : 'none';
+      });
+      headings.forEach(h => {
+        let el = h.nextElementSibling;
+        let visible = false;
+        while (el && el.tagName !== 'H2') {
+          if (el.classList.contains('row') && el.style.display !== 'none') visible = true;
+          el = el.nextElementSibling;
+        }
+        h.style.display = visible ? '' : 'none';
+      });
+    }
+    buttons.forEach(b => b.addEventListener('click', () => {
+      buttons.forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      applyFilter(b.dataset.f);
+    }));
+  </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Create deal · one by one</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f4f1ea; color: #1c1915; font-family: "Segoe UI", system-ui, sans-serif; }
+  .page { max-width: 1080px; margin: 0 auto; padding: 22px 18px 40px; display: grid; grid-template-columns: minmax(420px, 1fr) 320px; gap: 28px; align-items: start; }
+  .kicker { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #8a8175; font-weight: 700; }
+  h1 { margin: 6px 0 4px; font-size: 28px; letter-spacing: -.03em; }
+  .ask { margin: 0; color: #6d655c; font-size: 14px; }
+  .rail { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 16px; }
+  .rail button { background: #fff; border: 1px solid #e7e0d6; color: #6d655c; text-align: left; padding: 10px 12px; border-radius: 14px; }
+  .rail button small { display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; opacity: .7; }
+  .rail button b { display: block; margin-top: 2px; font-size: 15px; }
+  .rail button.on { background: #1c1915; color: #fff; border-color: #1c1915; }
+  .rail button.done { background: #f7f4ff; color: #1c1915; border-color: #d9ccff; }
+  .card { margin-top: 14px; background: #fff; border: 1px solid #e7e0d6; border-radius: 18px; padding: 18px 18px 14px; min-height: 220px; }
+  .progress { display: none; }
+  #stage.rise { animation: rise .28s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .block { margin-top: 16px; padding-top: 14px; border-top: 1px solid #efeae2; }
+  .block:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+  .block-title { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
+  .block-note { font-size: 12px; color: #8a8175; margin-bottom: 8px; }
+  .pair, .money { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+  .wide { grid-column: 1 / -1; }
+  label { display: block; font-size: 12px; color: #6d655c; font-weight: 700; margin: 0 0 6px; }
+  select, input[type="text"], input[type="number"], input[type="url"] { width: 100%; border: 1px solid #e4ddd2; border-radius: 12px; padding: 11px 12px; font-size: 16px; background: #fff; }
+  select:focus, input:focus { outline: 2px solid #7b61ff; border-color: #7b61ff; }
+  .rupee { position: relative; }
+  .rupee input { padding-left: 26px; }
+  .rupee::before { content: "₹"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #8a8175; font-weight: 700; }
+  .row { display: flex; gap: 8px; }
+  button { border: 0; border-radius: 12px; padding: 12px 16px; font-weight: 750; cursor: pointer; }
+  .next { background: #1c1915; color: #fff; }
+  .back, .minor { background: #efeae2; color: #1c1915; }
+  .nav { display: flex; justify-content: space-between; margin-top: 16px; }
+  .from { margin-top: 8px; font-size: 12px; font-weight: 700; color: #5b4bdb; display: none; }
+  .from.on { display: block; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { background: #efeae2; border: 1px solid #e4ddd2; }
+  .chip.on { background: #1c1915; color: #fff; }
+  .picked { display: none; margin-top: 10px; }
+  .picked.on { display: block; }
+  .lk { font-size: 12px; color: #6d655c; word-break: break-all; }
+  .extra, .addbox { display: none; margin-top: 10px; }
+  .extra.on, .addbox.on { display: block; }
+  .phone-wrap { position: sticky; top: 12px; }
+  .phone { width: 320px; background: #111; border-radius: 36px; padding: 10px; box-shadow: 0 16px 36px rgba(20,20,40,.16); }
+  .screen { background: #f8f9fa; border-radius: 26px; height: 640px; overflow: auto; }
+  .appbar { position: sticky; top: 0; background: #fff; display: flex; align-items: center; gap: 6px; padding: 10px; z-index: 2; }
+  .report { margin-left: auto; border: 1px solid #e8eaed; border-radius: 999px; font-size: 10px; font-weight: 700; padding: 4px 8px; }
+  .hero { height: 220px; background: #fff; position: relative; overflow: hidden; }
+  .slides { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .slides::-webkit-scrollbar { display: none; }
+  .slides img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: contain; scroll-snap-align: center; background: #fff; }
+  .dots { position: absolute; left: 0; right: 0; bottom: 8px; display: flex; justify-content: center; gap: 5px; }
+  .dots i { width: 6px; height: 6px; border-radius: 99px; background: #c4c7cc; display: block; }
+  .dots i.on { width: 14px; background: #7b61ff; }
+  .count { display: none; position: absolute; right: 10px; bottom: 22px; background: #202124cc; color: #fff; border-radius: 99px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+  .pill { display: none; position: absolute; left: 8px; top: 8px; background: #e0f2f1; color: #00796b; border: 1px solid #80cbc4; border-radius: 999px; font-size: 11px; font-weight: 800; padding: 2px 8px; }
+  .pill.on { display: block; }
+  .body { padding: 12px; }
+  .name-row { display: flex; justify-content: space-between; gap: 8px; }
+  .name-row h3 { margin: 0; font-size: 15px; }
+  .earnchip { background: #e6f4ea; color: #188038; border: 1px solid #ceead6; border-radius: 8px; font-size: 12px; font-weight: 800; padding: 4px 8px; }
+  .muted { font-size: 12px; color: #5f6368; margin: 4px 0; }
+  .exact { color: #7b61ff; font-size: 12px; font-weight: 750; }
+  .buys { display: flex; gap: 8px; margin: 10px 0; }
+  .buy { flex: 1; background: #fff; border: 1px solid #e8eaed; border-radius: 12px; padding: 8px; }
+  .buy span { display: block; font-size: 11px; color: #5f6368; }
+  .sum { background: #fff; border: 1px solid #e8eaed; border-radius: 14px; padding: 12px; }
+  .sum h4 { margin: 0; font-size: 15px; }
+  .line, .m, .calc { display: flex; justify-content: space-between; gap: 8px; }
+  .m { margin-top: 8px; }
+  .m .s, .sub { font-size: 11px; color: #5f6368; }
+  .m .v, .g { color: #188038; font-weight: 800; }
+  .earnbox { margin-top: 8px; background: #e6f4ea; border: 1px solid #ceead6; border-radius: 12px; padding: 8px 10px; display: flex; justify-content: space-between; }
+  .how { margin-top: 8px; color: #7b61ff; font-size: 12px; font-weight: 750; }
+  .calc { font-size: 12px; color: #5f6368; padding: 2px 0; }
+  .gststrip, .gstflow { display: none; margin-top: 10px; }
+  .gststrip.on, .gstflow.on { display: block; }
+  .gststrip { background: #e0f2f1; border: 1px solid #80cbc4; color: #00796b; border-radius: 10px; padding: 8px 10px; font-size: 12px; font-weight: 650; }
+  .gstflow { background: #fff; border-radius: 14px; padding: 12px; }
+  .gstflow h4 { text-align: center; margin: 4px 0; font-size: 15px; }
+  .gstep { display: flex; gap: 8px; margin-top: 8px; font-size: 12px; }
+  .gstep i { width: 22px; height: 22px; border-radius: 50%; background: #7b61ff; color: #fff; display: grid; place-items: center; font-style: normal; font-weight: 800; flex: none; }
+  .ok { width: 100%; margin-top: 10px; background: #7b61ff; color: #fff; }
+  .swipe { margin: 0 12px 12px; background: #7b61ff; color: #fff; text-align: center; border-radius: 999px; padding: 10px; font-size: 13px; font-weight: 750; }
+  .hot { box-shadow: inset 0 0 0 2px #7b61ff; border-radius: 8px; background: #f4f0ff; transition: box-shadow .2s ease, background .2s ease; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div>
+    <div class="kicker">Look only · 3 parts</div>
+    <h1 id="title">Product, store, card</h1>
+    <p class="ask" id="ask">The last deal fills these. Change only what moved.</p>
+    <div class="rail" id="rail">
+      <button type="button" data-step="0"><small>Part 1</small><b>Product</b></button>
+      <button type="button" data-step="1"><small>Part 2</small><b>Pricing</b></button>
+      <button type="button" data-step="2"><small>Part 3</small><b>GST</b></button>
+    </div>
+    <div class="card">
+      <div class="progress" id="progress">1 of 3</div>
+      <div id="stage"></div>
+      <div class="from" id="from">From the last deal.</div>
+      <div class="nav">
+        <button class="back" id="back" type="button">Back</button>
+        <button class="next" id="next" type="button">Next</button>
+      </div>
+    </div>
+  </div>
+  <div class="phone-wrap"><div class="phone"><div class="screen">
+    <div class="appbar"><span>←</span><b>Deal detail</b><span class="report">Anything wrong?</span></div>
+    <div class="hero" id="hero" data-k="product"><div class="slides" id="slides"></div><span class="pill" id="pill">GST</span><span class="count" id="imgCount"></span><div class="dots" id="dots"></div></div>
+    <div class="body">
+      <div class="name-row"><h3 id="phName">Pick a product</h3><span class="earnchip" id="phEarn" data-k="earn">Earn</span></div>
+      <div class="muted" id="phVariant" data-k="color"></div>
+      <div class="exact">Buy this exact variant</div>
+      <div class="buys"><div class="buy" data-k="store"><span>Buy on</span><b id="phStore">—</b></div><div class="buy" data-k="card"><span>Pay using</span><b id="phCard">—</b></div></div>
+      <div class="sum" id="phMoney"></div>
+      <div class="gststrip" id="gststrip" data-k="gst">GST invoice needed. At checkout, enter the Company and GST No. shown in the delivery address.</div>
+      <div class="gstflow" id="gstflow">
+        <h4>GST invoice needed</h4>
+        <div class="sub">This shows on the first Accept.</div>
+        <div class="gstep"><i>1</i><div><b>Enter GST at checkout</b><div>Company and GST No. from the delivery address in the app.</div></div></div>
+        <div class="gstep"><i>2</i><div><b>Upload the invoice after delivery</b><div>The correct invoice is required.</div></div></div>
+        <div class="gstep"><i>3</i><div><b>Wrong GST or invoice may delay payout</b><div>They can re-upload if it does not match.</div></div></div>
+        <button class="ok" type="button">I understand</button>
+      </div>
+    </div>
+    <div class="swipe">Swipe to accept</div>
+  </div></div></div>
+</div>
+<script src="deal-create-data.js"></script>
+<script>
+const products = window.DEAL_DATA.products;
+let gstList = window.DEAL_DATA.gst.slice();
+const steps = [
+  ["setup", "Product, store, card"],
+  ["money", "Pricing"],
+  ["gst", "GST"]
+];
+const stores = window.DEAL_DATA.stores;
+const dealers = window.DEAL_DATA.dealers;
+const cards = window.DEAL_DATA.cards;
+const isNew = new URLSearchParams(location.search).has("new");
+const moneyFields = [
+  ["price", "Dealer price"],
+  ["discount", "Discount"],
+  ["platform", "Platform fee"],
+  ["cardfee", "Card fee"],
+  ["cashback", "Cashback"],
+  ["reward", "Cash reward"],
+  ["spend", "Card holder will spend"],
+  ["receive", "Total card holder will receive"],
+  ["earn", "Card holder will earn"]
+];
+const deal = { store: "", dealer: "", card: "", color: "", qty: "", price: "", discount: "", platform: "", cardfee: "", cashback: "", reward: "", spend: "", receive: "", earn: "", gst: "" };
+let chosen = null, step = 0, focusKey = "", lastHot = "";
+const stage = document.getElementById("stage");
+function inr(n) { return n === "" || n === undefined ? "—" : "₹" + Math.round(Number(n) || 0).toLocaleString("en-IN"); }
+function photosOf(p) {
+  if (!p) return [];
+  if (Array.isArray(p.photos) && p.photos.length) return p.photos;
+  if (p.photo) return [p.photo];
+  return [];
+}
+let slide = 0;
+function renderGallery() {
+  const urls = photosOf(chosen);
+  const slides = document.getElementById("slides");
+  const key = urls.join("|");
+  if (slides.dataset.key !== key) {
+    slides.dataset.key = key;
+    slides.innerHTML = "";
+    urls.forEach((url) => {
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = "";
+      slides.appendChild(img);
+    });
+    slide = 0;
+    slides.scrollLeft = 0;
+  }
+  const multi = urls.length > 1;
+  const count = document.getElementById("imgCount");
+  count.style.display = multi ? "block" : "none";
+  count.textContent = multi ? (slide + 1) + " / " + urls.length : "";
+  const dots = document.getElementById("dots");
+  dots.innerHTML = urls.map((_, i) => `<i class="${i === slide ? "on" : ""}" data-i="${i}"></i>`).join("");
+  dots.querySelectorAll("i").forEach((dot) => {
+    dot.onclick = () => {
+      slide = Number(dot.dataset.i);
+      slides.scrollTo({ left: slide * slides.clientWidth, behavior: "smooth" });
+      renderGallery();
+    };
+  });
+}
+document.getElementById("slides").addEventListener("scroll", () => {
+  const slides = document.getElementById("slides");
+  const w = slides.clientWidth || 1;
+  const next = Math.round(slides.scrollLeft / w);
+  if (next !== slide) { slide = next; renderGallery(); }
+});
+setInterval(() => {
+  const urls = photosOf(chosen);
+  const slides = document.getElementById("slides");
+  if (urls.length < 2 || !slides.clientWidth) return;
+  slide = (slide + 1) % urls.length;
+  slides.scrollTo({ left: slide * slides.clientWidth, behavior: "smooth" });
+}, 3800);
+function paint() {
+  const hero = document.getElementById("hero");
+  document.getElementById("phName").textContent = chosen ? chosen.name : "Pick a product";
+  document.getElementById("phEarn").textContent = deal.earn === "" ? "Earn" : "Earn " + inr(deal.earn);
+  document.getElementById("phVariant").textContent = deal.color || "";
+  document.getElementById("phStore").textContent = deal.store || "—";
+  document.getElementById("phCard").textContent = deal.card || "—";
+  renderGallery();
+  const bank = `<div class="m" data-k="cashback"><div><b>Bank cashback</b><div class="s">Credited to your card/account according to the bank statements.</div></div><div class="v">${inr(deal.cashback)}</div></div>`;
+  const summary = `<h4>Payment summary</h4><div class="sub">Here's what you pay and what you get back.</div><div class="line" data-k="spend"><b>You pay at checkout</b><b>${inr(deal.spend)}</b></div>${bank}<div class="m" data-k="receive"><div><b>Mintzer payout</b><div class="s">Reimbursement after verification.</div></div><div class="v">${inr(deal.receive)}</div></div><div class="earnbox" data-k="earn"><b>Your earnings</b><b>${inr(deal.earn)}</b></div><div class="how">How this is calculated?</div><div class="calc" data-k="price"><span>Product price</span><b>${inr(deal.price)}</b></div><div class="calc" data-k="discount"><span>Discount</span><b class="g">− ${inr(deal.discount)}</b></div><div class="calc" data-k="platform"><span>Platform fee</span><b>${inr(deal.platform)}</b></div><div class="calc" data-k="cardfee"><span>Card fee</span><b>${inr(deal.cardfee)}</b></div><div class="calc" data-k="reward"><span>Cash reward</span><b class="g">${inr(deal.reward)}</b></div>`;
+  document.getElementById("phMoney").innerHTML = summary;
+  const gstOn = deal.gst !== "";
+  document.getElementById("pill").classList.toggle("on", !!(chosen && gstOn));
+  document.getElementById("gststrip").classList.toggle("on", !!(chosen && gstOn));
+  document.getElementById("gstflow").classList.toggle("on", !!(chosen && gstOn));
+  const stepId = steps[step][0];
+  const active = focusKey || (stepId === "gst" ? "gst" : stepId === "money" ? "price" : "product");
+  document.querySelectorAll("[data-k]").forEach((el) => el.classList.toggle("hot", el.dataset.k === active));
+  if (active === lastHot) return;
+  lastHot = active;
+  const screen = document.querySelector(".screen");
+  const hot = screen.querySelector(".hot");
+  if (hot) {
+    const a = hot.getBoundingClientRect();
+    const b = screen.getBoundingClientRect();
+    screen.scrollTop += a.top - b.top - 64;
+  }
+}
+function endShow() {
+  stage.classList.remove("rise");
+  void stage.offsetWidth;
+  stage.classList.add("rise");
+  paint();
+}
+function show() {
+  const [id, title] = steps[step];
+  document.getElementById("title").textContent = title;
+  document.getElementById("progress").textContent = (step + 1) + " of " + steps.length;
+  document.getElementById("back").style.visibility = step === 0 ? "hidden" : "visible";
+  document.getElementById("next").textContent = step === 0 ? "Pricing" : step === 1 ? "GST" : "Done";
+  document.querySelectorAll("#rail button").forEach((btn, i) => {
+    btn.classList.toggle("on", i === step);
+    btn.classList.toggle("done", i < step);
+  });
+  focusKey = "";
+  document.getElementById("from").classList.toggle("on", !!(chosen && chosen.last));
+  const choose = (list, current) => `<option value="">Choose</option>` + list.map((o) => `<option value="${o}" ${current === o ? "selected" : ""}>${o}</option>`).join("");
+  if (id === "setup") {
+    stage.innerHTML = `<div class="block"><div class="block-title">${isNew ? "New product" : "Product"}</div><div class="block-note">${isNew ? "Name and photos. They show on the phone only." : "Choose from the list. Photos show on the phone."}</div>${isNew ? "" : `<label>Product</label><div class="row"><select id="product"></select><button class="minor" id="showAdd" type="button">Add</button></div><div class="picked" id="picked"><button class="minor" id="showLink" type="button">Change link</button><label style="margin-top:8px">Photos for this deal</label><input id="swapPhoto" type="file" accept="image/*" multiple /><div class="block-note" id="photoNote"></div></div>`}<div class="extra" id="linkbox"><label>Offer link for this deal</label><input id="dealLink" type="url" /></div><div class="addbox" id="addbox"><label>Name</label><input id="newName" type="text" /><label>Photos</label><input id="newPhotos" type="file" accept="image/*" multiple /><label>Offer link</label><input id="newLink" type="url" /><button class="minor" id="saveProduct" type="button" style="margin-top:8px">Use this product</button></div><div style="margin-top:10px"><label>Color</label><input id="color" type="text" value="${deal.color ?? ""}" /></div></div><div class="block"><div class="block-title">Store and card</div><div class="pair"><div><label>Store</label><select id="store">${choose(stores, deal.store)}</select></div><div><label>Card</label><select id="card">${choose(cards, deal.card)}</select></div><div><label>Dealer</label><select id="dealer">${choose(dealers, deal.dealer)}</select></div><div><label>Order qty</label><input id="qty" type="number" value="${deal.qty ?? ""}" /></div></div></div>`;
+    const fill = () => {
+      ["color", "store", "card", "dealer", "qty"].forEach((key) => {
+        const el = document.getElementById(key);
+        if (el) el.value = deal[key] ?? "";
+      });
+    };
+    const syncPick = () => {
+      const box = document.getElementById("picked");
+      if (box) box.classList.toggle("on", !!chosen);
+      const note = document.getElementById("photoNote");
+      if (note) {
+        const n = photosOf(chosen).length;
+        note.textContent = n ? n + (n === 1 ? " photo on the phone." : " photos on the phone. Swipe them.") : "";
+      }
+      const sel = document.getElementById("product");
+      if (sel && chosen) sel.value = String(products.indexOf(chosen));
+    };
+    function pickProduct(p) {
+      chosen = p;
+      if (p && p.last) Object.assign(deal, p.last);
+      else Object.keys(deal).forEach((k) => deal[k] = "");
+      if (p) deal.color = p.last ? p.last.color : (p.color || "");
+      fill();
+      syncPick();
+      document.getElementById("from").classList.toggle("on", !!(p && p.last));
+      focusKey = "product";
+      paint();
+    }
+    const sel = document.getElementById("product");
+    if (sel) {
+      sel.innerHTML = '<option value="">Choose</option>' + products.map((p, i) => `<option value="${i}">${p.name}</option>`).join("");
+      sel.onchange = () => pickProduct(sel.value === "" ? null : products[Number(sel.value)]);
+      sel.onfocus = () => { focusKey = "product"; paint(); };
+    }
+    syncPick();
+    ["color", "store", "card", "dealer", "qty"].forEach((key) => {
+      const el = document.getElementById(key);
+      el.oninput = (e) => { deal[key] = e.target.value; paint(); };
+      el.onfocus = () => { focusKey = key === "dealer" || key === "qty" ? "" : key; paint(); };
+    });
+    const addBtn = document.getElementById("showAdd");
+    if (addBtn) addBtn.onclick = () => document.getElementById("addbox").classList.toggle("on");
+    const linkBtn = document.getElementById("showLink");
+    if (linkBtn) linkBtn.onclick = () => {
+      document.getElementById("linkbox").classList.add("on");
+      document.getElementById("dealLink").value = chosen ? (chosen.link || "") : "";
+    };
+    const dealLink = document.getElementById("dealLink");
+    if (dealLink) dealLink.oninput = (e) => { if (chosen) chosen.link = e.target.value; };
+    function readPhotos(files, done) {
+      const urls = new Array(files.length);
+      if (!files.length) { done([]); return; }
+      let left = files.length;
+      [...files].forEach((file, i) => {
+        const r = new FileReader();
+        r.onload = () => { urls[i] = r.result; if (--left === 0) done(urls); };
+        r.readAsDataURL(file);
+      });
+    }
+    const swap = document.getElementById("swapPhoto");
+    if (swap) swap.onchange = () => {
+      if (!chosen) return;
+      readPhotos(swap.files, (urls) => { chosen.photos = urls; chosen.photo = urls[0] || ""; syncPick(); paint(); });
+    };
+    if (isNew && !chosen) document.getElementById("addbox").classList.add("on");
+    document.getElementById("saveProduct").onclick = () => {
+      const name = document.getElementById("newName").value.trim();
+      if (!name) return;
+      const item = { name, color: "", link: document.getElementById("newLink").value.trim() || "", photo: "", photos: [], last: null };
+      const finish = () => { item.photo = item.photos[0] || ""; products.push(item); chosen = item; Object.keys(deal).forEach((k) => deal[k] = ""); show(); };
+      readPhotos(document.getElementById("newPhotos").files, (urls) => { item.photos = urls; finish(); });
+    };
+    endShow();
+    return;
+  }
+  if (id === "gst") {
+    stage.innerHTML = `<div class="block"><div class="block-title">GST for this deal</div><div class="block-note">Off keeps the normal deal. On shows the GST strip in the app.</div><label>GST</label><select id="field"><option value="">Off</option>${gstList.map((g, i) => `<option value="${i}" ${deal.gst === String(i) ? "selected" : ""}>${g.company}</option>`).join("")}</select><button class="minor" id="showGst" type="button" style="margin-top:8px">Add company</button><div class="addbox" id="gstadd"><label>Company</label><input id="gstCo" type="text" /><label>GST number</label><input id="gstNo" type="text" /><button class="minor" id="saveGst" type="button" style="margin-top:8px">Save</button></div></div>`;
+    document.getElementById("field").oninput = (e) => { deal.gst = e.target.value; lastHot = ""; paint(); };
+    document.getElementById("field").onfocus = () => { focusKey = "gst"; paint(); };
+    document.getElementById("showGst").onclick = () => document.getElementById("gstadd").classList.toggle("on");
+    document.getElementById("saveGst").onclick = () => {
+      const company = document.getElementById("gstCo").value.trim();
+      const no = document.getElementById("gstNo").value.trim();
+      if (!company || !no) return;
+      gstList.push({ company, no });
+      deal.gst = String(gstList.length - 1);
+      show();
+    };
+    endShow();
+    return;
+  }
+  if (id === "money") {
+    const box = (key, label) => `<div class="${key === "spend" || key === "receive" || key === "earn" ? "wide" : ""}"><label>${label}</label><div class="rupee"><input data-money="${key}" type="number" value="${deal[key] ?? ""}" /></div></div>`;
+    const appKeys = new Set(["spend", "receive", "earn"]);
+    stage.innerHTML = `<div class="block"><div class="block-title">Deal numbers</div><div class="money">${moneyFields.filter(([key]) => !appKeys.has(key)).map(([key, label]) => box(key, label)).join("")}</div></div><div class="block"><div class="block-title">What the app shows</div><div class="block-note">You pay, Mintzer payout, You earn.</div><div class="money">${moneyFields.filter(([key]) => appKeys.has(key)).map(([key, label]) => box(key, label)).join("")}</div></div>`;
+    stage.querySelectorAll("[data-money]").forEach((field) => {
+      field.oninput = () => { deal[field.dataset.money] = field.value; paint(); };
+      field.onfocus = () => { focusKey = field.dataset.money; paint(); };
+    });
+    endShow();
+    return;
+  }
+  endShow();
+}
+document.getElementById("next").onclick = () => {
+  if (step === 0 && !chosen) return;
+  if (step < steps.length - 1) { step += 1; show(); }
+  else document.getElementById("title").textContent = "Ready";
+};
+document.getElementById("back").onclick = () => { if (step > 0) { step -= 1; show(); } };
+document.querySelectorAll("#rail button").forEach((btn) => {
+  btn.onclick = () => {
+    const n = Number(btn.dataset.step);
+    if (n > 0 && !chosen) return;
+    if (n === step) return;
+    step = n;
+    show();
+  };
+});
+if (!isNew) {
+  const ip = products.find((p) => p.name === "Iphone 16 128GB");
+  if (ip) { chosen = ip; Object.assign(deal, ip.last); }
+}
+document.querySelector(".kicker").textContent = isNew ? "Look only · new product" : "Look only · saved models";
+show();
+</script>
+</body>
+</html>

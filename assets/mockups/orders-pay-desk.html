@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mintzer · Who to pay</title>
+<style>
+  :root {
+    --paper: #e8e4db;
+    --sheet: #fbfaf6;
+    --ink: #1c1915;
+    --muted: #746c62;
+    --line: #ddd6ca;
+    --green: #0f6b3f;
+    --green-soft: #e7f4ec;
+    --wait: #8c4034;
+    --shadow: 0 18px 50px rgba(40, 32, 18, 0.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 400px at 10% -10%, rgba(255,255,255,.7), transparent 50%),
+      var(--paper);
+    min-width: 1180px;
+  }
+  button, input { font: inherit; color: inherit; }
+  .app { display: flex; min-height: 100vh; }
+  .rail {
+    width: 72px; background: #221f1b; color: #d9d2c6;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 18px 0; gap: 6px; position: sticky; top: 0; height: 100vh;
+  }
+  .mark {
+    width: 36px; height: 36px; border-radius: 10px; margin-bottom: 18px;
+    display: grid; place-items: center; font-weight: 800; color: #fff;
+    background: #6d5ef5;
+  }
+  .rail button {
+    width: 42px; height: 42px; border: 0; border-radius: 10px;
+    background: transparent; color: #b7b0a4; cursor: pointer;
+  }
+  .rail button.on { background: #3a342c; color: #fff; }
+  .main {
+    flex: 1; min-width: 0;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 0 22px;
+    padding: 22px 26px 28px 22px;
+  }
+  .head { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px; }
+  .kicker { margin: 0 0 4px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 0; font-size: 34px; font-weight: 650; letter-spacing: -0.045em; }
+  h1 em { font-style: normal; color: var(--green); }
+  .look { font-size: 12px; color: var(--muted); }
+  .queue { padding-right: 4px; }
+  .qlabel {
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); margin: 8px 0;
+  }
+  .person {
+    width: 100%; text-align: left; border: 0; background: transparent;
+    border-left: 3px solid transparent; padding: 12px 12px 12px 14px;
+    cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px;
+    border-radius: 0 12px 12px 0;
+  }
+  .person.on { background: var(--sheet); border-left-color: var(--ink); box-shadow: var(--shadow); }
+  .person .name { font-weight: 750; font-size: 16px; }
+  .person .meta { grid-column: 1; color: var(--muted); font-size: 12px; }
+  .person .amt { grid-row: 1 / span 2; align-self: center; font-variant-numeric: tabular-nums; font-weight: 750; color: var(--green); }
+  .person.later .amt, .person.later .name { color: var(--muted); font-weight: 600; }
+  .bars { display: flex; gap: 3px; margin-top: 6px; }
+  .bars i { display: block; width: 14px; height: 4px; border-radius: 4px; background: var(--green); }
+  .person.later .bars i { background: #c4bdb2; }
+  .sheet {
+    background: var(--sheet);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    min-height: 640px;
+    padding: 26px 28px 22px;
+    display: flex; flex-direction: column;
+  }
+  .sheet-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  .eyebrow { margin: 0; color: var(--muted); font-size: 13px; }
+  .sheet h2 { margin: 2px 0 0; font-size: 40px; letter-spacing: -0.045em; font-weight: 650; }
+  .total { text-align: right; }
+  .total b {
+    display: block; font-size: 48px; letter-spacing: -0.05em; font-weight: 720;
+    font-variant-numeric: tabular-nums; color: var(--green); line-height: 1;
+  }
+  .total span { color: var(--muted); font-size: 13px; }
+  .math {
+    margin-top: 8px; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13px; line-height: 1.45;
+  }
+  .banner {
+    margin: 16px 0 0; padding: 10px 12px; border-radius: 10px;
+    background: #f6ece8; color: var(--wait); font-size: 13px;
+  }
+  .banner.way { background: #f6f1e4; color: #6d5420; }
+  table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+  th {
+    text-align: left; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: #8a8175; font-weight: 650; padding: 0 8px 8px; border-bottom: 1px solid var(--line);
+  }
+  td { padding: 12px 8px; border-bottom: 1px solid #eee8de; vertical-align: top; font-size: 14px; }
+  tr.off td { color: #8d867c; }
+  .deal { font-weight: 700; }
+  .sub { color: var(--muted); font-size: 12px; margin-top: 3px; font-family: Consolas, ui-monospace, monospace; }
+  .pay { font-variant-numeric: tabular-nums; font-weight: 750; color: var(--green); font-size: 16px; }
+  tr.off .pay { color: #8d867c; }
+  .ordered { color: #9a9288; font-size: 12px; }
+  .foot {
+    margin-top: auto; padding-top: 18px;
+    display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: end;
+  }
+  .actions { display: flex; gap: 8px; align-items: center; }
+  input[type="text"] {
+    width: 230px; border: 1px solid var(--line); background: #fff;
+    border-radius: 12px; padding: 12px 14px;
+  }
+  .btn { border: 0; border-radius: 12px; padding: 12px 14px; cursor: pointer; font-weight: 700; }
+  .btn.primary { background: var(--ink); color: #fff; }
+  .btn.ghost { background: #efeae2; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .stamp {
+    display: inline-block; margin-top: 4px; font-size: 11px; letter-spacing: .04em;
+    background: var(--green-soft); color: var(--green); border-radius: 999px; padding: 2px 7px;
+  }
+  .toast {
+    position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: #fff; padding: 12px 16px; border-radius: 12px; display: none;
+  }
+  .toast.show { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="rail">
+    <div class="mark">M</div>
+    <button title="Home">⌂</button>
+    <button class="on" title="Orders">☰</button>
+    <button title="Deals">▣</button>
+    <button title="People">☺</button>
+    <button title="Wallet">₹</button>
+  </aside>
+  <div class="main">
+    <header class="head">
+      <div>
+        <p class="kicker">Orders</p>
+        <h1>Who to pay <em id="headMoney">₹0</em></h1>
+      </div>
+      <div class="look">Look only. Live orders are not changed.</div>
+    </header>
+    <nav class="queue" id="queue"></nav>
+    <section class="sheet" id="sheet"></section>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const orders = [
+  { id: 1, user: "User7607", ord: "ORD38045L8", deal: "Iqoo 15R 8GB/256GB", ordered: 49198, toPay: 48500, store: "404-0094883-0110734", storeAt: "22 Oct · 12:41 AM", ship: "374662116592", courier: "Amazon", status: "Shipped", verified: false, bucket: "way" },
+  { id: 2, user: "User6781", ord: "ORD7C13294G", deal: "Iqoo 15R 8GB/256GB", ordered: 49198, toPay: 48500, store: "403-5889219-6761158", storeAt: "21 Oct · 10:41 PM", ship: "374662753261", courier: "Amazon", status: "Shipped", verified: false, bucket: "way" },
+  { id: 3, user: "User6313", ord: "ORD822NNQ9", deal: "Vivo T5X 6GB/128GB", ordered: 24630, toPay: 24211, store: "004383904237983331", storeAt: "20 Oct · 4:07 AM", ship: "FMPP4396823651", courier: "Ekart · OTP 120264", status: "Delivered", verified: false, bucket: "check" },
+  { id: 4, user: "Pavithra M", ord: "ORD34369F7", deal: "Acer Aspire 7 A715-79G", ordered: 68479, toPay: 69229, store: "40389218003895161", storeAt: "18 Oct · 10:58 PM", ship: "FMPP4396015836", courier: "Ekart · OTP 076234", status: "Delivered", verified: true, bucket: "ready" },
+  { id: 5, user: "User5749", ord: "ORD77885M9", deal: "Vivo T5X 6GB/128GB", ordered: 24630, toPay: 24211, store: "004389190675798511", storeAt: "21 Oct · 8:29 PM", ship: "FMPP4392269775", courier: "Ekart · OTP 719007", status: "Delivered", verified: true, bucket: "ready" },
+  { id: 6, user: "User5749", ord: "ORD1833E83", deal: "Vivo T5X 6GB/128GB", ordered: 24630, toPay: 24211, store: "004389189141572131", storeAt: "18 Oct · 8:02 PM", ship: "FMPP4396015825", courier: "Ekart · OTP 411757", status: "Delivered", verified: true, bucket: "ready" },
+  { id: 7, user: "User0875", ord: "ORDWL3HN928", deal: "Acer Aspire 7 A715-79G", ordered: 68479, toPay: 69229, store: "004389187656728191", storeAt: "18 Oct · 7:37 PM", ship: "FMPP4396141596", courier: "Ekart · OTP 674508", status: "Delivered", verified: true, bucket: "ready" },
+  { id: 8, user: "User5749", ord: "ORD389JV9OZ", deal: "Acer Aspire 7 A715-79G", ordered: 68479, toPay: 69229, store: "0043891912083569411", storeAt: "18 Oct · 7:27 PM", ship: "FMPP4396008924", courier: "Ekart · OTP 107032", status: "Delivered", verified: true, bucket: "ready" }
+];
+
+const inr = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
+const sum = (list) => list.reduce((a, o) => a + o.toPay, 0);
+const people = [...new Set(orders.map(o => o.user))].map(name => {
+  const rows = orders.filter(o => o.user === name);
+  const ready = rows.filter(o => o.bucket === "ready");
+  return { name, rows, ready, later: ready.length === 0 };
+}).sort((a, b) => {
+  if (a.later !== b.later) return a.later ? 1 : -1;
+  if (b.ready.length !== a.ready.length) return b.ready.length - a.ready.length;
+  return sum(b.ready) - sum(a.ready);
+});
+
+let current = "User5749";
+const picked = {};
+const txn = {};
+const stamped = {};
+people.forEach(p => {
+  picked[p.name] = new Set(p.ready.map(o => o.id));
+  txn[p.name] = "";
+  stamped[p.name] = "";
+});
+
+function toast(text) {
+  const el = document.getElementById("toast");
+  el.textContent = text;
+  el.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove("show"), 1800);
+}
+
+function paintQueue() {
+  const readyPeople = people.filter(p => !p.later);
+  const laterPeople = people.filter(p => p.later);
+  const readyMoney = sum(orders.filter(o => o.bucket === "ready"));
+  document.getElementById("headMoney").textContent = inr(readyMoney);
+  const block = (list) => list.map(p => {
+    const rows = p.later ? p.rows : p.ready;
+    const why = p.later
+      ? (p.rows[0].bucket === "check" ? "Delivered · not verified" : "Shipped · still on the way")
+      : (p.ready.length === 1 ? "1 order" : p.ready.length + " orders · one transfer");
+    return '<button class="person' + (p.later ? " later" : "") + (p.name === current ? " on" : "") + '" data-user="' + p.name + '">' +
+      '<div class="name">' + p.name + '</div>' +
+      '<div class="amt">' + inr(sum(rows)) + '</div>' +
+      '<div class="meta">' + why + '<div class="bars">' + rows.map(() => "<i></i>").join("") + "</div></div>" +
+      "</button>";
+  }).join("");
+  document.getElementById("queue").innerHTML =
+    '<div class="qlabel">Pay these · ' + readyPeople.length + " people</div>" + block(readyPeople) +
+    '<div class="qlabel">Not today · ' + laterPeople.length + "</div>" + block(laterPeople);
+}
+
+function paintSheet() {
+  const p = people.find(x => x.name === current);
+  const ready = p.ready;
+  const chosen = p.rows.filter(o => picked[p.name].has(o.id));
+  const payNow = !p.later;
+  const total = sum(chosen);
+  const math = chosen.map(o => inr(o.toPay)).join("<br>+ ");
+  let banner = "";
+  if (p.rows.some(o => o.bucket === "check")) banner = '<div class="banner">Do not pay yet. Invoice is not verified.</div>';
+  if (p.rows.every(o => o.bucket === "way")) banner = '<div class="banner way">On the way. To pay later ' + inr(sum(p.rows)) + ". Store bill was " + inr(p.rows.reduce((a, o) => a + o.ordered, 0)) + ".</div>";
+  const body = p.rows.map(o => {
+    const on = picked[p.name].has(o.id);
+    const can = o.bucket === "ready";
+    return '<tr class="' + (can ? "" : "off") + '">' +
+      '<td>' + (can ? '<input type="checkbox" data-id="' + o.id + '"' + (on ? " checked" : "") + ">" : "") + "</td>" +
+      "<td><div class=\"deal\">" + o.deal + "</div><div class=\"sub\">" + o.ord + "</div>" +
+        (stamped[p.name] && on ? '<div class="stamp">Txn ' + stamped[p.name] + "</div>" : "") + "</td>" +
+      "<td><div class=\"ordered\">Ordered " + inr(o.ordered) + "</div><div class=\"pay\">" + inr(o.toPay) + "</div></td>" +
+      "<td>" + o.store + "<div class=\"sub\">" + o.storeAt + "</div></td>" +
+      "<td>" + o.ship + "<div class=\"sub\">" + o.courier + "</div></td>" +
+      "<td>" + o.status + "<div class=\"sub\">" + (o.verified ? "Verified" : "Not verified") + "</div></td>" +
+      "</tr>";
+  }).join("");
+  document.getElementById("sheet").innerHTML =
+    '<div class="sheet-top"><div><p class="eyebrow">' + (payNow ? (ready.length > 1 ? "One person · one transfer" : "One order") : "Not ready") + "</p><h2>" + p.name + "</h2></div>" +
+    '<div class="total"><b>' + inr(payNow ? total : sum(p.rows)) + "</b><span>" + (payNow ? chosen.length + " of " + ready.length + " in this transfer" : "held back") + "</span>" +
+    (payNow && chosen.length > 1 ? '<div class="math">' + math + "</div>" : "") + "</div></div>" +
+    banner +
+    "<table><thead><tr><th></th><th>Deal</th><th>To pay</th><th>Store ID</th><th>Ship</th><th>Status</th></tr></thead><tbody>" + body + "</tbody></table>" +
+    '<div class="foot"><div class="actions">' +
+    '<input id="txn" type="text" placeholder="Transaction id" value="' + (txn[p.name] || "") + '"' + (payNow ? "" : " disabled") + ">" +
+    '<button class="btn ghost" id="copyAmt"' + (payNow ? "" : " disabled") + ">Copy amount</button>" +
+    '<button class="btn ghost" id="copyNote"' + (payNow ? "" : " disabled") + ">Copy the list</button>" +
+    "</div>" +
+    '<button class="btn primary" id="mark"' + (payNow && chosen.length ? "" : " disabled") + ">Put this id on " + chosen.length + " order" + (chosen.length === 1 ? "" : "s") + "</button></div>";
+  const txnEl = document.getElementById("txn");
+  if (txnEl) txnEl.addEventListener("input", (e) => { txn[p.name] = e.target.value; });
+  const copyAmt = document.getElementById("copyAmt");
+  if (copyAmt) copyAmt.onclick = async () => {
+    try { await navigator.clipboard.writeText(String(total)); } catch (e) {}
+    toast("Copied " + inr(total));
+  };
+  const copyNote = document.getElementById("copyNote");
+  if (copyNote) copyNote.onclick = async () => {
+    const note = [p.name].concat(chosen.map(o => o.deal + "  " + o.ord + "  " + o.toPay)).concat(["Total " + total]).join("\n");
+    try { await navigator.clipboard.writeText(note); } catch (e) {}
+    toast("Copied the orders in this transfer");
+  };
+  const mark = document.getElementById("mark");
+  if (mark) mark.onclick = () => {
+    const id = (txn[p.name] || "").trim();
+    if (!id) { toast("Type the transaction id first"); return; }
+    stamped[p.name] = id;
+    paintSheet();
+    toast("Look only. The id is shown on the ticked orders. Nothing was saved.");
+  };
+}
+
+function paint() { paintQueue(); paintSheet(); }
+
+document.getElementById("queue").addEventListener("click", (e) => {
+  const btn = e.target.closest(".person");
+  if (!btn) return;
+  current = btn.dataset.user;
+  paint();
+});
+document.getElementById("sheet").addEventListener("change", (e) => {
+  const box = e.target.closest("input[data-id]");
+  if (!box) return;
+  const id = Number(box.dataset.id);
+  if (box.checked) picked[current].add(id); else picked[current].delete(id);
+  paintSheet();
+});
+
+paint();
+</script>
+</body>
+</html>

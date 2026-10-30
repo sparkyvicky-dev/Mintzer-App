@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mintzer · In-app price claim — exact flow</title>
+<style>
+  :root {
+    --bg: #0e1016;
+    --paper: #f6f5f8;
+    --ink: #1c1915;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --purple: #7B61FF;
+    --purple-soft: #efeaff;
+    --green: #0f7a45;
+    --green-soft: #e8f6ee;
+    --amber: #9a6700;
+    --amber-soft: #fff6e0;
+    --rose: #b42318;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background:
+      radial-gradient(800px 420px at 0% 0%, #2a2150 0%, transparent 55%),
+      var(--bg);
+    color: #f4f4f5;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 56px; }
+  h1 { margin: 0 0 4px; font-size: 26px; letter-spacing: -0.02em; }
+  .sub { margin: 0 0 18px; color: #a1a1aa; font-size: 14px; line-height: 1.45; max-width: 70ch; }
+
+  .rail {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .rail button {
+    border: 1px solid #3f3f46; background: #181b24; color: #d4d4d8;
+    border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
+  }
+  .rail button.on { background: var(--purple); border-color: var(--purple); color: #fff; }
+  .rail button .n {
+    display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(255,255,255,.2); margin-right: 6px; font-size: 10px;
+  }
+
+  .stage { display: none; }
+  .stage.on { display: block; }
+
+  .layout { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .phone {
+    width: 320px; flex: 0 0 auto; background: #08090d; border-radius: 36px; padding: 12px;
+    box-shadow: 0 28px 70px rgba(0,0,0,.5);
+  }
+  .screen {
+    background: var(--paper); color: var(--ink); border-radius: 28px; min-height: 640px;
+    overflow: hidden; display: flex; flex-direction: column; position: relative;
+  }
+  .bar { height: 26px; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; font-size: 11px; font-weight: 700; }
+  .top { background: #fff; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .top h2 { margin: 0; font-size: 16px; }
+  .top p { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+  .body { padding: 12px 14px; flex: 1; overflow: auto; }
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin-bottom: 10px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 13px; }
+  .rowm { display: flex; justify-content: space-between; font-size: 13px; margin: 5px 0; }
+  .rowm b { font-variant-numeric: tabular-nums; }
+  .alert {
+    background: var(--amber-soft); color: var(--amber); border-radius: 10px; padding: 8px 10px;
+    font-size: 12px; font-weight: 650; line-height: 1.35; margin-top: 8px;
+  }
+  .btn {
+    width: 100%; border: 0; border-radius: 12px; padding: 12px; font-weight: 800; font-size: 14px; cursor: pointer;
+    background: var(--purple); color: #fff; margin-top: 8px;
+  }
+  .btn.sec { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  .btn.ok { background: var(--green); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .dock {
+    background: #fff; border-top: 1px solid var(--line); padding: 12px 14px 16px;
+    border-radius: 18px 18px 0 0; box-shadow: 0 -8px 24px rgba(0,0,0,.05);
+  }
+  .dock h3 { margin: 0 0 4px; font-size: 15px; }
+  .dock .hint { margin: 0 0 10px; font-size: 12px; color: var(--muted); line-height: 1.4; }
+  label.field { display: block; margin-bottom: 10px; }
+  label.field span { display: block; font-size: 10px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  label.field input, label.field select, label.field textarea {
+    width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 14px; background: #fafafa;
+  }
+  .upload {
+    border: 1.5px dashed #c4b5fd; background: var(--purple-soft); border-radius: 12px; padding: 18px 12px;
+    text-align: center; font-size: 13px; font-weight: 700; color: #5b4bdb; margin-bottom: 10px;
+  }
+  .upload.done { border-style: solid; background: var(--green-soft); color: var(--green); border-color: #86efac; }
+  .flow { display: flex; gap: 4px; margin: 8px 0 12px; }
+  .flow i {
+    flex: 1; height: 4px; border-radius: 4px; background: #e5e7eb; font-style: normal;
+  }
+  .flow i.on { background: var(--purple); }
+  .toast {
+    position: absolute; left: 16px; right: 16px; bottom: 88px; background: #111; color: #fff;
+    border-radius: 12px; padding: 10px 12px; font-size: 12px; font-weight: 600; text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  }
+  .pill {
+    display: inline-block; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 999px;
+    background: var(--amber-soft); color: var(--amber);
+  }
+  .pill.green { background: var(--green-soft); color: var(--green); }
+  .pill.grey { background: #f3f4f6; color: #4b5563; }
+
+  .side { flex: 1; min-width: 280px; max-width: 520px; }
+  .side .box {
+    background: #181b24; border: 1px solid #2f333d; border-radius: 16px; padding: 14px 16px; margin-bottom: 12px;
+  }
+  .side h3 { margin: 0 0 8px; font-size: 15px; color: #fff; }
+  .side p, .side li { color: #a1a1aa; font-size: 13px; line-height: 1.45; margin: 0; }
+  .side ol, .side ul { margin: 8px 0 0; padding-left: 18px; }
+  .side .who { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--purple); margin-bottom: 6px; }
+  .nav { display: flex; gap: 8px; margin-top: 14px; }
+  .nav button {
+    border: 0; border-radius: 10px; padding: 10px 14px; font-weight: 700; cursor: pointer;
+    background: #27272a; color: #fff; font-size: 13px;
+  }
+  .nav button.primary { background: var(--purple); }
+  .admin {
+    background: #fff; color: var(--ink); border-radius: 12px; padding: 12px; margin-top: 8px;
+  }
+  .admin .h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; font-weight: 800; }
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px; }
+  .g2 div { background: #f8fafc; border-radius: 8px; padding: 8px; }
+  .g2 span { display: block; font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+  .ab { display: flex; gap: 6px; margin-top: 8px; }
+  .ab button { flex: 1; border: 0; border-radius: 8px; padding: 9px; font-size: 12px; font-weight: 800; cursor: pointer; }
+  .ab .y { background: var(--green-soft); color: var(--green); }
+  .ab .n { background: #fee4e2; color: var(--rose); }
+  .timeline { margin: 0; padding: 0; list-style: none; }
+  .timeline li {
+    position: relative; padding: 0 0 12px 18px; border-left: 2px solid #3f3f46; font-size: 12px; color: #a1a1aa;
+  }
+  .timeline li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -5px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: var(--purple);
+  }
+  .timeline li strong { color: #fff; display: block; font-size: 13px; }
+  .note { margin-top: 16px; font-size: 12px; color: #71717a; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>In-app price claim — exact flow</h1>
+    <p class="sub">Click each step. This is the full path from “I paid more on Amazon/FK” to admin decision and what the holder sees after. Visual only — not live yet.</p>
+
+    <div class="rail" id="rail">
+      <button class="on" data-step="1"><span class="n">1</span>Trigger</button>
+      <button data-step="2"><span class="n">2</span>Confirm</button>
+      <button data-step="3"><span class="n">3</span>Amount</button>
+      <button data-step="4"><span class="n">4</span>Screenshot</button>
+      <button data-step="5"><span class="n">5</span>Submitted</button>
+      <button data-step="6"><span class="n">6</span>Admin</button>
+      <button data-step="7"><span class="n">7</span>Result</button>
+    </div>
+
+    <!-- 1 -->
+    <div class="stage on" data-stage="1">
+      <div class="layout">
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>9:41</span><span>Order</span></div>
+          <div class="top"><h2>ORD3RM45L8</h2><p>Iqoo 15R · Amazon · Delivered</p></div>
+          <div class="body">
+            <div class="card">
+              <h3>Money</h3>
+              <div class="rowm"><span>You pay (app)</span><b>₹49,198</b></div>
+              <div class="rowm"><span>You earn</span><b>₹1,000</b></div>
+              <div class="rowm"><span>From Mintzer</span><b>₹48,500</b></div>
+              <div class="alert">Checkout sometimes adds store fees. If you paid more than You pay, claim here — not on WhatsApp.</div>
+            </div>
+            <button class="btn" id="go2a">Paid more than You pay?</button>
+            <button class="btn sec">Tell Mintzer (delivery)</button>
+            <button class="btn sec">Upload invoice</button>
+          </div>
+        </div></div>
+        <div class="side">
+          <div class="box">
+            <div class="who">App · holder</div>
+            <h3>When the button shows</h3>
+            <ul>
+              <li>Order ID already saved (Placed or later)</li>
+              <li>Not Cancelled / Rejected</li>
+              <li>No open price claim already</li>
+            </ul>
+            <p style="margin-top:10px">Same entry can sit on <b>Order detail</b> and on the My Orders card if you want — this mock shows Order detail.</p>
+          </div>
+          <div class="box">
+            <div class="who">Rule</div>
+            <h3>WhatsApp is not the path</h3>
+            <p>Tell Mintzer stays for delivery boy / help. Price gap always uses this button.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="stage" data-stage="2">
+      <div class="layout">
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>9:41</span><span>Claim</span></div>
+          <div class="top"><h2>Price claim</h2><p>ORD3RM45L8</p></div>
+          <div class="body">
+            <div class="flow"><i class="on"></i><i></i><i></i></div>
+            <div class="card">
+              <h3>Was checkout more than You pay?</h3>
+              <p style="margin:0;font-size:12px;color:var(--muted);line-height:1.4">App You pay was <b>₹49,198</b>. Only continue if Amazon/Flipkart charged more.</p>
+            </div>
+            <button class="btn" id="go3a">Yes — I paid more</button>
+            <button class="btn sec">No — amounts match</button>
+          </div>
+        </div></div>
+        <div class="side">
+          <div class="box">
+            <div class="who">App · holder</div>
+            <h3>Step 1 of 3</h3>
+            <p><b>No</b> closes the sheet. Nothing is saved.</p>
+            <p style="margin-top:8px"><b>Yes</b> opens amount + screenshot steps.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="stage" data-stage="3">
+      <div class="layout">
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>9:41</span><span>Claim</span></div>
+          <div class="top"><h2>Price claim</h2><p>Step 2 · amount</p></div>
+          <div class="body">
+            <div class="flow"><i class="on"></i><i class="on"></i><i></i></div>
+            <label class="field"><span>What you paid at store</span><input value="49348" inputmode="numeric" /></label>
+            <div class="card">
+              <div class="rowm"><span>You pay (app)</span><b>₹49,198</b></div>
+              <div class="rowm"><span>You typed</span><b>₹49,348</b></div>
+              <div class="rowm"><span>Gap</span><b style="color:var(--amber)">+ ₹150</b></div>
+            </div>
+            <label class="field"><span>Why higher? (optional)</span>
+              <select>
+                <option>Platform / shipping fee</option>
+                <option>Card fee</option>
+                <option>Price changed at checkout</option>
+                <option>Not sure</option>
+              </select>
+            </label>
+            <button class="btn" id="go4a">Next · screenshot</button>
+          </div>
+        </div></div>
+        <div class="side">
+          <div class="box">
+            <div class="who">App · validation</div>
+            <h3>Exact checks</h3>
+            <ul>
+              <li>Typed amount &gt; You pay</li>
+              <li>Gap at least ₹1 (or your min band, e.g. ₹99)</li>
+              <li>Gap not absurd (e.g. cap ₹5,000) — else “contact support”</li>
+            </ul>
+            <p style="margin-top:8px">Gap is calculated live: typed − You pay.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="stage" data-stage="4">
+      <div class="layout">
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>9:41</span><span>Claim</span></div>
+          <div class="top"><h2>Price claim</h2><p>Step 3 · proof</p></div>
+          <div class="body">
+            <div class="flow"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+            <div class="card">
+              <div class="rowm"><span>Claimed gap</span><b>+ ₹150</b></div>
+            </div>
+            <div class="upload done">✓ checkout_ss.png<br><span style="font-weight:600;font-size:11px">Amazon order total visible</span></div>
+            <p style="margin:0 0 10px;font-size:12px;color:var(--muted);line-height:1.4">Need the page that shows Order ID + final paid amount. Blurry / cropped = reject.</p>
+            <button class="btn" id="go5a">Submit claim</button>
+          </div>
+        </div></div>
+        <div class="side">
+          <div class="box">
+            <div class="who">App · required</div>
+            <h3>Screenshot is mandatory</h3>
+            <p>No submit without image. Camera or gallery. One file for v1.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="stage" data-stage="5">
+      <div class="layout">
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>9:41</span><span>Order</span></div>
+          <div class="top"><h2>ORD3RM45L8</h2><p>Iqoo 15R · Amazon</p></div>
+          <div class="body">
+            <div class="card">
+              <h3>Price claim <span class="pill">Under review</span></h3>
+              <div class="rowm"><span>You pay</span><b>₹49,198</b></div>
+              <div class="rowm"><span>You claimed</span><b>₹49,348</b></div>
+              <div class="rowm"><span>Gap</span><b>+ ₹150</b></div>
+              <p style="margin:8px 0 0;font-size:12px;color:var(--muted);line-height:1.4">Usually checked within 1 working day. Mintzer payout stays Total receive unless we approve an adjust.</p>
+            </div>
+            <button class="btn sec" disabled>Paid more than You pay?</button>
+            <button class="btn sec">Tell Mintzer (delivery)</button>
+          </div>
+          <div class="toast">Claim sent · we’ll update this order</div>
+        </div></div>
+        <div class="side">
+          <div class="box">
+            <div class="who">App · after submit</div>
+            <h3>What changes</h3>
+            <ul>
+              <li>Claim button locks (no duplicate)</li>
+              <li>Order shows “Under review”</li>
+              <li>Optional push: “Price claim received”</li>
+              <li>Creates admin ticket/flag on that order</li>
+            </ul>
+          </div>
+          <div class="box">
+            <div class="who">Server</div>
+            <h3>Saved fields</h3>
+            <ul>
+              <li>order_id · claimed_amount · gap · reason</li>
+              <li>screenshot URL</li>
+              <li>status = pending</li>
+              <li>created_at</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="stage" data-stage="6">
+      <div class="layout">
+        <div class="phone"><div class="screen" style="background:#eef1f6">
+          <div class="bar"><span>Admin</span><span>Orders</span></div>
+          <div class="body">
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <strong style="font-size:14px">ORD3RM45L8</strong>
+                <span class="pill">Price claim</span>
+              </div>
+              <p style="margin:6px 0 0;font-size:12px;color:var(--muted)">User7607 · 9698687607</p>
+            </div>
+            <div class="admin">
+              <div class="h">Claim detail</div>
+              <div class="g2">
+                <div><span>You pay</span><b>₹49,198</b></div>
+                <div><span>Claimed</span><b>₹49,348</b></div>
+                <div><span>Gap</span><b>+ ₹150</b></div>
+                <div><span>Reason</span><b>Platform fee</b></div>
+              </div>
+              <p style="margin:8px 0;font-size:12px"><a href="#" onclick="return false">Open screenshot</a> · <a href="#" onclick="return false">Full order</a></p>
+              <div class="ab">
+                <button class="y" id="go7y">Approve adjust +₹150</button>
+                <button class="n" id="go7n">Reject</button>
+              </div>
+            </div>
+            <div class="card" style="margin-top:10px">
+              <h3 style="margin:0 0 4px;font-size:12px">Also visible</h3>
+              <p style="margin:0;font-size:12px;color:var(--muted)">Focus chip later: “Price claims” · or badge on Orders row · ticket # auto-linked</p>
+            </div>
+          </div>
+        </div></div>
+        <div class="side">
+          <div class="box">
+            <div class="who">Admin panel</div>
+            <h3>Exact actions</h3>
+            <ol>
+              <li>Open screenshot — confirm Order ID + paid total</li>
+              <li><b>Approve</b> → record adjust (usually on earn / note; payout Total receive unchanged unless you choose otherwise)</li>
+              <li><b>Reject</b> → status rejected + short reason</li>
+              <li>Push + in-app line updates for holder</li>
+            </ol>
+          </div>
+          <div class="box">
+            <div class="who">Suggested policy</div>
+            <ul>
+              <li>&lt; ₹99 → usually Reject (noise)</li>
+              <li>₹99–₹300 + clear SS → Approve</li>
+              <li>&gt; ₹300 → manual review / cancel deal</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="stage" data-stage="7">
+      <div class="layout">
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>9:41</span><span>Order</span></div>
+          <div class="top"><h2>ORD3RM45L8</h2><p>Iqoo 15R · Amazon</p></div>
+          <div class="body">
+            <div class="card" id="resultCard">
+              <h3>Price claim <span class="pill green" id="resultPill">Approved</span></h3>
+              <div class="rowm"><span>Gap</span><b>+ ₹150</b></div>
+              <p id="resultCopy" style="margin:8px 0 0;font-size:12px;color:var(--muted);line-height:1.4">We verified your checkout screenshot. ₹150 will be included in your payout note / earn adjust for this order.</p>
+            </div>
+            <div class="card">
+              <h3>Money</h3>
+              <div class="rowm"><span>From Mintzer</span><b>₹48,500</b></div>
+              <div class="rowm"><span>You earn</span><b>₹1,000</b></div>
+              <div class="rowm"><span>Claim adjust</span><b style="color:var(--green)">+ ₹150</b></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="side">
+          <div class="box">
+            <div class="who">App · final</div>
+            <h3>Two outcomes</h3>
+            <ul>
+              <li><b>Approved</b> — green pill + adjust line + push</li>
+              <li><b>Rejected</b> — grey/red pill + short reason (“fee under ₹99” / “screenshot unclear”)</li>
+            </ul>
+            <p style="margin-top:8px">Toggle below to preview Reject.</p>
+            <div class="nav">
+              <button class="primary" type="button" id="showApproved">Show Approved</button>
+              <button type="button" id="showRejected">Show Rejected</button>
+            </div>
+          </div>
+          <div class="box">
+            <div class="who">Full timeline</div>
+            <ul class="timeline">
+              <li><strong>1 · Holder taps claim</strong> Order detail</li>
+              <li><strong>2 · Confirms paid more</strong></li>
+              <li><strong>3 · Types store amount</strong> Gap auto</li>
+              <li><strong>4 · Uploads screenshot</strong></li>
+              <li><strong>5 · Under review</strong> Button locked</li>
+              <li><strong>6 · Admin Approve / Reject</strong></li>
+              <li><strong>7 · Holder sees result</strong> Push + order card</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button type="button" id="prev">← Prev</button>
+      <button class="primary" type="button" id="next">Next →</button>
+    </div>
+    <p class="note">Brave demo only. Not in the Play app yet. Money rule reminder: From Mintzer = admin Total receive unless you later decide adjust changes payout.</p>
+  </div>
+
+<script>
+  var step = 1;
+  var max = 7;
+  function go(n) {
+    step = Math.max(1, Math.min(max, n));
+    document.querySelectorAll('.rail button').forEach(function (b) {
+      b.classList.toggle('on', Number(b.getAttribute('data-step')) === step);
+    });
+    document.querySelectorAll('.stage').forEach(function (s) {
+      s.classList.toggle('on', Number(s.getAttribute('data-stage')) === step);
+    });
+  }
+  document.querySelectorAll('.rail button').forEach(function (b) {
+    b.addEventListener('click', function () { go(Number(b.getAttribute('data-step'))); });
+  });
+  document.getElementById('prev').onclick = function () { go(step - 1); };
+  document.getElementById('next').onclick = function () { go(step + 1); };
+  ['go2a','go3a','go4a','go5a','go7y'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', function () { go(step + 1); });
+  });
+  var rej = document.getElementById('go7n');
+  if (rej) rej.addEventListener('click', function () {
+    go(7);
+    setRejected();
+  });
+  function setApproved() {
+    document.getElementById('resultPill').className = 'pill green';
+    document.getElementById('resultPill').textContent = 'Approved';
+    document.getElementById('resultCopy').textContent = 'We verified your checkout screenshot. ₹150 will be included in your payout note / earn adjust for this order.';
+  }
+  function setRejected() {
+    document.getElementById('resultPill').className = 'pill grey';
+    document.getElementById('resultPill').textContent = 'Rejected';
+    document.getElementById('resultCopy').textContent = 'We couldn’t approve this gap. Reason: screenshot unclear / fee under policy band. You can reply on the ticket if needed.';
+  }
+  document.getElementById('showApproved').onclick = setApproved;
+  document.getElementById('showRejected').onclick = setRejected;
+</script>
+</body>
+</html>

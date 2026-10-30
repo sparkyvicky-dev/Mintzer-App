@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sparky Mobiles</title>
+  <style>
+    body { 
+      text-align: center; 
+      font-family: Arial, sans-serif; 
+      margin: 0; 
+      background-color: #f8f8f8; 
+      position: relative; 
+      overflow-x: hidden; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      height: 100vh; 
+    }
+    .logo-container { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .logo { 
+      width: 40%; 
+      max-width: 400px; 
+      height: auto;
+      animation: floatEffect 3s ease-in-out infinite, glow 2s infinite alternate; 
+    }
+    @media (max-width: 600px) {
+      .logo {
+        width: 56%;
+        max-width: 240px;
+      }
+    }
+    @keyframes floatEffect {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0); }
+    }
+    @keyframes glow {
+      0% { filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.5)); }
+      100% { filter: drop-shadow(0 0 15px rgba(255, 0, 0, 1)); }
+    }
+    .text-container {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .title { 
+      font-size: 28.6px; 
+      font-weight: bold; 
+      animation: fadeSlide 1.5s ease-in-out; 
+      color: #333; 
+    }
+    .subtitle { 
+      font-size: 18px; 
+      color: #616161; 
+      animation: fadeInUp 1.5s ease-in-out; 
+      font-weight: bold; 
+      margin-top: 5px; 
+    }
+    .bank-dropdown {
+      margin-top: 20px;
+      width: 80%;
+      max-width: 400px;
+    }
+    .bank-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: white;
+      margin-bottom: 10px;
+      cursor: pointer;
+      position: relative;
+      text-align: center;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .bank-option img {
+      width: 30px;
+      height: auto;
+      margin-right: 10px;
+    }
+    .bank-option::after {
+      content: "\25BC";
+      font-size: 14px;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .bank-details {
+      display: none;
+      padding: 10px;
+      font-size: 14px;
+      background-color: #f1f1f1;
+      border-radius: 5px;
+      margin-top: 5px;
+      text-align: left;
+      position: relative;
+    }
+    .copy-button {
+      cursor: pointer;
+      padding: 5px;
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .detail-text {
+      margin-right: 10px;
+    }
+    .qr-code img {
+      width: 300px;
+      height: auto;
+    }
+    .bank-detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+      flex-wrap: nowrap;
+    }
+    .bank-detail-row:last-child {
+      border-bottom: none;
+    }
+    .left-align {
+      font-weight: bold;
+      flex: 1;
+      text-align: left;
+    }
+    .right-align {
+      flex: 1;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .bank-option span {
+      flex-grow: 1;
+      text-align: center;
+    }
+    .contact-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      padding: 5px 15px;
+      font-size: 14px;
+      border-radius: 5px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+    }
+    .phone-button { background-color: #007BFF; }
+    .whatsapp-button { background-color: #25D366; }
+    .phone-button:hover { background-color: #0056b3; }
+    .whatsapp-button:hover { background-color: #1ebe57; }
+  </style>
+  <script>
+    function toggleDetails(id) {
+      var details = document.getElementById(id);
+      details.style.display = (details.style.display === "block") ? "none" : "block";
+    }
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text);
+      alert("Copied: " + text);
+    }
+    function copyBankDetails(id) {
+      const rows = document.querySelectorAll(`#${id} .bank-detail-row`);
+      const lines = Array.from(rows).map(row => {
+        const key = row.querySelector('.left-align').textContent.trim();
+        const val = row.querySelector('.detail-text').textContent.replace(/\s+/g, ' ').trim();
+        return key + ': ' + val;
+      });
+      const textToCopy = lines.join('\n');
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        alert('Copied:\n' + textToCopy);
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="/Payments/images/logo.png" alt="Sparky Mobiles Logo" class="logo">
+  </div>
+  <div class="text-container">
+    <div class="title">Sparky Mobiles</div>
+    <div class="subtitle">Retail & Wholesale 🚀</div>
+  </div>
+  <div class="bank-dropdown">
+    <h3>Bank Details</h3>
+
+    <!-- GPay/PhonePe/QRCode Section -->
+    <div class="bank-option" onclick="toggleDetails('gpay-details')">
+      <img src="/Payments/images/gpay.png" alt="GPay/PhonePe/QRCode">
+      <span>GPay/PhonePe/QRCode</span>
+    </div>
+    <div id="gpay-details" class="bank-details">
+      <div class="bank-detail-row">
+        <div class="left-align">UPI ID</div>
+        <div class="right-align">
+          <span class="detail-text">a2zenterprises8109@sbi</span>
+          <button class="copy-button" onclick="copyToClipboard('a2zenterprises8109@sbi')">Copy</button>
+        </div>
+      </div>
+      <div class="qr-code">
+        <img src="images/Qrcode.png" alt="QR Code">
+      </div>
+    </div>
+
+    <!-- State Bank of India Section -->
+    <div class="bank-option" onclick="toggleDetails('sbi-details')">
+      <img src="/Payments/images/sbi.png" alt="SBI">
+      <span>State Bank of India</span>
+    </div>
+    <div id="sbi-details" class="bank-details">
+      <div style="text-align: center; margin-bottom: 10px;">
+        <button class="copy-button" onclick="copyBankDetails('sbi-details')">Copy Account Details (Tap to copy)</button>
+      </div>
+      <div class="bank-detail-row">
+        <div class="left-align">Name</div>
+        <div class="right-align">
+          <span class="detail-text">A2Z Enterprise</span>
+          <button class="copy-button" onclick="copyToClipboard('A2Z Enterprise')">Copy</button>
+        </div>
+      </div>
+      <div class="bank-detail-row">
+        <div class="left-align">Type</div>
+        <div class="right-align">
+          <span class="detail-text">Current</span>
+          <button class="copy-button" onclick="copyToClipboard('Current')">Copy</button>
+        </div>
+      </div>
+      <div class="bank-detail-row">
+        <div class="left-align">Account No</div>
+        <div class="right-align">
+          <span class="detail-text">00000041453688109</span>
+          <button class="copy-button" onclick="copyToClipboard('00000041453688109')">Copy</button>
+        </div>
+      </div>
+      <div class="bank-detail-row">
+        <div class="left-align">IFSC</div>
+        <div class="right-align">
+          <span class="detail-text">SBIN0012805</span>
+          <button class="copy-button" onclick="copyToClipboard('SBIN0012805')">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- SUPPORT BUTTON -->
+  <div class="contact-container">
+    <a href="tel:+916380027328" class="contact-item phone-button">📞 Support</a>
+    <a href="https://wa.me/916380027328" class="contact-item whatsapp-button" target="_blank">💬 WhatsApp</a>
+  </div>
+</body>
+</html>

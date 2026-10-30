@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Invoices · stay on Orders</title>
+<link rel="stylesheet" href="smart-work.css">
+</head><body>
+<div class="app"><aside class="rail"><div class="mark">M</div><i class="on">☰</i></aside>
+<main class="main">
+<h1>Invoices</h1>
+<p class="note">No second visit. These are Orders rows, filtered to the bill. Verify stays on the row.</p>
+<div class="tag">Not uploaded · Re-upload · Ready to verify</div>
+<div style="display:flex;gap:8px;margin-bottom:8px">
+  <button class="btn p" data-f="all">All bills</button>
+  <button class="btn g" data-f="none">Not uploaded</button>
+  <button class="btn g" data-f="re">Re-upload</button>
+  <button class="btn g" data-f="ready">Ready to verify</button>
+</div>
+<div class="card"><table>
+<thead><tr><th>User</th><th>Deal</th><th>Bill</th><th>Verify</th></tr></thead>
+<tbody id="rows"></tbody></table></div>
+</main></div>
+<script>
+const rows = [
+  { user:"User6313", deal:"Vivo T5X", bill:"Invoice · 20 Oct", verify:"Select", kind:"ready" },
+  { user:"User7607", deal:"Iqoo 15R", bill:"Invoice · 22 Oct", verify:"Select", kind:"ready" },
+  { user:"Example", deal:"No bill yet", bill:"Not uploaded", verify:"Alert", kind:"none" },
+  { user:"Example", deal:"Bill sent back", bill:"Re-upload asked", verify:"Re-upload", kind:"re" }
+];
+let f = "all";
+function paint() {
+  document.getElementById("rows").innerHTML = rows.filter(r => f === "all" || r.kind === f).map(r =>
+    "<tr><td class='name'>" + r.user + "</td><td>" + r.deal + "</td><td>" + r.bill + "</td><td>" + r.verify + "</td></tr>"
+  ).join("");
+}
+document.querySelectorAll("[data-f]").forEach(b => b.onclick = () => {
+  f = b.dataset.f;
+  document.querySelectorAll("[data-f]").forEach(x => { x.className = "btn " + (x === b ? "p" : "g"); });
+  paint();
+});
+paint();
+</script>
+</body></html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mintzer · Orders</title>
+<style>
+  :root {
+    --bg: #f3f5fb;
+    --ink: #1c2434;
+    --muted: #6b7289;
+    --line: #e6e9f2;
+    --purple: #5b4bdb;
+    --green: #0f7a45;
+    --green-bg: #eef8f2;
+    --way-bg: #f7f8fc;
+    --check-bg: #fff8f6;
+    --card: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { font-family: "Segoe UI", system-ui, sans-serif; color: var(--ink); background: var(--bg); min-width: 1280px; }
+  button, select, input, textarea { font: inherit; }
+  .app { display: flex; min-height: 100vh; }
+  .rail {
+    width: 68px; background: #fff; border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 0;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .mark { width: 36px; height: 36px; border-radius: 10px; background: var(--purple); color: #fff; display: grid; place-items: center; font-weight: 800; }
+  .rail button { width: 40px; height: 40px; border: 0; border-radius: 10px; background: transparent; color: #98a0b3; cursor: pointer; }
+  .rail button.on { background: #f3f0ff; color: var(--purple); }
+  .main { flex: 1; min-width: 0; padding: 14px 16px 24px; }
+  .title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  h1 { font-size: 22px; margin: 0; font-weight: 700; }
+  h1 span { color: var(--muted); font-weight: 500; }
+  .look { font-size: 12px; color: var(--muted); }
+  .bar {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 10px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .bar label { font-size: 12px; color: var(--muted); }
+  select.f, .bar button.tool {
+    border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 7px 10px; cursor: pointer;
+  }
+  .date { background: var(--purple); color: #fff; border: 0; border-radius: 8px; padding: 8px 12px; }
+  .focus { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .focus b { font-weight: 650; }
+  .pill { border-radius: 8px; padding: 7px 10px; font-size: 13px; }
+  .pill.pay { background: #efeaff; color: #3d2e9e; }
+  .pill.way { background: #fff6df; color: #7a5b10; }
+  .pill.wait { background: #ffecec; color: #8d3048; }
+  .tools { display: flex; gap: 6px; margin: 0 0 8px; }
+  .tools button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 13px; }
+  .tools button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .sheet { background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    position: sticky; top: 0; background: #f7f8fc; text-align: left; font-size: 11px;
+    letter-spacing: .04em; text-transform: uppercase; color: #667085; padding: 8px; border-bottom: 1px solid var(--line); z-index: 1;
+  }
+  td { padding: 8px; border-bottom: 1px solid #f0f2f7; vertical-align: top; font-size: 13px; }
+  tr.ready td { background: var(--green-bg); }
+  tr.way td { background: #fff; }
+  tr.check td { background: var(--check-bg); }
+  tr.group td { background: #f6f4ff; color: #3d2e9e; font-weight: 700; font-size: 12px; padding: 6px 8px; }
+  .name { color: var(--purple); font-weight: 750; background: none; border: 0; padding: 0; cursor: pointer; }
+  .sub { color: var(--muted); font-size: 11px; margin-top: 2px; font-family: Consolas, ui-monospace, monospace; }
+  .ord-amt { color: #98a2b3; }
+  .to { color: var(--green); font-weight: 750; font-variant-numeric: tabular-nums; }
+  .next { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--purple); }
+  .courier { font-weight: 700; }
+  .c-amz { color: #b45309; }
+  .c-ekart { color: #0f7a45; }
+  .icon { border: 0; background: #f3f0ff; color: var(--purple); border-radius: 6px; padding: 2px 6px; cursor: pointer; }
+  a.inv { color: var(--purple); font-weight: 700; text-decoration: none; }
+  .ok { color: var(--green); font-weight: 750; }
+  .btn {
+    border: 0; border-radius: 8px; padding: 6px 8px; cursor: pointer; font-weight: 700; font-size: 12px;
+  }
+  .btn.pay { background: var(--purple); color: #fff; }
+  .btn.ghost { background: #eef0f6; color: var(--ink); }
+  .btn.danger { background: #fff; color: #b42318; border: 1px solid #f3c4c4; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  select.mini { border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; background: #fff; max-width: 110px; }
+  .mask { position: fixed; inset: 0; background: rgba(20, 24, 36, .35); display: none; }
+  .mask.show { display: block; }
+  .panel {
+    position: fixed; top: 0; right: 0; height: 100vh; width: 460px; background: #fff;
+    transform: translateX(104%); transition: transform .18s ease; padding: 18px 18px 24px; overflow: auto;
+  }
+  .mask.show .panel { transform: none; }
+  .panel h2 { margin: 8px 0 4px; font-size: 22px; }
+  .amt-lg { font-size: 32px; color: var(--green); font-weight: 750; letter-spacing: -.03em; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .grid label, .stack label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .grid input, .stack input, .stack textarea {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: #f7f8fc;
+  }
+  .stack { margin-bottom: 10px; }
+  .stack input.edit, .stack textarea { background: #fff; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .chips button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 4px 8px; cursor: pointer; font-size: 12px; }
+  .sib { border: 1px solid var(--line); border-radius: 10px; padding: 8px; margin-top: 6px; display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+  .toast {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: #1c2434; color: #fff; padding: 10px 14px; border-radius: 10px; display: none;
+  }
+  .toast.show { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="rail">
+    <div class="mark">M</div>
+    <button>⌂</button>
+    <button class="on">☰</button>
+    <button>▣</button>
+    <button>☺</button>
+    <button>₹</button>
+  </aside>
+  <div class="main">
+    <div class="title">
+      <h1>Orders <span>/ List</span></h1>
+      <div class="look">Look only. Live orders are not changed.</div>
+    </div>
+    <div class="bar">
+      <div>
+        <label>Status</label><br>
+        <select class="f" id="status">
+          <option value="">All</option>
+          <option>Placed</option>
+          <option>Shipped</option>
+          <option>Out For Delivery</option>
+          <option>Delivered</option>
+        </select>
+      </div>
+      <button class="date">All Orders</button>
+      <button class="tool" id="reload">Refresh</button>
+      <div class="focus">
+        <span class="pill pay"><b id="nPay">0</b> ready · <b id="mPay">₹0</b> to pay</span>
+        <span class="pill way"><b id="nWay">0</b> on the way · <b id="mWay">₹0</b></span>
+        <span class="pill wait"><b id="nWait">0</b> need verify</span>
+      </div>
+    </div>
+    <div class="tools">
+      <button class="on" data-view="compact">Default view</button>
+      <button data-view="payout">Payout view</button>
+      <button data-view="track">Tracking view</button>
+      <button data-view="all">All 17 fields</button>
+    </div>
+    <div class="sheet">
+      <table>
+        <thead id="head"></thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="mask" id="mask">
+  <div class="panel">
+    <button class="btn ghost" id="close">Close</button>
+    <h2 id="pUser"></h2>
+    <div class="sub" id="pDeal"></div>
+    <div class="amt-lg" id="pAmt"></div>
+    <div class="grid">
+      <div><label>Bank</label><input value="From their account" disabled></div>
+      <div><label>Payee</label><input value="From their account" disabled></div>
+      <div><label>Account</label><input value="From their account" disabled></div>
+      <div><label>IFSC</label><input value="From their account" disabled></div>
+      <div><label>UPI</label><input value="From their account" disabled></div>
+    </div>
+    <div id="sibs"></div>
+    <div class="stack"><label>Transaction ID</label><input class="edit" id="txn" placeholder="UTR / reference"></div>
+    <div class="stack"><label>Transaction file</label><input class="edit" type="file"></div>
+    <div class="stack">
+      <label>Payout note</label>
+      <textarea class="edit" id="note" rows="3"></textarea>
+      <div class="chips">
+        <button data-note="Paid via UPI">Paid via UPI</button>
+        <button data-note="Paid via NEFT">Paid via NEFT</button>
+        <button data-note="Paid via IMPS">Paid via IMPS</button>
+        <button data-note="Processed successfully">Processed successfully</button>
+      </div>
+    </div>
+    <button class="btn pay" id="submitPay">Submit</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const orders = [
+  { id: 1, user: "User7607", ord: "ORD38045L8", deal: "Iqoo 15R 8GB/256GB", ordered: 49198, toPay: 48500, date: "22 Oct 26 · 12:41 AM", store: "404-0094883-0110734", storeAt: "22 Oct 26 · 12:41 AM", ship: "374662116592", shipAt: "22 Oct 26", courier: "Amazon", otp: "in", mobile: "··4518", status: "Shipped", invoice: true, invAt: "22 Oct 26", verified: false, bucket: "way" },
+  { id: 2, user: "User6781", ord: "ORD7C13294G", deal: "Iqoo 15R 8GB/256GB", ordered: 49198, toPay: 48500, date: "21 Oct 26 · 10:41 PM", store: "403-5889219-6761158", storeAt: "21 Oct 26 · 10:41 PM", ship: "374662753261", shipAt: "21 Oct 26", courier: "Amazon", otp: "in", mobile: "··2946", status: "Shipped", invoice: true, invAt: "21 Oct 26", verified: false, bucket: "way" },
+  { id: 3, user: "User6313", ord: "ORD822NNQ9", deal: "Vivo T5X 6GB/128GB", ordered: 24630, toPay: 24211, date: "20 Oct 26 · 4:07 AM", store: "004383904237983331", storeAt: "20 Oct 26 · 4:07 AM", ship: "FMPP4396823651", shipAt: "20 Oct 26", courier: "Ekart", otp: "120264", mobile: "··4770", status: "Delivered", invoice: true, invAt: "20 Oct 26", verified: false, bucket: "check" },
+  { id: 4, user: "Pavithra M", ord: "ORD34369F7", deal: "Acer Aspire 7 A715-79G", ordered: 68479, toPay: 69229, date: "18 Oct 26 · 10:58 PM", store: "40389218003895161", storeAt: "18 Oct 26 · 10:58 PM", ship: "FMPP4396015836", shipAt: "18 Oct 26", courier: "Ekart", otp: "076234", mobile: "··3935", status: "Delivered", invoice: true, invAt: "18 Oct 26", verified: true, bucket: "ready" },
+  { id: 5, user: "User5749", ord: "ORD77885M9", deal: "Vivo T5X 6GB/128GB", ordered: 24630, toPay: 24211, date: "21 Oct 26 · 8:29 PM", store: "004389190675798511", storeAt: "21 Oct 26 · 8:29 PM", ship: "FMPP4392269775", shipAt: "21 Oct 26", courier: "Ekart", otp: "719007", mobile: "··8504", status: "Delivered", invoice: true, invAt: "21 Oct 26", verified: true, bucket: "ready" },
+  { id: 6, user: "User5749", ord: "ORD1833E83", deal: "Vivo T5X 6GB/128GB", ordered: 24630, toPay: 24211, date: "18 Oct 26 · 8:02 PM", store: "004389189141572131", storeAt: "18 Oct 26 · 8:02 PM", ship: "FMPP4396015825", shipAt: "18 Oct 26", courier: "Ekart", otp: "411757", mobile: "··4238", status: "Delivered", invoice: true, invAt: "18 Oct 26", verified: true, bucket: "ready" },
+  { id: 7, user: "User0875", ord: "ORDWL3HN928", deal: "Acer Aspire 7 A715-79G", ordered: 68479, toPay: 69229, date: "18 Oct 26 · 7:37 PM", store: "004389187656728191", storeAt: "18 Oct 26 · 7:37 PM", ship: "FMPP4396141596", shipAt: "18 Oct 26", courier: "Ekart", otp: "674508", mobile: "··0702", status: "Delivered", invoice: true, invAt: "18 Oct 26", verified: true, bucket: "ready" },
+  { id: 8, user: "User5749", ord: "ORD389JV9OZ", deal: "Acer Aspire 7 A715-79G", ordered: 68479, toPay: 69229, date: "18 Oct 26 · 7:27 PM", store: "0043891912083569411", storeAt: "18 Oct 26 · 7:27 PM", ship: "FMPP4396008924", shipAt: "18 Oct 26", courier: "Ekart", otp: "107032", mobile: "··4238", status: "Delivered", invoice: true, invAt: "18 Oct 26", verified: true, bucket: "ready" }
+];
+
+const views = {
+  compact: ["n", "user", "deal", "money", "store", "ship", "status", "bill", "verify", "pay", "cancel"],
+  payout: ["n", "user", "deal", "money", "status", "bill", "verify", "pay", "cancel"],
+  track: ["n", "user", "deal", "store", "ship", "courier", "otp", "mobile", "status"],
+  all: ["n", "ord", "user", "deal", "money", "receive", "date", "store", "ship", "courier", "otp", "mobile", "status", "bill", "verify", "pay", "cancel"]
+};
+const heads = {
+  n: "#", ord: "Order no", user: "User", deal: "Deal", money: "Money", receive: "To pay",
+  date: "Order date", store: "Store ID", ship: "Ship", courier: "Courier", otp: "OTP",
+  mobile: "Mobile", status: "Status", bill: "Bill", verify: "Verify", pay: "Payout", cancel: "Cancel"
+};
+let view = "compact";
+let statusFilter = "";
+let payId = null;
+const sameTxn = new Set();
+
+const inr = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
+const sum = (list) => list.reduce((a, o) => a + o.toPay, 0);
+function nextOf(o) {
+  if (!o.store) return "Store ID";
+  if (!o.ship) return "Tracking";
+  if (!o.otp) return "OTP";
+  if (o.status !== "Delivered") return "Mark delivered";
+  if (!o.invoice) return "Invoice";
+  if (!o.verified) return "Verify";
+  return "Pay " + inr(o.toPay);
+}
+function toast(t) {
+  const el = document.getElementById("toast");
+  el.textContent = t;
+  el.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove("show"), 1600);
+}
+function cell(key, o, i) {
+  if (key === "n") return i;
+  if (key === "ord") return o.ord;
+  if (key === "user") return '<button class="name" data-user="' + o.user + '">' + o.user + '</button><div class="sub">' + o.ord + '</div><div class="next">Next: ' + nextOf(o) + '</div>';
+  if (key === "deal") return o.deal;
+  if (key === "money") return '<div class="ord-amt">Ordered ' + inr(o.ordered) + '</div><div class="to">' + inr(o.toPay) + '</div><div class="sub">To pay</div>';
+  if (key === "receive") return '<div class="to">' + inr(o.toPay) + '</div>';
+  if (key === "date") return o.date;
+  if (key === "store") return o.store + ' <button class="icon" data-act="edit-store">edit</button><div class="sub">Entered ' + o.storeAt + '</div>';
+  if (key === "ship") return o.ship + ' <button class="icon" data-act="edit-ship">edit</button><div class="sub">' + o.courier + ' · OTP ' + o.otp + ' · ' + o.mobile + '</div>';
+  if (key === "courier") return '<span class="courier ' + (o.courier === "Amazon" ? "c-amz" : "c-ekart") + '">' + o.courier + '</span>';
+  if (key === "otp") return o.otp;
+  if (key === "mobile") return o.mobile;
+  if (key === "status") {
+    if (o.status === "Delivered") return '<span class="ok">Delivered</span>';
+    return '<select class="mini" data-act="status"><option>' + o.status + '</option><option>Delivered</option><option>Rejected</option></select>';
+  }
+  if (key === "bill") return o.invoice ? '<a class="inv" href="#">Invoice</a><div class="sub">' + o.invAt + '</div>' : '<button class="icon" data-act="bell">Remind</button>';
+  if (key === "verify") {
+    if (o.verified) return '<span class="ok">Verified</span>';
+    return '<select class="mini" data-act="verify"><option>Select</option>' + (o.invoice ? '<option>Verify</option><option>Re-Upload</option>' : '<option>Alert</option>') + '</select>';
+  }
+  if (key === "pay") {
+    if (o.bucket === "ready") return '<button class="btn pay" data-act="pay">Payout ' + inr(o.toPay) + '</button>';
+    return '<button class="btn ghost" disabled>Not ready</button>';
+  }
+  if (key === "cancel") return '<button class="btn danger" data-act="cancel"' + (o.status === "Delivered" ? " disabled" : "") + '>Cancel</button>';
+  return "";
+}
+function rows() {
+  return orders.filter(o => !statusFilter || o.status === statusFilter).slice().sort((a, b) => {
+    const rank = (o) => o.bucket === "ready" ? 0 : o.bucket === "check" ? 1 : 2;
+    if (rank(a) !== rank(b)) return rank(a) - rank(b);
+    if (a.user !== b.user) return a.user.localeCompare(b.user);
+    return a.id - b.id;
+  });
+}
+function paint() {
+  const cols = views[view];
+  const list = rows();
+  const ready = list.filter(o => o.bucket === "ready");
+  const way = list.filter(o => o.bucket === "way");
+  const wait = list.filter(o => o.bucket === "check");
+  document.getElementById("nPay").textContent = ready.length;
+  document.getElementById("mPay").textContent = inr(sum(ready));
+  document.getElementById("nWay").textContent = way.length;
+  document.getElementById("mWay").textContent = inr(sum(way));
+  document.getElementById("nWait").textContent = wait.length;
+  document.getElementById("head").innerHTML = "<tr>" + cols.map(c => "<th>" + heads[c] + "</th>").join("") + "</tr>";
+  let html = "";
+  let last = "";
+  list.forEach((o, idx) => {
+    const mates = list.filter(x => x.user === o.user);
+    if (mates.length > 1 && o.user !== last) {
+      const readyMates = mates.filter(x => x.bucket === "ready");
+      html += '<tr class="group"><td colspan="' + cols.length + '">' + o.user + " · " + mates.length + " orders on this list" +
+        (readyMates.length ? " · to pay " + inr(sum(readyMates)) : "") + "</td></tr>";
+    }
+    last = o.user;
+    html += '<tr class="' + o.bucket + '" data-id="' + o.id + '">' + cols.map(c => "<td>" + cell(c, o, idx + 1) + "</td>").join("") + "</tr>";
+  });
+  document.getElementById("body").innerHTML = html;
+}
+document.querySelector(".tools").onclick = (e) => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  view = b.dataset.view;
+  document.querySelectorAll(".tools button").forEach(x => x.classList.toggle("on", x === b));
+  paint();
+};
+document.getElementById("status").onchange = (e) => { statusFilter = e.target.value; paint(); };
+document.getElementById("reload").onclick = () => toast("Look only. List was not reloaded from live.");
+document.getElementById("body").onclick = (e) => {
+  const tr = e.target.closest("tr[data-id]");
+  if (!tr) return;
+  const o = orders.find(x => x.id === Number(tr.dataset.id));
+  const act = e.target.dataset.act;
+  if (act === "pay") openPay(o);
+  if (act === "bell") toast("Reminder only in this look.");
+  if (act === "edit-store" || act === "edit-ship") toast("Edit stays on the row. Nothing saved.");
+  if (act === "cancel") toast(o.status === "Delivered" ? "Delivered orders stay." : "Cancel reasons stay the same. Nothing saved.");
+  if (e.target.classList.contains("name")) toast(o.user + " · open their page from the live Orders list.");
+};
+document.getElementById("body").onchange = (e) => {
+  const tr = e.target.closest("tr[data-id]");
+  if (!tr) return;
+  const o = orders.find(x => x.id === Number(tr.dataset.id));
+  if (e.target.dataset.act === "status" && e.target.value === "Delivered") {
+    o.status = "Delivered";
+    o.bucket = o.verified ? "ready" : "check";
+    paint();
+  }
+  if (e.target.dataset.act === "verify" && e.target.value === "Verify") {
+    o.verified = true;
+    o.bucket = o.status === "Delivered" ? "ready" : o.bucket;
+    paint();
+  }
+  if (e.target.dataset.act === "verify" && e.target.value === "Re-Upload") toast("Ask for the invoice again. Nothing saved.");
+};
+function openPay(o) {
+  payId = o.id;
+  sameTxn.clear();
+  orders.filter(x => x.user === o.user && x.bucket === "ready" && x.id !== o.id).forEach(x => sameTxn.add(x.id));
+  document.getElementById("pUser").textContent = o.user;
+  document.getElementById("pDeal").textContent = o.deal + " · " + o.ord;
+  document.getElementById("pAmt").textContent = inr(o.toPay);
+  const mates = orders.filter(x => x.user === o.user && x.bucket === "ready" && x.id !== o.id);
+  document.getElementById("sibs").innerHTML = mates.length
+    ? '<div class="sub">Same person, still to pay. Tick to use one transaction id.</div>' + mates.map(m =>
+        '<label class="sib"><span><input type="checkbox" data-sib="' + m.id + '" checked> ' + m.deal + '<div class="sub">' + m.ord + '</div></span><b class="to">' + inr(m.toPay) + '</b></label>'
+      ).join("") + '<div class="sub" id="together"></div>'
+    : "";
+  document.getElementById("txn").value = "";
+  document.getElementById("note").value = "";
+  together();
+  document.getElementById("mask").classList.add("show");
+}
+function together() {
+  const el = document.getElementById("together");
+  if (!el) return;
+  const list = orders.filter(o => o.id === payId || sameTxn.has(o.id));
+  el.textContent = "One transfer " + inr(sum(list)) + " · " + list.length + " orders";
+}
+document.getElementById("sibs").onchange = (e) => {
+  const id = Number(e.target.dataset.sib);
+  if (!id) return;
+  if (e.target.checked) sameTxn.add(id); else sameTxn.delete(id);
+  together();
+};
+document.querySelector(".chips").onclick = (e) => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  document.getElementById("note").value = b.dataset.note;
+};
+document.getElementById("close").onclick = () => document.getElementById("mask").classList.remove("show");
+document.getElementById("mask").onclick = (e) => { if (e.target.id === "mask") e.currentTarget.classList.remove("show"); };
+document.getElementById("submitPay").onclick = () => {
+  if (!document.getElementById("txn").value.trim()) { toast("Transaction id is required."); return; }
+  document.getElementById("mask").classList.remove("show");
+  toast("Look only. Payout was not saved.");
+};
+paint();
+</script>
+</body>
+</html>

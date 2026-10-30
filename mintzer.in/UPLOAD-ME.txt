@@ -1,0 +1,65 @@
+EXTRACT / GO-LIVE (Hostinger) — marketing site only
+=====================================================
+
+Upload zip: mintzer-in-upload.zip
+Local ready site: mintzer.in\mintzer\mintzer\
+
+WHAT YOUR HOSTINGER DOWNLOAD SHOWED
+-----------------------------------
+domains/mintzer.in/
+  public_html/          ← this IS https://mintzer.in/  (upload HERE)
+    index.html          ← old marketing (replace)
+    aboutus.html        ← old Google URL (our zip overwrites with redirect home)
+    faqs.html           ← old Google URL (our zip overwrites with redirect home)
+    privacypolicy.html  ← old (our zip overwrites with redirect)
+    termsandconditions.html ← old (our zip overwrites with redirect)
+    output.css / images ← old Tailwind assets (can leave)
+    newapp/             ← LIVE Laravel API + admin (app.mintzer.in) — DO NOT TOUCH
+    beta/               ← staging copy — DO NOT TOUCH
+  mintzer-admin/        ← OLD CodeIgniter admin (2023), OUTSIDE public_html
+                          NOT the live admin. Live admin is public_html/newapp.
+                          Do not delete unless you confirm nothing points to it.
+                          Do NOT upload the new website into mintzer-admin.
+  .trash/               ← Hostinger trash — ignore
+
+mintzer-admin vs admin site
+---------------------------
+- Live admin / API: public_html/newapp  → usually https://app.mintzer.in/
+- mintzer-admin folder: legacy CodeIgniter. Not required for the new marketing site.
+- New marketing HTML has NO link into mintzer-admin or newapp admin panels.
+
+SAFE STEPS
+----------
+1. In Hostinger File Manager open: domains → mintzer.in → public_html
+2. Confirm you see folders: newapp  and  beta  (do not open/delete them)
+3. Optional: rename current index.html → index-old-2026-09-19.html (backup)
+4. Upload mintzer-in-upload.zip INTO public_html (same level as newapp)
+5. Extract zip:
+   - Extract to: public_html (empty folder name / extract here)
+   - Overwrite: ON
+6. Delete the zip after extract
+7. Confirm newapp and beta folders still exist
+8. Test:
+   - https://mintzer.in/           → new site
+   - https://mintzer.in/contact.html
+   - https://mintzer.in/privacy.html
+   - https://mintzer.in/terms.html
+   - https://mintzer.in/aboutus    → should send you to the homepage
+   - https://app.mintzer.in/       → must still load (admin/API)
+
+AFTER GO-LIVE — Google search still looks cheap until you also:
+  See mintzer.in/GOOGLE-SEARCH-FIX.txt
+  1. Hide app.mintzer.in (4 lines in newapp/public/.htaccess)
+  2. Request indexing in Google Search Console for https://mintzer.in/
+  3. Paste new Play + App Store listing copy (same file)
+
+DO NOT
+------
+- Delete newapp, beta, cgi-bin, or mintzer-admin
+- Extract the zip into newapp or into mintzer-admin
+- Replace public_html/.htaccess unless the new site breaks (current .htaccess only adds clean URLs; keep it)
+
+After extract you should see in public_html:
+  index.html, contact.html, privacy.html, terms.html,
+  aboutus.html, faqs.html, privacypolicy.html, termsandconditions.html, assets/
+  …plus existing newapp/, beta/, and any old leftover files (harmless)

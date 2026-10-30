@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment credit — fixed</title>
+  <style>
+    :root {
+      --purple: #7B61FF;
+      --ink: #1A1C1E;
+      --muted: #5F6368;
+      --line: #E6E8EC;
+      --green: #137333;
+      --page: #ECEEF4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at 0% -10%, #c8ecd8 0%, transparent 50%),
+        radial-gradient(800px 400px at 100% 0%, #d9d0ff 0%, transparent 45%),
+        var(--page);
+      padding: 24px 14px 48px;
+    }
+    header { max-width: 1040px; margin: 0 auto 16px; }
+    h1 { margin: 0 0 6px; font-size: 22px; font-weight: 850; }
+    .sub { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+    .okpill {
+      display: inline-block; margin-top: 10px;
+      background: #E6F4EA; color: var(--green);
+      border: 1px solid #CEEAD6; border-radius: 999px;
+      padding: 6px 12px; font-size: 12px; font-weight: 800;
+    }
+    .grid {
+      max-width: 1040px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .label {
+      font-size: 11px; font-weight: 800; letter-spacing: .05em;
+      text-transform: uppercase; color: var(--green); margin-bottom: 8px;
+    }
+    .phone {
+      background: #fff; border: 1px solid var(--line); border-radius: 22px;
+      overflow: hidden; box-shadow: 0 16px 36px rgba(26,28,30,.08);
+      max-width: 360px;
+    }
+    .bar {
+      padding: 11px 12px; font-size: 14px; font-weight: 800;
+      border-bottom: 1px solid var(--line);
+    }
+    .pad { padding: 12px; }
+    .chip {
+      display: inline-block; font-size: 10px; font-weight: 800;
+      padding: 3px 8px; border-radius: 99px; background: #E6F4EA; color: var(--green);
+      margin-bottom: 8px;
+    }
+    .title { font-size: 13px; font-weight: 800; margin: 0 0 4px; }
+    .meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+    .box {
+      border-radius: 12px; padding: 12px;
+      border: 1px solid #CEEAD6; background: #E6F4EA;
+    }
+    .box.info { background: #EEF3FF; border-color: #D6E0FF; }
+    .line-row {
+      display: flex; justify-content: space-between; gap: 8px;
+      background: #fff; border: 1px solid #CEEAD6; border-radius: 10px;
+      padding: 10px; margin-bottom: 8px;
+    }
+    .line-row.plain { border-color: var(--line); }
+    .l { font-size: 12px; font-weight: 800; }
+    .s { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .v { font-size: 15px; font-weight: 900; color: var(--green); white-space: nowrap; }
+    .v.ink { color: var(--ink); }
+    .earn { font-size: 14px; font-weight: 800; color: var(--green); margin: 4px 0 8px; }
+    .kv { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .kv b { color: var(--green); }
+    .wallet {
+      display: flex; justify-content: space-between; gap: 8px;
+      border: 1px solid var(--line); border-radius: 12px; padding: 10px;
+    }
+    .foot { max-width: 1040px; margin: 18px auto 0; font-size: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Payment credit — fixed (same places)</h1>
+    <p class="sub">
+      Matches approved clarity: <strong>From Mintzer ₹31,635</strong> · Bank cashback ₹1,608 · Your earnings ₹900.
+      No more ₹33,243.
+    </p>
+    <div class="okpill">App code + order list cashback field updated</div>
+  </header>
+
+  <div class="grid">
+    <div>
+      <div class="label">1 · Order · Payment — fixed</div>
+      <div class="phone">
+        <div class="bar">← Order detail</div>
+        <div class="pad">
+          <span class="chip">FIXED</span>
+          <p class="title">Infinix GT 30 Pro</p>
+          <div class="meta">Payment step (before Paid)</div>
+          <div class="box info">
+            <div style="font-size:12px;font-weight:700;color:#5B4BDB;margin-bottom:6px">🎉 On the way to your account</div>
+            <div style="font-size:13px;font-weight:750;margin-bottom:8px">Payout on the way</div>
+            <div class="l">From Mintzer ₹31,635</div>
+            <div class="s">Bank transfer to your payout account</div>
+            <div style="height:8px"></div>
+            <div class="l">Bank cashback ₹1,608</div>
+            <div class="s">Credited separately by your bank</div>
+            <div style="height:8px"></div>
+            <div class="earn" style="margin:0">Your earnings ₹900</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="label">2 · Order · Paid — fixed</div>
+      <div class="phone">
+        <div class="bar">← Order detail</div>
+        <div class="pad">
+          <span class="chip">FIXED</span>
+          <p class="title">Infinix GT 30 Pro</p>
+          <div class="meta">Paid (last step)</div>
+          <div class="box">
+            <div class="line-row">
+              <div>
+                <div class="l">From Mintzer</div>
+                <div class="s">Credited to your bank</div>
+              </div>
+              <div class="v">₹31,635</div>
+            </div>
+            <div class="line-row plain">
+              <div>
+                <div class="l">Bank cashback</div>
+                <div class="s">Credited separately by your bank</div>
+              </div>
+              <div class="v ink">₹1,608</div>
+            </div>
+            <div class="earn">Your earnings ₹900</div>
+            <div class="kv">
+              Account <b>Bank · ••••xxxx</b><br>
+              UTR <b>O9J6081026000001</b><br>
+              Paid on <b>date, time</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="label">3 · Wallet — fixed</div>
+      <div class="phone">
+        <div class="bar">Wallet</div>
+        <div class="pad">
+          <span class="chip">FIXED</span>
+          <p class="title">Transaction row</p>
+          <div class="meta">Uses mintzer_payout · never spend + earn</div>
+          <div class="wallet">
+            <div>
+              <div class="l">Infinix GT 30 Pro</div>
+              <div class="s">OD3387… · Paid</div>
+            </div>
+            <div style="text-align:right">
+              <div class="v">₹31,635</div>
+              <div class="s">· +₹900</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">
+    Needs app build <b>3.0.33+</b> on the phone for UI. Server already returns mintzer_payout + cashback on order list.
+    Example order ORDGVD9663 / 9698687607.
+  </p>
+</body>
+</html>

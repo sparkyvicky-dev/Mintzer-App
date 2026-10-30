@@ -1,0 +1,9 @@
+# Hide app.mintzer.in (admin + API) from Google.
+# Paste these 4 lines at the TOP of:
+#   public_html/newapp/public/.htaccess
+# Do not replace the rest of the file. Do not Disallow in robots.txt
+# yet — Google must still fetch the page to see noindex.
+
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>

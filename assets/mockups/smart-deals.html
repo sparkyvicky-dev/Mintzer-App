@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><title>Deals · use Copy</title>
+<link rel="stylesheet" href="smart-work.css">
+</head><body>
+<div class="app"><aside class="rail"><div class="mark">M</div><i class="on">▣</i></aside>
+<main class="main">
+<h1>Deals</h1>
+<p class="note">Do not start from an empty form. Copy the last deal like it. Instruction, Extra Notes, and Offer Text stay hidden. Stock alert stays on the row.</p>
+<div class="tag">Suggestion · Copy is the main button</div>
+<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px">
+  <button class="btn g">New deal</button>
+  <button class="btn p" id="copy">Copy selected deal</button>
+</div>
+<div class="card"><table>
+<thead><tr><th></th><th>Deal</th><th>You pay</th><th>Qty</th><th>Status</th><th>Last live</th><th></th></tr></thead>
+<tbody>
+<tr><td><input type="radio" name="d" checked></td><td>Iqoo 15R 8GB/256GB</td><td>₹49,198</td><td>6</td><td class="ok">Live</td><td>22 Oct</td><td><button class="btn s">Stock alert</button></td></tr>
+<tr><td><input type="radio" name="d"></td><td>Vivo T5X 6GB/128GB</td><td>₹24,630</td><td>4</td><td class="ok">Live</td><td>21 Oct</td><td><button class="btn s">Stock alert</button></td></tr>
+<tr><td><input type="radio" name="d"></td><td>Acer Aspire 7 A715-79G</td><td>₹68,479</td><td>3</td><td class="ok">Live</td><td>18 Oct</td><td><button class="btn s">Stock alert</button></td></tr>
+</tbody></table></div>
+<p class="note" id="msg" style="margin-top:12px">Copy opens the deal form filled from Iqoo 15R. You change the name, price, and links. The three hidden boxes are not asked again.</p>
+</main></div>
+<script>
+document.getElementById("copy").onclick = () => {
+  document.getElementById("msg").textContent = "Look only. Copy was not opened on the live deal form.";
+};
+</script>
+</body></html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mintzer — Style 4, plus overlay</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Roboto, system-ui, sans-serif; background: #E8EAED; color: #202124; }
+    .page { max-width: 1680px; margin: 0 auto; padding: 20px 16px 80px; }
+    h1 { font-size: 22px; font-weight: 800; }
+    .lead { font-size: 14px; color: #5F6368; line-height: 1.55; margin: 8px 0 12px; max-width: 920px; }
+    .lead b { color: #202124; }
+    .note {
+      font-size: 12px; line-height: 1.45; max-width: 920px; margin-bottom: 12px;
+      background: #EDE7FF; border: 1px solid #DDD4FF; padding: 10px 12px; border-radius: 10px;
+    }
+    .jump { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+    .jump a {
+      font-size: 12px; font-weight: 800; text-decoration: none; color: #7B61FF;
+      background: #fff; border: 1px solid #DDD4FF; padding: 5px 10px; border-radius: 99px;
+    }
+    .board { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 22px; }
+    .panel { background: #fff; border: 1px solid #DADCE0; border-radius: 16px; overflow: hidden; }
+    .ph { padding: 12px 14px; background: #F8F9FA; border-bottom: 1px solid #E8EAED; }
+    .ph h2 { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .ph p { font-size: 12px; color: #5F6368; margin-top: 4px; line-height: 1.4; }
+    .num {
+      min-width: 28px; height: 22px; border-radius: 99px; background: #7B61FF; color: #fff;
+      font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;
+      padding: 0 7px;
+    }
+    .pb { padding: 16px; background: #F1F3F4; display: flex; justify-content: center; }
+    .phone {
+      width: 360px; height: 740px; max-width: 100%;
+      background: #F8F9FA; border: 1px solid #DADCE0; border-radius: 28px;
+      overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 12px 32px rgba(32,33,36,.12);
+    }
+    .status { flex-shrink: 0; display: flex; justify-content: space-between; padding: 6px 16px 0; font-size: 11px; font-weight: 700; background: #7B61FF; color: #fff; }
+    .header { flex-shrink: 0; background: #7B61FF; color: #fff; padding: 8px 14px 12px; }
+    .header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .greeting h2 { font-size: 18px; font-weight: 800; }
+    .greeting p { font-size: 11px; color: #DDD4FF; margin-top: 2px; }
+    .actions { display: flex; align-items: center; gap: 6px; }
+    .wallet { background: rgba(255,255,255,.22); color: #fff; border-radius: 99px; padding: 5px 10px; font-size: 12px; font-weight: 800; }
+    .icon { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.16); display: grid; place-items: center; font-size: 13px; }
+    .scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #F8F9FA; }
+    .scroll::-webkit-scrollbar { width: 3px; }
+    .scroll::-webkit-scrollbar-thumb { background: #DADCE0; border-radius: 4px; }
+    .toolbar { display: flex; gap: 8px; padding: 10px 12px 0; }
+    .search {
+      flex: 1; display: flex; align-items: center; gap: 8px; background: #fff;
+      border: 1px solid #E8EAED; border-radius: 24px; padding: 8px 12px; font-size: 13px; color: #5F6368;
+    }
+    .vtoggle { display: flex; border: 1px solid #E8EAED; border-radius: 12px; overflow: hidden; background: #fff; }
+    .vtoggle span { width: 34px; height: 34px; display: grid; place-items: center; color: #5F6368; font-size: 13px; }
+    .vtoggle .on { background: #EDE7FF; color: #7B61FF; }
+    .chips { display: flex; gap: 6px; padding: 10px 12px; }
+    .chip { font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 99px; background: #fff; border: 1px solid #E8EAED; color: #5F6368; }
+    .chip.on { background: #7B61FF; color: #fff; border-color: #7B61FF; }
+    .proof { margin: 0 12px 8px; padding: 8px 10px; background: #fff; border: 1px solid #E8EAED; border-radius: 10px; font-size: 11px; color: #5F6368; }
+    .proof b { color: #188038; }
+    .list-meta { display: flex; justify-content: space-between; padding: 0 12px 8px; font-size: 11px; color: #5F6368; }
+    .list-meta em { font-style: normal; color: #7B61FF; font-weight: 600; }
+    .pad { padding: 0 10px 64px; position: relative; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .nav {
+      flex-shrink: 0; display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #E8EAED; background: #fff; padding: 8px 0 10px;
+      font-size: 10px; color: #5F6368; text-align: center; font-weight: 600;
+    }
+    .nav .on { color: #7B61FF; }
+    .help {
+      position: absolute; right: 12px; bottom: 12px;
+      background: #7B61FF; color: #fff; border-radius: 99px; font-size: 11px; font-weight: 700;
+      padding: 8px 12px;
+    }
+    img { display: block; }
+    .pin {
+      position: absolute; top: 5px; left: 5px; z-index: 2;
+      width: 22px; height: 22px; border-radius: 50%; overflow: hidden;
+      border: 1.5px solid #fff; background: #fff;
+    }
+    .pin img { width: 100%; height: 100%; object-fit: contain; }
+    .gst {
+      position: absolute; top: 5px; right: 5px; z-index: 2;
+      font-size: 8px; font-weight: 800; padding: 2px 5px; border-radius: 4px;
+      background: #FEF7E0; color: #E37400; border: 1px solid #F9AB00;
+    }
+    .prod { width: 100%; height: 100%; object-fit: contain; }
+    .logo { width: 16px; height: 16px; border-radius: 50%; object-fit: contain; background: #fff; flex-shrink: 0; }
+    .ibox { position: relative; overflow: hidden; background: #fff; }
+    .ibox.dark { background: #111; }
+    .card { background: #fff; border: 1px solid #E8EAED; border-radius: 12px; overflow: hidden; }
+    .earn { border: 0; background: #7B61FF; color: #fff; font-weight: 800; cursor: pointer; width: 100%; border-radius: 8px; font-size: 12px; padding: 8px; }
+    .name { font-size: 11px; font-weight: 700; line-height: 1.25; }
+    .sub { font-size: 10px; color: #5F6368; display: flex; align-items: center; gap: 5px; min-width: 0; }
+    .wash {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+      padding: 22px 8px 7px;
+      background: linear-gradient(transparent, rgba(60,64,67,.88));
+      color: #fff;
+    }
+    .wash .n { font-size: 11px; font-weight: 700; line-height: 1.25; }
+    .wash .p { font-size: 10px; opacity: .92; margin-top: 2px; }
+
+    .a { padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .a .ibox { height: 78px; border-radius: 8px; }
+    .a .name { height: 2.5em; overflow: hidden; }
+
+    .b .ibox { height: 118px; }
+    .b .body { padding: 7px 8px 8px; display: flex; flex-direction: column; gap: 6px; }
+
+    .c .ibox { height: 118px; }
+    .c .body { padding: 7px 8px 8px; display: flex; flex-direction: column; gap: 6px; }
+    .c .name { height: 2.5em; overflow: hidden; }
+
+    .d .ibox { height: 128px; }
+    .d .body { padding: 7px 8px 8px; }
+
+    .e .ibox { height: 118px; }
+    .e .film::after {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: rgba(95,99,104,.28);
+    }
+    .e .body { padding: 7px 8px 8px; display: flex; flex-direction: column; gap: 5px; }
+    .e .name { height: 2.5em; overflow: hidden; }
+
+    .f .ibox { height: 110px; }
+    .f .chip-pay {
+      position: absolute; left: 6px; right: 6px; bottom: 6px; z-index: 2;
+      background: rgba(60,64,67,.82); color: #fff; border-radius: 8px;
+      font-size: 10px; font-weight: 700; padding: 5px 8px;
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    }
+    .f .body { padding: 7px 8px 8px; display: flex; flex-direction: column; gap: 6px; }
+    .f .name { height: 2.5em; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Style 4 + the grey overlay</h1>
+    <p class="lead">
+      You like <b>4</b> (name, grey pay line, Earn button) and the <b>grey wash</b> from 3 and 9.
+      These six Homes keep 4’s logic and only move what sits on the photo. Scroll each phone.
+    </p>
+    <p class="note">Reply <b>A–F</b>. Locked demo is unchanged. My pick: <b>B</b> — name on the grey bar, pay caption, Earn. One less row than 4, overlay you liked.</p>
+    <nav class="jump">
+      <a href="#sA">A Now</a>
+      <a href="#sB">B Name on overlay</a>
+      <a href="#sC">C Pay on overlay</a>
+      <a href="#sD">D Name + pay on overlay</a>
+      <a href="#sE">E Soft grey film</a>
+      <a href="#sF">F Grey pay chip</a>
+    </nav>
+    <div class="board" id="board"></div>
+  </div>
+  <script>
+    const INR = n => n.toLocaleString('en-IN');
+    const DEALS = [
+      { name: 'Motorola G57 Power 5G', gst: true, dark: false, img: '../images/motorola-g57.jpg', store: '../logos/fitted/stores/flipkart.png', card: null, cardName: 'Any card', spend: 17519, earn: 300 },
+      { name: 'Samsung Galaxy M35 5G', gst: false, dark: true, img: '../images/samsung-m35.png', store: '../logos/fitted/stores/amazon.png', card: '../logos/fitted/cards/hdfc.png', cardName: 'HDFC', spend: 22999, earn: 450 },
+      { name: 'Samsung HD TV 32"', gst: true, dark: false, img: '../images/samsung-tv-32.jpg', store: '../logos/fitted/stores/flipkart.png', card: '../logos/fitted/cards/axis.png', cardName: 'Axis', spend: 12499, earn: 380 },
+      { name: 'iQOO Neo 10', gst: true, dark: false, img: '../images/motorola-g57.jpg', store: '../logos/fitted/stores/iqoo.png', card: '../logos/fitted/cards/onecard.png', cardName: 'OneCard', spend: 27999, earn: 500 },
+      { name: 'Motorola Edge 60', gst: true, dark: false, img: '../images/motorola-g57.jpg', store: '../logos/fitted/stores/motorola.png', card: '../logos/fitted/cards/hsbc.png', cardName: 'HSBC', spend: 24999, earn: 380 },
+      { name: 'vivo T4x', gst: true, dark: true, img: '../images/samsung-m35.png', store: '../logos/fitted/stores/vivo.png', card: '../logos/fitted/cards/pnb.png', cardName: 'PNB', spend: 19149, earn: 280 },
+      { name: 'OPPO K13 5G', gst: true, dark: true, img: '../images/samsung-m35.png', store: '../logos/fitted/stores/oppo.png', card: '../logos/fitted/cards/rbl.png', cardName: 'RBL', spend: 16899, earn: 250 },
+      { name: 'Samsung HD TV 32"', gst: true, dark: false, img: '../images/samsung-tv-32.jpg', store: '../logos/fitted/stores/flipkart.png', card: '../logos/fitted/cards/sbi.png', cardName: 'SBI', spend: 13299, earn: 420 }
+    ];
+    const pin = d => `<span class="pin"><img src="${d.store}" alt=""></span>`;
+    const gst = d => d.gst ? '<span class="gst">GST</span>' : '';
+    const bank = d => d.card ? `<img class="logo" src="${d.card}" alt=""> ${d.cardName}` : d.cardName;
+    const photo = (d, extra = '') =>
+      `<div class="ibox${d.dark ? ' dark' : ''} ${extra}"><img class="prod" src="${d.img}" alt="">${pin(d)}${gst(d)}`;
+
+    const chrome = inner => `
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="header"><div class="header-row">
+        <div class="greeting"><h2>Hi, Vikram</h2><p>Earn with your card</p></div>
+        <div class="actions"><span class="wallet">₹12,400</span><span class="icon">🔔</span><span class="icon">💬</span></div>
+      </div></div>
+      <div class="scroll">
+        <div class="toolbar"><div class="search">⌕ Search deals…</div><div class="vtoggle"><span>☰</span><span class="on">⊞</span></div></div>
+        <div class="chips"><span class="chip on">All Deals</span><span class="chip">Direct</span><span class="chip">Link</span></div>
+        <div class="proof">🔥 <b>₹8.2L+</b> earned this week · 42 orders today</div>
+        <div class="list-meta"><span>8 deals live</span><em>Highest earn ↓</em></div>
+        <div class="pad"><div class="grid2">${inner}</div><span class="help">Help</span></div>
+      </div>
+      <div class="nav"><span class="on">Home</span><span>Orders</span><span>Wallet</span><span>Profile</span></div>`;
+
+    const cards = {
+      A: d => `<article class="card a">
+        ${photo(d)}</div>
+        <div class="name">${d.name}</div>
+        <div class="sub">${bank(d)} · ₹${INR(d.spend)}</div>
+        <button type="button" class="earn">Earn ₹${d.earn}</button>
+      </article>`,
+      B: d => `<article class="card b">
+        ${photo(d)}<div class="wash"><div class="n">${d.name}</div></div></div>
+        <div class="body">
+          <div class="sub">${bank(d)} · ₹${INR(d.spend)}</div>
+          <button type="button" class="earn">Earn ₹${d.earn}</button>
+        </div>
+      </article>`,
+      C: d => `<article class="card c">
+        ${photo(d)}<div class="wash"><div class="p">Pay ₹${INR(d.spend)}</div></div></div>
+        <div class="body">
+          <div class="name">${d.name}</div>
+          <div class="sub">${bank(d)}</div>
+          <button type="button" class="earn">Earn ₹${d.earn}</button>
+        </div>
+      </article>`,
+      D: d => `<article class="card d">
+        ${photo(d)}<div class="wash"><div class="n">${d.name}</div><div class="p">${d.cardName} · Pay ₹${INR(d.spend)}</div></div></div>
+        <div class="body"><button type="button" class="earn">Earn ₹${d.earn}</button></div>
+      </article>`,
+      E: d => `<article class="card e">
+        ${photo(d, 'film')}</div>
+        <div class="body">
+          <div class="name">${d.name}</div>
+          <div class="sub">${bank(d)} · ₹${INR(d.spend)}</div>
+          <button type="button" class="earn">Earn ₹${d.earn}</button>
+        </div>
+      </article>`,
+      F: d => `<article class="card f">
+        ${photo(d)}<div class="chip-pay"><span>${d.cardName}</span><span>₹${INR(d.spend)}</span></div></div>
+        <div class="body">
+          <div class="name">${d.name}</div>
+          <button type="button" class="earn">Earn ₹${d.earn}</button>
+        </div>
+      </article>`
+    };
+
+    const STYLES = [
+      { id: 'A', title: '4 as you liked', blurb: 'Control. Name, grey pay line, Earn. No overlay.' },
+      { id: 'B', title: 'Name on grey bar', blurb: 'Steal 9: name sits in the wash. Caption is bank + pay. Earn below. Shorter than A.' },
+      { id: 'C', title: 'Pay on grey bar', blurb: 'Steal 3: Pay ₹ on the photo. Name + bank stay under. Earn button.' },
+      { id: 'D', title: 'Name + pay on grey', blurb: 'Shortest. Overlay does the talking. Only Earn sits under the photo.' },
+      { id: 'E', title: 'Soft grey film', blurb: 'Same as 4, whole photo gets a light grey veil. Layout unchanged.' },
+      { id: 'F', title: 'Grey pay chip', blurb: 'Rounded grey chip on the photo for bank + amount. Name + Earn under.' }
+    ];
+
+    document.getElementById('board').innerHTML = STYLES.map(s => `
+      <section class="panel" id="s${s.id}">
+        <div class="ph"><h2><span class="num">4${s.id}</span> ${s.title}</h2><p>${s.blurb}</p></div>
+        <div class="pb"><div class="phone">${chrome(DEALS.map(cards[s.id]).join(''))}</div></div>
+      </section>`).join('');
+  </script>
+</body>
+</html>
