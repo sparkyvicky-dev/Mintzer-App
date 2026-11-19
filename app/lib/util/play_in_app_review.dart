@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -7,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../config/app_config.dart';
 import '../theme/app_theme.dart';
 
-/// Soft pre-prompt → Google Play In-App Review when available.
+/// Soft pre-prompt → store in-app review when available (Play / App Store).
 class PlayInAppReview {
   PlayInAppReview._();
 
@@ -52,8 +54,21 @@ class PlayInAppReview {
     }
   }
 
-  /// Profile → Rate Mintzer — opens Play listing.
+  /// Profile → Rate Mintzer — opens Play or App Store listing.
   static Future<void> openPlayListing() async {
+    if (!kIsWeb && Platform.isIOS) {
+      try {
+        await InAppReview.instance.openStoreListing(
+          appStoreId: AppConfig.appStoreId.isEmpty ? null : AppConfig.appStoreId,
+        );
+        return;
+      } catch (_) {}
+      try {
+        await launchUrl(Uri.parse(AppConfig.appStoreUrl), mode: LaunchMode.externalApplication);
+      } catch (_) {}
+      return;
+    }
+
     final market = Uri.parse('market://details?id=${AppConfig.packageId}');
     final https = Uri.parse(AppConfig.playUrl);
     try {

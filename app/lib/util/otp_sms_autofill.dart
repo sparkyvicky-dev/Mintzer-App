@@ -1,3 +1,6 @@
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:smart_auth/smart_auth.dart';
 
 /// Android OTP capture for Mintzer SMS.
@@ -6,18 +9,24 @@ import 'package:smart_auth/smart_auth.dart';
 /// approved Mintzer template does not include that, so Retriever never fires.
 /// We use [SMS User Consent] instead: system shows “Allow Mintzer to read this
 /// one message?” → fills the 6-digit code.
+///
+/// On iOS this is a no-op — OTP fields use `AutofillHints.oneTimeCode` instead.
 class OtpSmsAutofill {
   OtpSmsAutofill._();
+
+  static bool get _android => !kIsWeb && Platform.isAndroid;
 
   static Future<String?>? _pending;
 
   /// Call **before** `sendOtp` so listening is active when the SMS arrives.
   static void arm() {
+    if (!_android) return;
     _pending = _listenOnce();
   }
 
   /// Await the armed listener, or start a new one if [arm] was skipped.
   static Future<String?> consume() {
+    if (!_android) return Future<String?>.value(null);
     final pending = _pending;
     _pending = null;
     return pending ?? _listenOnce();
@@ -25,6 +34,7 @@ class OtpSmsAutofill {
 
   static Future<void> cancel() async {
     _pending = null;
+    if (!_android) return;
     await SmartAuth.instance.removeUserConsentApiListener();
   }
 

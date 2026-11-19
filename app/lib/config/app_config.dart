@@ -1,8 +1,41 @@
-/// Release / Play gates. Do not flip force-update until live mapper is proven on device.
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+/// Release / store gates. Do not flip force-update until live mapper is proven on device.
 class AppConfig {
   static const packageId = 'com.mintzer';
+  /// iOS bundle ID (same as Android applicationId).
+  static const iosBundleId = 'com.mintzer';
   static const versionLabel = '3.0.41';
   static const playUrl = 'https://play.google.com/store/apps/details?id=com.mintzer';
+
+  /// Numeric App Store ID from App Store Connect (set after first listing).
+  /// Empty → [appStoreUrl] falls back to [websiteUrl] until you fill this in.
+  static const appStoreId = '';
+
+  static String get appStoreUrl => appStoreId.isEmpty
+      ? websiteUrl
+      : 'https://apps.apple.com/app/id$appStoreId';
+
+  /// Platform store listing for Rate / open-store actions.
+  static String get storeUrl {
+    if (!kIsWeb && Platform.isIOS) return appStoreUrl;
+    return playUrl;
+  }
+
+  /// Short label for Profile → Rate Mintzer trailing chip.
+  static String get storeLabel {
+    if (!kIsWeb && Platform.isIOS) return 'App Store';
+    return 'Play';
+  }
+
+  /// Share / invite deep link. Prefer website until App Store is live, then
+  /// include both stores when [appStoreId] is set.
+  static String get inviteStoreUrl {
+    if (appStoreId.isEmpty) return playUrl;
+    return 'Android: $playUrl · iOS: $appStoreUrl';
+  }
 
   /// Flexible update only until new APK opens real old orders without crash.
   static const forceUpdateEnabled = false;

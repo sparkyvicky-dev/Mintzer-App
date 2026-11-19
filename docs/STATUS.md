@@ -1,8 +1,19 @@
-# Mintzer — status (28 Oct 2026)
+# Mintzer — status (19 Nov 2026)
 
 **A–Z of the whole app (till date):** [APP-A-TO-Z.md](./APP-A-TO-Z.md)
 
-**Flutter tree:** every file in `app/` is listed in [frontend/03-flutter-app-map.md](./frontend/03-flutter-app-map.md). Code version is **3.0.41 (30041)**. Android only. On 25 Sep the web scaffold, Windows runner, and generated build/IDE junk were removed. No `app/lib` or Android source was deleted. Logo files that could be recovered were put back. Locked screens were not restyled.
+**Flutter tree:** every file in `app/` is listed in [frontend/03-flutter-app-map.md](./frontend/03-flutter-app-map.md). Code version is **3.0.41 (30041)**. **Android live on Play.** **iOS App Store:** scaffold in `app/ios/` — follow [IOS-APP-STORE.md](./IOS-APP-STORE.md) (Mac + Xcode + Firebase iOS plist). On 25 Sep the web scaffold, Windows runner, and generated build/IDE junk were removed. No `app/lib` or Android source was deleted. Logo files that could be recovered were put back. Locked screens were not restyled.
+
+---
+
+## 19 Nov — iOS App Store scaffold
+
+| Item | Detail |
+|------|--------|
+| Platform | `app/ios/` created · bundle `com.mintzer` |
+| Code | OTP SMS Android-gated · Darwin push locals · store URLs / Rate Mintzer |
+| Mac next | `GoogleService-Info.plist` · signing · Push capability · Archive → TestFlight |
+| Doc | [IOS-APP-STORE.md](./IOS-APP-STORE.md) |
 
 ---
 

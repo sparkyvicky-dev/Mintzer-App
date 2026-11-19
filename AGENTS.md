@@ -25,6 +25,7 @@ Mintzer — Android-first Indian fintech app. Users browse Flipkart/Amazon card 
 | **Legacy users / no crash** | **LOCKED** — same phone, no force PAN, mapper must not crash — [docs/STATUS.md](docs/STATUS.md) |
 | Figma UI design | Optional polish — match the locked live demo |
 | Mobile app code (Flutter) | **In `app/`** — package `com.mintzer`. Map: `docs/frontend/03-flutter-app-map.md`. Do not restyle locked screens. |
+| **iOS / App Store** | Scaffold in `app/ios/` — build/Archive on Mac only. See [docs/IOS-APP-STORE.md](docs/IOS-APP-STORE.md). |
 | PAN verify | **Live Cashfree** — app `POST /pan-verify`. IFSC stays API Sathi. See `docs/STATUS.md`. |
 | Backend implementation | **After or parallel** — see backend docs |
 

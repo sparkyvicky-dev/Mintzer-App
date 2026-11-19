@@ -179,8 +179,13 @@ class PushBootstrap {
 
   static Future<void> _initLocalNotifications() async {
     const androidInit = AndroidInitializationSettings('@drawable/ic_stat_mintzer');
+    const darwinInit = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
     await _local.initialize(
-      const InitializationSettings(android: androidInit),
+      const InitializationSettings(android: androidInit, iOS: darwinInit),
       onDidReceiveNotificationResponse: (resp) {
         // ignore: discarded_futures
         PushRouter.handlePayload(resp.payload);
@@ -239,6 +244,11 @@ class PushBootstrap {
           icon: '@drawable/ic_stat_mintzer',
           importance: Importance.high,
           priority: Priority.high,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
         ),
       ),
       payload: payload,

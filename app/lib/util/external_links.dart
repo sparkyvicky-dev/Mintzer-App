@@ -46,7 +46,10 @@ Future<void> openTutorials(BuildContext context) =>
     openExternalUrl(context, AppConfig.tutorialsUrl, failTitle: 'Couldn’t open tutorials');
 
 Future<void> openPlayStore(BuildContext context) =>
-    openExternalUrl(context, AppConfig.playUrl, failTitle: 'Couldn’t open Play Store');
+    openExternalUrl(context, AppConfig.storeUrl, failTitle: 'Couldn’t open store');
+
+/// Opens the platform store listing (Play on Android, App Store on iOS).
+Future<void> openAppStore(BuildContext context) => openPlayStore(context);
 
 String storeFallbackUrl(String storeId) => switch (storeId) {
       'amazon' => 'https://www.amazon.in',
