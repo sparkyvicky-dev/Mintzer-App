@@ -1,5 +1,5 @@
 name: mintzer
-description: Mintzer — card deals, Play package com.mintzer.
+description: Mintzer — card deals, package com.mintzer (Play + App Store).
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -65,7 +65,8 @@ dev_dependencies:
 
 flutter_launcher_icons:
   android: true
-  ios: false
+  ios: true
+  remove_alpha_ios: true
   image_path: assets/logos/ic_launcher_full.png
   adaptive_icon_background: "#7B61FF"
   adaptive_icon_foreground: assets/logos/ic_launcher_foreground.png

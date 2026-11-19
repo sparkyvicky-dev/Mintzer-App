@@ -584,7 +584,7 @@ class _ProfileScreenState extends State<ProfileScreen> with WidgetsBindingObserv
                   ShareParams(
                     // l10n-missing
                     text:
-                        'Join Mintzer with my code $_code — earn on Flipkart & Amazon card deals. https://play.google.com/store/apps/details?id=com.mintzer',
+                        'Join Mintzer with my code $_code — earn on Flipkart & Amazon card deals. ${AppConfig.inviteStoreUrl}',
                   ),
                 );
               },
@@ -717,7 +717,7 @@ class _ProfileScreenState extends State<ProfileScreen> with WidgetsBindingObserv
                 _NavRow(
                   // l10n-missing
                   title: 'Rate Mintzer',
-                  trailing: Text(S.e('Play'), style: TextStyle(fontSize: 12, color: Color(0xFF9AA0A6))),
+                  trailing: Text(AppConfig.storeLabel, style: TextStyle(fontSize: 12, color: Color(0xFF9AA0A6))),
                   onTap: () => PlayInAppReview.openPlayListing(),
                 ),
               ],

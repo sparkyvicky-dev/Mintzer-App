@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import '../config/app_config.dart';
 import '../l10n/s.dart';
 import '../mock/session.dart';
 import '../models/deal.dart';
@@ -324,8 +325,11 @@ class _FatPromo extends StatelessWidget {
       2 => _Refer(
           onTap: () => SharePlus.instance.share(
             ShareParams(
-              text:
-                  S.e('Join me on Mintzer — earn on Flipkart & Amazon card deals. https://play.google.com/store/apps/details?id=com.mintzer'),
+              text: S
+                  .e(
+                    'Join me on Mintzer — earn on Flipkart & Amazon card deals. https://play.google.com/store/apps/details?id=com.mintzer',
+                  )
+                  .replaceAll(AppConfig.playUrl, AppConfig.inviteStoreUrl),
             ),
           ),
         ),

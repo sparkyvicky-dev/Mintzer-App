@@ -1,0 +1,9 @@
+Place the real GoogleService-Info.plist here (gitignored).
+
+1. Firebase Console → project mintzer-e45d6 (mintzercorp@gmail.com)
+2. Add iOS app with bundle ID: com.mintzer
+3. Download GoogleService-Info.plist
+4. Copy to: app/ios/Runner/GoogleService-Info.plist
+5. In Xcode: ensure the file is in the Runner target (Copy Bundle Resources)
+
+Do NOT commit the real plist (see repo .gitignore).
